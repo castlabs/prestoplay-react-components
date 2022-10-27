@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg  viewBox="-8 -8 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g  stroke="none" stroke-width="1" fill-rule="evenodd">
+        <circle id="Oval"  cx="32" cy="32" r="6"/>
+        <g id="Group-2" transform="translate(17.000000, 47.500000) rotate(-180.000000) translate(-17.000000, -47.500000) translate(8.000000, 38.000000)" >
+            <rect id="Rectangle" x="0" y="15" width="16" height="4"/>
+            <rect id="Rectangle" x="0" y="3" width="4" height="16"/>
+            <rect id="Rectangle" transform="translate(10.131728, 8.631728) rotate(-45.000000) translate(-10.131728, -8.631728) " x="1.13172798" y="6.63172798" width="18" height="4"/>
+        </g>
+        <g id="Group" transform="translate(47.278175, 17.000000) rotate(-180.000000) translate(-47.278175, -17.000000) translate(37.778175, 8.000000)" >
+            <rect id="Rectangle" x="2.22182541" y="0" width="16" height="4"/>
+            <rect id="Rectangle" x="14.2218254" y="0" width="4" height="16"/>
+            <rect id="Rectangle" transform="translate(8.000000, 9.778175) rotate(-45.000000) translate(-8.000000, -9.778175) " x="-1" y="7.77817459" width="18" height="4"/>
+        </g>
+    </g>
+</svg>

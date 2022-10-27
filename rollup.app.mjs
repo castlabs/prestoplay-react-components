@@ -21,10 +21,23 @@ export default [
         extensions: [".js"],
       }),
       replace({
-        'process.env.NODE_ENV': JSON.stringify( 'development' )
+        preventAssignment: true,
+        'process.env.NODE_ENV': JSON.stringify('development')
       }),
       commonjs(),
-      typescript({tsconfig: './tsconfig.json'}),
+      typescript({
+        tsconfig: './app/tsconfig.json',
+        compilerOptions: {
+          outDir: './app/dist'
+        },
+        include: [
+          "./app/src/**/*.tsx",
+          "./app/src/**/*.ts",
+          "./src/**/*.tsx",
+          "./src/**/*.ts"
+        ],
+        exclude: ["dist/**/*.d.ts"]
+      }),
       postcss({
         plugins: [
           url({
@@ -39,7 +52,7 @@ export default [
         host: "localhost",
         port: 3000,
       }),
-      livereload({ watch: "app/dist" }),
+      livereload({watch: "app/dist"})
     ]
   }
 ]

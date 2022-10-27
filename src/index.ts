@@ -1,6 +1,13 @@
+export * from './Player'
+export * from './utils'
+export * from './LanguageCodes'
+
+
+export * from './components/BaseButton'
+export * from './components/PlayerSurface'
+
 export * from './components/PlayPauseButton'
 export * from './components/CurrentTime'
-export * from './components/PlayerSurface'
 export * from './components/Slider'
 export * from './components/SeekBar'
 export * from './components/BufferingIndicator'
@@ -13,5 +20,3 @@ export * from './components/SeekButton'
 export * from './components/TimeLeft'
 export * from './components/TrackSelectionList'
 export * from './components/VolumeBar'
-export * from './Player'
-export * from './utils'

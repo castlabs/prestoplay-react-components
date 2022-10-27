@@ -1,25 +1,67 @@
 import {Player} from "./Player";
-import React, {MouseEventHandler} from "react";
+import React, {CSSProperties} from "react";
 
-function pad(str: string, max: number): string {
-  return str.length < max ? pad('0' + str, max) : str;
-}
-
-function padReplace(value:string) {
-  return (_:any, group:string) => pad(value, group.length - 1)
-}
-
+/**
+ * Base properties for components created by this library
+ */
 export interface BaseComponentProps {
+  /**
+   * Optional children that can be passed. If and how they are used depends
+   * on the component.
+   */
   children?: React.ReactNode
+  /**
+   * Class name extensions that are passed to the top level element created by
+   * a component
+   */
   className?: string
+  /**
+   * Style extensions that are passed to the top level element created by
+   * a component
+   */
+  style?: CSSProperties
 }
 
+/**
+ * Base interface for component properties that need a player instance
+ */
 export interface BasePlayerComponentProps extends BaseComponentProps {
+  /**
+   * The player instance
+   */
   player: Player
 }
 
-export interface BasePlayerComponentButtonProps extends BasePlayerComponentProps{
+/**
+ * Base properties interface for button components that interact with a player.
+ */
+export interface BasePlayerComponentButtonProps extends BasePlayerComponentProps {
+  /**
+   * Buttons, by default assume they have an icon. Use this to disable the icon
+   * and turn the button into a text based button.
+   */
   disableIcon?: boolean
+}
+
+/**
+ * Small helper that makes it a little easier dealing with a lot of dynamic
+ * class names
+ * @param classes Record that maps from the class name to a boolean that
+ *   indicates if the class will be included in the final classNames string
+ * @param classNames Extension that will be appended to the final result if
+ *   provided
+ */
+export function classNames(classes: Record<string, boolean>, classNames?: string): string {
+  let selected: string[] = []
+  for (let k in classes) {
+    if (classes[k]) {
+      selected.push(k)
+    }
+  }
+  if (classNames) {
+    selected.push(classNames)
+  }
+  return selected.join(' ')
 }
 
 /**
@@ -58,9 +100,33 @@ export function timeToString(timeInSeconds: number, opt_format = '%hh:%mm:%ss') 
     .replace(/(%s+)/, padReplace(String(seconds)));
 }
 
-export function getMinimalFormat(time:number):string {
-  if(time >= 0 && time < 3600) {
+/**
+ * Returns the minimal time string based on the provided time
+ * @param time
+ */
+export function getMinimalFormat(time: number): string {
+  if (time >= 0 && time < 3600) {
     return "%mm:%ss"
   }
   return "%hh:%mm:%ss"
+}
+
+/**
+ * Returns the value if it is defined, otherwise returns the specified
+ * default value.
+ *
+ * @param value The value
+ * @param defaultValue The default value if value is undefined
+ */
+export function p(value: any, defaultValue: any) {
+  if (value === undefined) return defaultValue
+  return value
+}
+
+function pad(str: string, max: number): string {
+  return str.length < max ? pad('0' + str, max) : str;
+}
+
+function padReplace(value: string) {
+  return (_: any, group: string) => pad(value, group.length - 1)
 }
