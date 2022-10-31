@@ -2,6 +2,7 @@
   "name": "@castlabs/prestoplay-react-components",
   "version": "0.5.0",
   "description": "React components for PRESTOplay",
+  "homepage": "https://github.com/castlabs/prestoplay-react-components",
   "main": "dist/prestoplay-react.js",
   "types": "dist/prestoplay-react.d.ts",
   "scripts": {
