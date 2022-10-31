@@ -5,7 +5,7 @@ export interface SpacerProps extends BaseComponentProps{
   style?: CSSProperties
 }
 
-const Spacer = (props: SpacerProps) => {
+export const Spacer = (props: SpacerProps) => {
   return (
     <div className={`pp-ui pp-ui-spacer ${props.className || ''}`} style={props.style}>
       {props.children}

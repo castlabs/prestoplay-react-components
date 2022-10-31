@@ -10,7 +10,7 @@ export interface VolumeBarProps extends BasePlayerComponentProps{
   adjustWhileDragging?: boolean
 }
 
-const VolumeBar = (props: VolumeBarProps) => {
+export const VolumeBar = (props: VolumeBarProps) => {
   let [progress, setProgress] = useState(100)
 
   async function updateFromPlayer(presto?:any): Promise<number> {

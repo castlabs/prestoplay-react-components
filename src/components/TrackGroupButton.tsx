@@ -66,3 +66,5 @@ export const TrackGroupButton = (props: TrackGroupButtonProps) => {
     </BaseButton>
   )
 }
+
+export default TrackGroupButton

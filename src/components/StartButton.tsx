@@ -11,7 +11,7 @@ export interface StartButtonProps extends BasePlayerComponentButtonProps{
   config: any
 }
 
-const StartButton = (props: StartButtonProps) => {
+export const StartButton = (props: StartButtonProps) => {
   let [visible, setVisible] = useState(!!props.config);
 
   const start = async () => {

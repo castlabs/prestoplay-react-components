@@ -11,7 +11,7 @@ export interface PosterImageProps extends BasePlayerComponentProps{
   alt?: string
 }
 
-const PosterImage = (props: PosterImageProps) => {
+export const PosterImage = (props: PosterImageProps) => {
   let [visible, setVisible] = useState(!!props.src);
   let [wasHidden, setWasHidden] = useState(false);
 

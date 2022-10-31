@@ -11,7 +11,7 @@ export interface TimeLeftProps extends BasePlayerComponentProps{
   disableHoveringDisplay?: boolean
 }
 
-const TimeLeft = (props: TimeLeftProps) => {
+export const TimeLeft = (props: TimeLeftProps) => {
   let [timeLeft, setTimeLeft] = useState("")
   let [isHovering, setHovering] = useState(false)
   let hoveringRef = useRef<boolean>()

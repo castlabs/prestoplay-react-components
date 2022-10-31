@@ -8,7 +8,7 @@ import BaseButton from "./BaseButton";
 export interface MuteButtonProps extends BasePlayerComponentButtonProps{
 }
 
-const MuteButton = (props: MuteButtonProps) => {
+export const MuteButton = (props: MuteButtonProps) => {
   let [muted, setMuted] = useState(false);
 
   usePrestoEvent('volumechange', props.player, (e, presto) => {

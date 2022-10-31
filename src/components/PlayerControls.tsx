@@ -9,7 +9,7 @@ export interface PlayerControlsProps extends BasePlayerComponentProps {
   hideDelay?: number
 }
 
-const PlayerControls = (props: PlayerControlsProps) => {
+export const PlayerControls = (props: PlayerControlsProps) => {
   let [controlsVisible, setControlsVisible_] = useState(props.player.controlsVisible);
   const timer = useRef<any>(null);
   const ref = createRef<HTMLDivElement>();

@@ -16,7 +16,7 @@ export interface SliderProps extends BaseComponentProps {
   currentValue?: () => Promise<number>
 }
 
-const Slider = (props: SliderProps) => {
+export const Slider = (props: SliderProps) => {
   let [interacting, setInteracting] = useState(false)
   let [adjustPosition, setAdjustPosition] = useState(false)
   let [progress, setProgress] = useState(props.value)

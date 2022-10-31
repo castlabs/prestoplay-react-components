@@ -18,7 +18,7 @@ export interface SeekBarProps extends BasePlayerComponentProps {
   keyboardSeekBackward?: number
 }
 
-const SeekBar = (props: SeekBarProps) => {
+export const SeekBar = (props: SeekBarProps) => {
   let [progress, setProgress] = useState(0)
   let [hoverPosition, setHoverPosition] = useState(-1)
   let [hoverValue, setHoverValue] = useState(0)

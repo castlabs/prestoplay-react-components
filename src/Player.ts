@@ -585,3 +585,5 @@ export function useGlobalHide(ref: React.RefObject<Element>, hide: () => any) {
     }
   })
 }
+
+export default Player

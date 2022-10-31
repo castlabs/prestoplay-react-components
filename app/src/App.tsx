@@ -27,7 +27,7 @@ import BufferingIndicator from "../../src/components/BufferingIndicator";
 import TimeLeft from "../../src/components/TimeLeft";
 
 import HorizontalBar from "../../src/components/HorizontalBar";
-import {TrackGroupButton} from "../../src/components/TrackGroupButton";
+import TrackGroupButton from "../../src/components/TrackGroupButton";
 import Thumbnail from "../../src/components/Thumbnail";
 import TrackSelectionList from "../../src/components/TrackSelectionList";
 import PlayerControls from "../../src/components/PlayerControls";

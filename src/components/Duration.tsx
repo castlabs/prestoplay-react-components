@@ -10,7 +10,7 @@ import Label from "./Label";
 export interface DurationProps extends BasePlayerComponentProps{
 }
 
-const Duration = (props: DurationProps) => {
+export const Duration = (props: DurationProps) => {
   let [duration, setDuration] = useState("")
 
   usePrestoEvent("durationchange", props.player, (_, presto) => {

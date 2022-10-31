@@ -38,10 +38,10 @@ import "@castlabs/prestoplay/cl.htmlcue"
 import "@castlabs/prestoplay/cl.ttml"
 import "@castlabs/prestoplay/cl.vtt"
 
-// Load the player and surface component. We are loading
-// individual modules here
-import {Player} from "@castlabs/prestoplay-react-components/dist/Player"
-import PlayerSurface from "@castlabs/prestoplay-react-components/dist/components/PlayerSurface"
+// Load the player and surface component. We are loading from the 
+// index bundle but you can also load from the index with "@castlabs/prestoplay-react-components/dist"
+// or individual components, for instance "@castlabs/prestoplay-react-components/dist/Player"
+import {Player, PlayerSurface} from "@castlabs/prestoplay-react-components/"
 
 
 // load the player styles

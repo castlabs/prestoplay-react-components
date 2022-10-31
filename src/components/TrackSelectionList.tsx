@@ -4,13 +4,13 @@ import {clpp} from "@castlabs/prestoplay"
 import {BasePlayerComponentProps, classNames} from "../utils";
 import {TrackType} from "../Track";
 import {usePrestoUiEvent} from "../Player";
-import {TrackSelectionButton} from "./TrackSelectionButton";
+import TrackSelectionButton from "./TrackSelectionButton";
 
 export interface TrackSelectionListProps extends BasePlayerComponentProps {
   type: TrackType
 }
 
-const TrackSelectionList = (props: TrackSelectionListProps) => {
+export const TrackSelectionList = (props: TrackSelectionListProps) => {
   let [tracks, setTracks] = useState(props.player[`${props.type}Tracks`]);
 
   usePrestoUiEvent(`${props.type}TracksAvailable`, props.player, (tracks) => {

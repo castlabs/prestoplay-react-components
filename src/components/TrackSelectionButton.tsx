@@ -3,9 +3,9 @@ import {Track} from "../Track";
 import {BasePlayerComponentProps, classNames} from "../utils";
 // @ts-ignore
 import {clpp} from "@castlabs/prestoplay"
-import {TrackLabel} from "./TrackLabel";
+import TrackLabel from "./TrackLabel";
 import BaseButton from "./BaseButton";
-import {DefaultTrackLabelerOptions, TrackLabeler} from "../Player";
+import {TrackLabeler} from "../Player";
 
 export interface TrackSelectionButtonProps extends BasePlayerComponentProps {
   track: Track
@@ -34,3 +34,4 @@ export const TrackSelectionButton = (props: TrackSelectionButtonProps) => {
     </BaseButton>
   )
 }
+export default TrackSelectionButton

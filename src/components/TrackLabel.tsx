@@ -22,3 +22,5 @@ export const TrackLabel = (props: TrackLabelProps) => {
     </div>
   )
 }
+
+export default TrackLabel

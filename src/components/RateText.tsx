@@ -8,7 +8,7 @@ import Label from "./Label";
 export interface RateTextProps extends BasePlayerComponentProps{
 }
 
-const RateText = (props: RateTextProps) => {
+export const RateText = (props: RateTextProps) => {
   let [rate, setRate] = useState(1);
 
   usePrestoEvent('ratechange', props.player, (e, presto) => {

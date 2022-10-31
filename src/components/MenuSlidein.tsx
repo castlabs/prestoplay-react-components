@@ -42,7 +42,7 @@ export const DEFAULT_SELECTION_OPTIONS: SelectionOption[] = [
  * @param props
  * @constructor
  */
-const MenuSlidein = (props: MenuSlideinProps) => {
+export const MenuSlidein = (props: MenuSlideinProps) => {
   let [isVisible, setVisible] = useState(props.player.slideInMenuVisible);
   let [audioListVisible, setAudioListVisible] = useState(false)
   let [textListVisible, setTextListVisible] = useState(false)

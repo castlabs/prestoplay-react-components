@@ -11,7 +11,7 @@ export interface CurrentTimeProps extends BasePlayerComponentProps{
   disableHoveringDisplay?: boolean
 }
 
-const CurrentTime = (props: CurrentTimeProps) => {
+export const CurrentTime = (props: CurrentTimeProps) => {
   let [currentTime, setCurrentTime] = useState("")
   let [isHovering, setHovering] = useState(false)
   let hoveringRef = useRef<boolean>()

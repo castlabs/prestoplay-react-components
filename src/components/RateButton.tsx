@@ -11,7 +11,7 @@ export interface RateButtonProps extends BasePlayerComponentButtonProps{
   min?: number
 }
 
-const RateButton = (props: RateButtonProps) => {
+export const RateButton = (props: RateButtonProps) => {
   let [rate, setRate] = useState(1);
 
   usePrestoEvent('ratechange', props.player, (e, presto) => {

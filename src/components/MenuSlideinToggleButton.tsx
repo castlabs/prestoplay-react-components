@@ -13,7 +13,7 @@ import BaseButton from "./BaseButton";
 export interface MenuSlideinToggleProps extends BasePlayerComponentButtonProps{
 }
 
-const MenuSlideinToggleButton = (props: MenuSlideinToggleProps) => {
+export const MenuSlideinToggleButton = (props: MenuSlideinToggleProps) => {
   let [isVisible, setVisible] = useState(false);
 
   async function toggle(event:React.MouseEvent) {

@@ -19,7 +19,7 @@ export interface ThumbnailProps extends BasePlayerComponentProps {
   onThumbSize?: (width:number, height:number) => void
 }
 
-const Thumbnail = (props: ThumbnailProps) => {
+export const Thumbnail = (props: ThumbnailProps) => {
   let [thumbsPlugin, setThumbsPlugin] = useState<any>()
   let [hasThumb, setHasThumb] = useState<boolean>(false)
   let [thumbWidth, setThumbWidth] = useState<number>(0)

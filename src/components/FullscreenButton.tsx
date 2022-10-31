@@ -10,7 +10,7 @@ export interface FullscreenButtonProps extends BasePlayerComponentButtonProps{
   fullscreenContainer: React.MutableRefObject<HTMLElement | null>;
 }
 
-const FullscreenButton = (props: FullscreenButtonProps) => {
+export const FullscreenButton = (props: FullscreenButtonProps) => {
   let [fullscreen, setFullscreen] = useState(!!document.fullscreenElement);
 
   function toggle() {

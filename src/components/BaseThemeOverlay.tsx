@@ -1,5 +1,5 @@
-import React, {createRef, useEffect, useRef, useState} from "react";
-import {usePrestoEvent, usePrestoUiEvent} from "../Player";
+import React from "react";
+
 // @ts-ignore
 import {BasePlayerComponentProps, p} from "../utils";
 import PlayerControls from "./PlayerControls";
@@ -65,7 +65,7 @@ export interface BaseThemeOverlayProps extends BasePlayerComponentProps {
   seekBackward?: number
 }
 
-const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
+export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   let selectionOptions = props.menuSelectionOptions || DEFAULT_SELECTION_OPTIONS
 
   const renderOptionsMenuButton = () => {

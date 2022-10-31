@@ -9,7 +9,7 @@ export interface PlayPauseButtonProps extends BasePlayerComponentButtonProps{
   resetRate?: boolean
 }
 
-const PlayPauseButton = (props: PlayPauseButtonProps) => {
+export const PlayPauseButton = (props: PlayPauseButtonProps) => {
   let [isPlaying, setIsPlaying] = useState(false)
   let [rate, setRate] = useState(1);
   let rateRef = useRef<number>();
