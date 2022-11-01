@@ -25,7 +25,7 @@ There are a few things that you need to set up for basic playback.
  * You need to create a `Player` instance that can be shared between the player UI related components.
  * You need to create a `PlayerSurface` component that receives the player and a player configuration.
 
-A rather minimal setup could look something like this:
+A minimal setup could look something like this:
 ```javascript
 import React, {createRef, useState} from 'react';
 
@@ -81,14 +81,14 @@ const App = () => {
 ```
 
 Note that we are creating a reference to the player surface here, which is not strictly needed. However, 
-we use that ref later to allow th player surface to become the fullscreen component.
+we use that ref later to allow the player surface to become the fullscreen component.
 
 The above example will create a basic player surface that will load and play the provided video, however,
 we do not have any controls enabled yet.
 
 To get started with a set of basic controls, the `BaseThemeOverlay` can be used. It serves as a small 
 basic implementation of a UI theme, but already provides the core functions and is a 
-[good starting point](./src/components/BaseThemeOverlay.tsx) to lear how to build custom overlays.
+[good starting point](./src/components/BaseThemeOverlay.tsx) to learn how to build custom overlays.
 
 ```javascript
 return (
@@ -143,12 +143,12 @@ return (
     </PlayerSurface>
 )
 ```
-The above example shows the defaults. You can chang the order, remove some selections, change the label 
-that will be used to show the selection groups, and configure the behaviour if elements of the group are 
+The above example shows the defaults. You can change the order, remove some selections, change the label
+that will be used to show the selection groups, and configure the behavior if elements of the group are
 not available.
 
 The labels that are displayed in by default in the menu are currently only configurable globally using the 
-labeler options in the `player` instance. Here are the defaults and how you can chang them:
+labeler options in the `player` instance. Here are the defaults and how you can change them:
 
 ```javascript
 player.trackLabelerOptions = {
@@ -160,7 +160,7 @@ player.trackLabelerOptions = {
 }
 ```
 
-In addition to the default labeler, you can also provide a custom functio to create labels for tracks:
+In addition to the default labeler, you can also provide a custom function to create labels for tracks:
 
 ```javascript
 // set a custom track labeler
@@ -179,10 +179,10 @@ duration. A value of 0 will remove the button from the layout.
 ## Custom controls and Player Interfaces
 
 It can (and probably will) happen that the basic overlays are not enough, and you need to build some 
-custom controls on top (or somewhere else) if the player surface. This library provides building blocks to 
+custom controls on top of the player surface or somewhere else. This library provides building blocks to
 create customer player interfaces. Note that when you try this, you will notice that the basic look and 
 feel of the controller components is still the same. This can be changed through CSS and you will need to 
-overwrite some CSS variables, for instance ot change icons, colors or sizes, or provide complete custom 
+overwrite some CSS variables, for instance, or change icons, colors or sizes, or provide complete custom
 styles for your layouts. Take a look at the [base theme](./src/themes/pp-ui-base-theme.css). Here we are 
 going to focus on combining the available components and constructing a different player interface structure.
 
@@ -239,7 +239,7 @@ The basic building blocks that we are using here are
  * `TimeLeft` shows the remaining playback duration
  * `FullscreenButton` to push the related surface into fullscreen mode
 
-This should hopefully look fairly intuitive. One thing to point our here is that we set 
+This should hopefully look intuitive. One thing to point out here is that we set
 `enableThumbnailSlider` to `false` on the `SeekBar`. The `SeekBar` does have embedded support for 
 scrubbing thumbnails, however, the thumbnail location would be limited to the width of the slider. Since 
 we want the thumbnails to show over the full width of the video surface, we are creating a dedicated 
