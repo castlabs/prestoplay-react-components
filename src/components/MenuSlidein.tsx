@@ -1,11 +1,9 @@
 import React, {createRef, useState} from "react";
-import {useGlobalHide, usePrestoUiEvent} from "../Player";
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
 import {BasePlayerComponentButtonProps} from "../utils";
 import {TrackGroupButton} from "./TrackGroupButton";
 import TrackSelectionList from "./TrackSelectionList";
 import {TrackType} from "../Track";
+import {useGlobalHide, usePrestoUiEvent} from "../react";
 
 
 /**

@@ -1,14 +1,7 @@
 import React, {useState} from "react";
-import {
-  Player,
-  usePresto,
-  usePrestoEvent,
-  usePrestoUiEvent
-} from "../Player";
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
 import {BasePlayerComponentButtonProps} from "../utils";
 import BaseButton from "./BaseButton";
+import {usePrestoUiEvent} from "../react";
 
 export interface MenuSlideinToggleProps extends BasePlayerComponentButtonProps{
 }

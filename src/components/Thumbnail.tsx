@@ -6,9 +6,11 @@ import React, {
 import {
   BasePlayerComponentProps,
 } from "../utils";
-import {usePrestoEvent, usePrestoUiEvent} from "../Player";
+
 // @ts-ignore
 import {clpp} from '@castlabs/prestoplay'
+import "@castlabs/prestoplay/cl.thumbnails"
+import {usePresto, usePrestoUiEvent} from "../react";
 
 
 export interface ThumbnailProps extends BasePlayerComponentProps {
@@ -80,7 +82,8 @@ export const Thumbnail = (props: ThumbnailProps) => {
       })
   }
 
-  usePrestoEvent("loadeddata", props.player, (e, presto) => {
+  usePresto(props.player, (presto) => {
+
     setThumbsPlugin(presto.getPlugin(clpp.thumbnails.ThumbnailsPlugin.Id));
   })
 

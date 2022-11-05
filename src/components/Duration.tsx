@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from "react";
-import {Player, usePrestoEvent, usePrestoUiEvent} from "../Player";
+import React, {useState} from "react";
 import {
   BasePlayerComponentProps,
   getMinimalFormat,
   timeToString
 } from "../utils";
 import Label from "./Label";
+import {usePrestoUiEvent} from "../react";
 
 export interface DurationProps extends BasePlayerComponentProps{
 }

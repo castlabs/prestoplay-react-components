@@ -1,7 +1,4 @@
 import React from "react";
-import {Player} from "../Player";
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
 import {BasePlayerComponentButtonProps} from "../utils";
 import BaseButton from "./BaseButton";
 

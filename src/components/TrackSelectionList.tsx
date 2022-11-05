@@ -1,10 +1,8 @@
 import React, {useState} from "react";
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
 import {BasePlayerComponentProps, classNames} from "../utils";
 import {TrackType} from "../Track";
-import {usePrestoUiEvent} from "../Player";
 import TrackSelectionButton from "./TrackSelectionButton";
+import {usePrestoUiEvent} from "../react";
 
 export interface TrackSelectionListProps extends BasePlayerComponentProps {
   type: TrackType

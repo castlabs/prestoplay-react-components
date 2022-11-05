@@ -1,7 +1,6 @@
 import React, {createRef, useEffect, useRef, useState} from "react";
-import {usePrestoEvent, usePrestoUiEvent} from "../Player";
-// @ts-ignore
 import {BasePlayerComponentProps} from "../utils";
+import {usePrestoUiEvent} from "../react";
 
 const DEFAULT_HIDE_DELAY = 5
 

@@ -1,11 +1,11 @@
 import React, {useRef, useState} from "react";
-import {usePrestoEvent, usePrestoUiEvent} from "../Player";
 import {
   BasePlayerComponentProps,
   getMinimalFormat,
   timeToString
 } from "../utils";
 import Label from "./Label";
+import {usePrestoUiEvent} from "../react";
 
 export interface TimeLeftProps extends BasePlayerComponentProps {
   disableHoveringDisplay?: boolean

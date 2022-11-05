@@ -1,10 +1,6 @@
-import React, {useRef, useState} from "react";
-import {Player, usePrestoEvent} from "../Player";
+import React, {useState} from "react";
 import {BasePlayerComponentButtonProps} from "../utils";
 import BaseButton from "./BaseButton";
-
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
 
 export interface FullscreenButtonProps extends BasePlayerComponentButtonProps{
   fullscreenContainer: React.MutableRefObject<HTMLElement | null>;

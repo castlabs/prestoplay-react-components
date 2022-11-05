@@ -1,9 +1,7 @@
-import React, {createRef, MouseEventHandler, useRef, useState} from "react";
-import {Player, usePresto, usePrestoEvent, usePrestoUiEvent} from "../Player";
+import React, {useState} from "react";
 import Slider from "./Slider";
 import {BasePlayerComponentProps, p} from "../utils";
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
+import {usePresto, usePrestoUiEvent} from "../react";
 
 
 export interface VolumeBarProps extends BasePlayerComponentProps{

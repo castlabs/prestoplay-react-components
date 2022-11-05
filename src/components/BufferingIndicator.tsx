@@ -1,8 +1,7 @@
 import React, {useState} from "react";
-import {Player, State, usePrestoUiEvent} from "../Player";
+import {Player, State} from "../Player";
 import {BasePlayerComponentProps} from "../utils";
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
+import {usePrestoUiEvent} from "../react";
 
 export interface BufferingIndicatorProps extends BasePlayerComponentProps{
   player: Player

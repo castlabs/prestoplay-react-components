@@ -3,13 +3,11 @@ import {TrackType} from "../Track";
 import {BasePlayerComponentProps, classNames} from "../utils";
 import {
   DefaultTrackLabelerOptions,
-  TrackLabeler,
-  usePrestoUiEvent
+  TrackLabeler
 } from "../Player";
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
 import BaseButton from "./BaseButton";
 import Label from "./Label";
+import {usePrestoUiEvent} from "../react";
 
 export interface TrackGroupButtonProps extends BasePlayerComponentProps {
   type: TrackType

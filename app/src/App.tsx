@@ -4,7 +4,6 @@ import React, {createRef, useState} from 'react';
 import {clpp} from "@castlabs/prestoplay"
 import "@castlabs/prestoplay/cl.mse"
 import "@castlabs/prestoplay/cl.dash"
-import "@castlabs/prestoplay/cl.thumbnails"
 import "@castlabs/prestoplay/cl.htmlcue"
 import "@castlabs/prestoplay/cl.ttml"
 import "@castlabs/prestoplay/cl.vtt"

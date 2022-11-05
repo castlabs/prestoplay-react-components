@@ -1,9 +1,8 @@
 import React, {useRef, useState} from "react";
-import {State, usePrestoUiEvent} from "../Player";
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
+import {State} from "../Player";
 import BaseButton from "./BaseButton";
 import {BasePlayerComponentButtonProps} from "../utils";
+import {usePrestoUiEvent} from "../react";
 
 export interface PlayPauseButtonProps extends BasePlayerComponentButtonProps{
   resetRate?: boolean

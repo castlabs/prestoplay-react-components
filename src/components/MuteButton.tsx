@@ -1,9 +1,7 @@
 import React, {useState} from "react";
-import {Player, usePrestoEvent} from "../Player";
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
 import {BasePlayerComponentButtonProps} from "../utils";
 import BaseButton from "./BaseButton";
+import {usePrestoCoreEvent} from "../react";
 
 export interface MuteButtonProps extends BasePlayerComponentButtonProps{
 }
@@ -11,10 +9,10 @@ export interface MuteButtonProps extends BasePlayerComponentButtonProps{
 export const MuteButton = (props: MuteButtonProps) => {
   let [muted, setMuted] = useState(false);
 
-  usePrestoEvent('volumechange', props.player, (e, presto) => {
+  usePrestoCoreEvent('volumechange', props.player, (e, presto) => {
     setMuted(presto.isMuted())
   })
-  usePrestoEvent('loadedmetadata', props.player, (e, presto) => {
+  usePrestoCoreEvent('loadedmetadata', props.player, (e, presto) => {
     setMuted(presto.isMuted())
   })
 

@@ -1,13 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {Player, usePrestoEvent} from "../Player";
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
-import {
-  BasePlayerComponentButtonProps,
-} from "../utils";
+import {BasePlayerComponentButtonProps} from "../utils";
 import BaseButton from "./BaseButton";
 
-export interface StartButtonProps extends BasePlayerComponentButtonProps{
+export interface StartButtonProps extends BasePlayerComponentButtonProps {
   config: any
 }
 
@@ -38,7 +33,7 @@ export const StartButton = (props: StartButtonProps) => {
     <BaseButton onClick={start}
                 disableIcon={false}
                 style={props.style}
-                className={`pp-ui pp-ui-start-button ${visible ? '': 'pp-ui-start-button-hidden'} ${props.className}`}/>
+                className={`pp-ui pp-ui-start-button ${visible ? '' : 'pp-ui-start-button-hidden'} ${props.className}`}/>
   )
 }
 

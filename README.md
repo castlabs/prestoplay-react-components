@@ -254,15 +254,15 @@ When building custom interfaces and components, there might be two type of event
 listen to. Events triggered by the video player, i.e. prestoplay events, and events that are triggered by 
 the UI components and the UI "Player". We provide two helper function to hook into these events.
 
-To hook into player related events, you can use `usePrestoEvent`:
+To hook into player related events, you can use `usePrestoCoreEvent`:
 
 ```javascript
-usePrestoEvent(clpp.events.STATE_CHANGED, props.player, (e, presto) => {
+usePrestoCoreEvent(clpp.events.STATE_CHANGED, props.player, (e, presto) => {
   console.log("Current player state: " + e.detail.currentState)
 });
 ```
 
-`usePrestoEvent` takes the event name, the `Player` instance and a function that will receive the event 
+`usePrestoCoreEvent` takes the event name, the `Player` instance and a function that will receive the event 
 and the prestoplay instance that triggered the event.
 
 In addition, this library provides some dedicated UI related events that a component can hook into using 

@@ -1,9 +1,12 @@
 // @ts-ignore
 import {clpp} from '@castlabs/prestoplay'
-import React, {useEffect} from "react";
 import {
-  fromPrestoTrack, getAbrTrack,
-  getActiveTrack, getDisabledTrack, getTracks, getUnavailableTrack,
+  fromPrestoTrack,
+  getAbrTrack,
+  getActiveTrack,
+  getDisabledTrack,
+  getTracks,
+  getUnavailableTrack,
   Track,
   TrackType,
 } from "./Track";
@@ -634,37 +637,9 @@ export class Player {
   }
 
   release() {
-    this.action(() => {
-      return this.pp_.release()
-    })
-  }
-
-  on(event: string, callback: (e: any) => void) {
-    this.action(() => {
-      this.pp_.on(event, callback)
-      return Promise.resolve()
-    })
-  }
-
-  off(event: string, callback: (e: any) => void) {
-    this.action(() => {
-      this.pp_.off(event, callback)
-      return Promise.resolve()
-    })
-  }
-
-  one(event: string, callback: (e: any) => void) {
-    this.action(() => {
-      this.pp_.one(event, callback)
-      return Promise.resolve()
-    })
-  }
-
-  use(component: any) {
-    this.action(() => {
-      this.pp_.use(component)
-      return Promise.resolve()
-    })
+    if (this.pp_) {
+      this.pp_.release()
+    }
   }
 
   setHoverPosition(position: number, percent: number) {
@@ -880,62 +855,6 @@ export class Player {
   onUIEvent<K extends EventType<UIEvents>>(type: K, listener: EventListener<UIEvents[K]>): void {
     this._eventEmitter.on(type, listener)
   }
-}
-
-export type EventHandler = (e: any, presto: any) => void
-export type PrestoReceiver = (presto: any) => void
-
-export function usePrestoEvent(eventName: string, player: Player, handler: EventHandler, dependencies?: any[]) {
-  async function handleEvent(e: any) {
-    let presto = await player.presto()
-    handler(e, presto)
-  }
-
-  dependencies = dependencies || []
-
-  useEffect(() => {
-    player.on(eventName, handleEvent);
-    return () => {
-      player.off(eventName, handleEvent);
-    }
-  }, [player, ...dependencies])
-}
-
-export function usePrestoUiEvent<E extends EventType<UIEvents>>(eventName: E, player: Player, handler: EventListener<UIEvents[E]>) {
-  useEffect(() => {
-    player.onUIEvent(eventName, handler);
-    return () => {
-      player.offUIEvent(eventName, handler);
-    }
-  }, [player])
-}
-
-export function usePresto(player: Player, receiver: PrestoReceiver) {
-  useEffect(() => {
-    let completed = false
-    player.presto().then((presto) => {
-      if (!completed) {
-        receiver(presto)
-      }
-    })
-    return () => {
-      completed = true
-    }
-  }, [player])
-}
-
-export function useGlobalHide(ref: React.RefObject<Element>, hide: () => any) {
-  useEffect(() => {
-    let handleClick = async (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains((event.target as Node))) {
-        await hide()
-      }
-    }
-    document.addEventListener("click", handleClick)
-    return () => {
-      document.removeEventListener("click", handleClick)
-    }
-  })
 }
 
 const isSameTrack = (a: Track | undefined, b: Track | undefined): boolean => {

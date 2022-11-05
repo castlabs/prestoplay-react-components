@@ -5,9 +5,6 @@ import React, {
 } from "react";
 import {BasePlayerComponentProps} from "../utils";
 
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
-
 /**
  * The properties of the player surface. This is the element that receives
  * the prestoplay configuration.

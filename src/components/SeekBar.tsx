@@ -1,8 +1,8 @@
 import React, {useState} from "react";
-import {usePrestoUiEvent} from "../Player";
 import Slider from "./Slider";
 import {BasePlayerComponentProps, p} from "../utils";
 import Thumbnail from "./Thumbnail";
+import {usePrestoUiEvent} from "../react";
 
 export interface SeekBarProps extends BasePlayerComponentProps {
   adjustWhileDragging?: boolean

@@ -2,7 +2,8 @@ export * from './Player'
 export * from './Track'
 export * from './utils'
 export * from './LanguageCodes'
-
+export * from './react'
+export * from './EventEmitter'
 
 export * from './components/BaseButton'
 export * from './components/BaseThemeOverlay'
@@ -33,3 +34,7 @@ export * from './components/TrackSelectionButton'
 export * from './components/TrackSelectionList'
 export * from './components/VerticalBar'
 export * from './components/VolumeBar'
+export {useGlobalHide} from "./react";
+export {usePresto} from "./react";
+export {usePrestoUiEvent} from "./react";
+export {usePrestoCoreEvent} from "./react";

@@ -22,6 +22,9 @@ interface IEventEmitter<T extends EventMap> {
   emit<K extends EventType<T>>(type: K, data: T[K]): void
 }
 
+/**
+ * Basic implementation of an event emitter
+ */
 export class EventEmitter<T extends EventMap> implements IEventEmitter<T> {
   private listeners_: { [K in keyof EventMap]?: Array<(p: EventMap[K]) => void>} = {};
 
@@ -46,12 +49,4 @@ export class EventEmitter<T extends EventMap> implements IEventEmitter<T> {
     };
     this.listeners_[type] = (this.listeners_[type] || []).concat(oneoff);
   }
-}
-
-interface Dummy {
-  foo: number
-}
-function testme() {
-  let emitter = new EventEmitter<Dummy>()
-  emitter.on("foo", data => {console.log(data - 1)})
 }

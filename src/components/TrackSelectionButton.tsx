@@ -1,8 +1,6 @@
 import React from "react";
 import {Track} from "../Track";
 import {BasePlayerComponentProps, classNames} from "../utils";
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
 import TrackLabel from "./TrackLabel";
 import BaseButton from "./BaseButton";
 import {TrackLabeler} from "../Player";

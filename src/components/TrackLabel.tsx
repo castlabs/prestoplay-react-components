@@ -1,9 +1,5 @@
 import React from "react";
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
 import {BaseComponentProps, classNames} from "../utils";
-import {Track} from "../Track";
-
 
 export interface TrackLabelProps extends BaseComponentProps {
   label: string
