@@ -25,8 +25,7 @@
 * Added a lot of API level documentation to the modules
 * Added testing infrastructure
 * Added wrapper properties and functions for 
-  * `position` (read only, use `seek()` to change the position)
-  * `seek()`
+  * `position` (read/write) Use this property to seek
   * `volume` (read/write)
   * `muted` (read/write)
   * `live` (read only)
@@ -34,6 +33,8 @@
   * `state` (read only)
   * `rate` (read/write)
   * `playing` (read/write)
+* Added seek chaining to make sure that we are not issuing seeks that will not be the
+  final target position. This will make consecutive seeks faster
 
 # 0.5.0
 

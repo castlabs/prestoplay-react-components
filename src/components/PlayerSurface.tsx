@@ -45,16 +45,16 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
   }
   const onKeyDown = async (e:React.KeyboardEvent) => {
     if(e.defaultPrevented) return
-    let presto = await props.player.presto();
+    let player = props.player;
     switch (e.code) {
       case "ArrowRight":
-        props.player.seek(props.player.position + 10)
+        player.position += 10
         break
       case "ArrowLeft":
-        props.player.seek(props.player.position + (-10))
+        player.position -= 10
         break
       case "Space":
-        presto.isPaused() ? presto.play() : presto.pause()
+        player.playing = !player.playing
         e.preventDefault()
         break
     }

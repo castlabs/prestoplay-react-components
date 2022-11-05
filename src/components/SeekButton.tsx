@@ -7,7 +7,7 @@ export interface SeekButtonProps extends BasePlayerComponentButtonProps {
 }
 
 export const SeekButton = (props: SeekButtonProps) => {
-  const seek = () => props.player.seek(props.player.position + props.seconds)
+  const seek = () => props.player.position += props.seconds
 
   if(!props.seconds) return <></>
 

@@ -36,8 +36,7 @@ export const SeekBar = (props: SeekBarProps) => {
   async function applyValue(progressValue: number) {
     let seekRange = props.player.seekRange
     let range = seekRange.end - seekRange.start;
-    let targetPosition = seekRange.start + (range * (progressValue / 100.0));
-    props.player.seek(targetPosition)
+    props.player.position = seekRange.start + (range * (progressValue / 100.0))
   }
 
   async function applyHoverValue(hoverValue: number) {
@@ -86,7 +85,7 @@ export const SeekBar = (props: SeekBarProps) => {
       targetPosition = Math.min(currentTime + seekForward, range.end);
     }
     if(targetPosition >= 0) {
-      player.seek(targetPosition)
+      player.position = targetPosition
       let rangeDuration = range.end - range.start;
       let positionInRange = targetPosition - range.start;
       const progress = Math.min(100, Math.max(0, 100.0 * (positionInRange / rangeDuration)));

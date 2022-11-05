@@ -535,7 +535,7 @@ export class Player {
    *
    * @param position The target position in seconds
    */
-  seek(position: number) {
+  set position(position: number) {
     if (!this.pp_) return
 
     if (!this._isUserSeeking) {
@@ -545,7 +545,7 @@ export class Player {
         this._isUserSeeking = false;
         if (this._userSeekingTarget != position) {
           // we received another seek in between and have to execute that now
-          this.seek(this._userSeekingTarget)
+          this.position = this._userSeekingTarget
         } else {
           this._userSeekingTarget = -1
           this.emitUIEvent("position", this.pp_.getPosition())
