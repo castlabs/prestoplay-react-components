@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Player, usePrestoEvent} from "../Player";
+import {Player, usePrestoEvent, usePrestoUiEvent} from "../Player";
 import {
   BasePlayerComponentProps,
   getMinimalFormat,
@@ -13,12 +13,11 @@ export interface DurationProps extends BasePlayerComponentProps{
 export const Duration = (props: DurationProps) => {
   let [duration, setDuration] = useState("")
 
-  usePrestoEvent("durationchange", props.player, (_, presto) => {
-    let dur = presto.getDuration();
-    if(presto.isLive()) {
+  usePrestoUiEvent("durationchange", props.player, (duration) => {
+    if(duration == Infinity) {
       setDuration("Live")
     } else {
-      setDuration(timeToString(dur, getMinimalFormat(dur)))
+      setDuration(timeToString(duration, getMinimalFormat(duration)))
     }
   })
 

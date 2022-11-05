@@ -1,5 +1,5 @@
 import React, {createRef, MouseEventHandler, useRef, useState} from "react";
-import {Player, usePresto, usePrestoEvent} from "../Player";
+import {Player, usePresto, usePrestoEvent, usePrestoUiEvent} from "../Player";
 import Slider from "./Slider";
 import {BasePlayerComponentProps, p} from "../utils";
 // @ts-ignore
@@ -13,27 +13,23 @@ export interface VolumeBarProps extends BasePlayerComponentProps{
 export const VolumeBar = (props: VolumeBarProps) => {
   let [progress, setProgress] = useState(100)
 
-  async function updateFromPlayer(presto?:any): Promise<number> {
-    presto = presto || await props.player.presto()
-    let volume = presto.getVolume();
-    let progress = volume * 100
-    if (presto.isMuted()) {
-      progress = 0
-    }
+  function updateFromPlayer(): number {
+    const player = props.player;
+    const progress = player.muted ? 0 : (player.volume * 100)
     setProgress(progress)
     return progress
   }
 
-  usePrestoEvent("volumechange", props.player, async (_, presto) => {
-    await updateFromPlayer(presto)
+  usePrestoUiEvent("volumechange", props.player, () => {
+    updateFromPlayer()
   })
 
-  usePresto(props.player, async (presto) => {
-    await updateFromPlayer(presto)
+  usePresto(props.player,  () => {
+     updateFromPlayer()
   })
 
-  usePrestoEvent(clpp.events.STATE_CHANGED, props.player, async (_, presto) => {
-    await updateFromPlayer(presto)
+  usePrestoUiEvent("statechanged", props.player, () => {
+    updateFromPlayer()
   })
 
   async function applyValue(progressValue:number) {

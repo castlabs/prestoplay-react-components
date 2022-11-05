@@ -7,7 +7,7 @@ import {
 } from "../utils";
 import Label from "./Label";
 
-export interface CurrentTimeProps extends BasePlayerComponentProps{
+export interface CurrentTimeProps extends BasePlayerComponentProps {
   disableHoveringDisplay?: boolean
 }
 
@@ -17,34 +17,31 @@ export const CurrentTime = (props: CurrentTimeProps) => {
   let hoveringRef = useRef<boolean>()
   hoveringRef.current = isHovering
 
-  function setPositionFromPlayer(presto:any) {
+  function setPositionFromPlayer(position: number) {
     setCurrentTime(
-      timeToString(
-        presto.getPosition(),
-        getMinimalFormat(presto.getDuration())))
+      timeToString(position, getMinimalFormat(props.player.duration)))
   }
 
-  usePrestoEvent("timeupdate", props.player, (_, presto) => {
+  usePrestoUiEvent("position", props.player, async (position) => {
     if (hoveringRef.current) return;
-    setPositionFromPlayer(presto);
+    setPositionFromPlayer(position);
   })
+
   usePrestoUiEvent("hoverPosition", props.player, async (data) => {
-    let presto = await props.player.presto()
     let hoverPosition = data.position
     if (hoverPosition < 0 || props.disableHoveringDisplay) {
       setHovering(false)
-      setPositionFromPlayer(presto);
+      setPositionFromPlayer(props.player.position);
     } else {
       setHovering(true)
       setCurrentTime(
-        timeToString(
-          hoverPosition,
-          getMinimalFormat(presto.getDuration())))
+        timeToString(hoverPosition, getMinimalFormat(props.player.duration)))
     }
   })
 
   return (
-    <Label label={currentTime} children={props.children} className={`pp-ui-label-current-time ${props.className || ''}`}/>
+    <Label label={currentTime} children={props.children}
+           className={`pp-ui-label-current-time ${props.className || ''}`}/>
   )
 }
 

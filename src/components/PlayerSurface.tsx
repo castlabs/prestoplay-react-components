@@ -51,10 +51,10 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
     let presto = await props.player.presto();
     switch (e.code) {
       case "ArrowRight":
-        presto.seek(presto.getPosition() + 10)
+        props.player.seek(props.player.position + 10)
         break
       case "ArrowLeft":
-        presto.seek(presto.getPosition() + (-10))
+        props.player.seek(props.player.position + (-10))
         break
       case "Space":
         presto.isPaused() ? presto.play() : presto.pause()

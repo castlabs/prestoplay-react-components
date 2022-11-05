@@ -1,5 +1,5 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Player, usePrestoEvent} from "../Player";
+import React, {useRef, useState} from "react";
+import {State, usePrestoUiEvent} from "../Player";
 // @ts-ignore
 import {clpp} from "@castlabs/prestoplay"
 import BaseButton from "./BaseButton";
@@ -15,45 +15,41 @@ export const PlayPauseButton = (props: PlayPauseButtonProps) => {
   let rateRef = useRef<number>();
   rateRef.current = rate
 
-  usePrestoEvent('ratechange', props.player, (e, presto) => {
-    let rate = presto.getPlaybackRate();
-    if (rate != 0) {
-      setRate(rate)
-      if (rate != 1 && props.resetRate) {
-        setIsPlaying(false)
-      }
+  usePrestoUiEvent('ratechange', props.player, (rate) => {
+    setRate(rate)
+    if (rate != 1 && props.resetRate) {
+      setIsPlaying(false)
     }
   })
 
-  usePrestoEvent(clpp.events.STATE_CHANGED, props.player, (e, _) => {
-    switch (e.detail.currentState) {
-      case clpp.Player.State.IDLE:
+  usePrestoUiEvent("statechanged", props.player, ({currentState}) => {
+    switch (currentState) {
+      case State.Idle:
         setIsPlaying(false)
         break;
-      case clpp.Player.State.ENDED:
+      case State.Ended:
         setIsPlaying(false)
         break;
-      case clpp.Player.State.PAUSED:
+      case State.Paused:
         setIsPlaying(false)
         break;
-      case clpp.Player.State.PLAYING:
+      case State.Playing:
         if (!props.resetRate || rateRef.current == 1) {
           setIsPlaying(true)
         }
         break;
-      case clpp.Player.State.ERROR:
+      case State.Error:
         setIsPlaying(false)
         break;
     }
   })
 
   async function toggle() {
-    const presto = await props.player.presto()
     if (!props.resetRate || rateRef.current == 1) {
-      presto.isPaused() ? presto.play() : presto.pause()
+      props.player.playing = !props.player.playing
     } else {
-      presto.setPlaybackRate(1)
-      presto.play()
+      props.player.rate = 1
+      props.player.playing = true
     }
   }
 

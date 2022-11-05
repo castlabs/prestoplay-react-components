@@ -1,15 +1,8 @@
-import React, {
-  createRef,
-  CSSProperties,
-  MouseEventHandler,
-  useRef,
-  useState
-} from "react";
-import {Player, usePrestoEvent} from "../Player";
+import React, {useState} from "react";
+import {usePrestoUiEvent} from "../Player";
 import Slider from "./Slider";
 import {BasePlayerComponentProps, p} from "../utils";
 import Thumbnail from "./Thumbnail";
-import {renderToReadableStream} from "react-dom/server";
 
 export interface SeekBarProps extends BasePlayerComponentProps {
   adjustWhileDragging?: boolean
@@ -25,27 +18,26 @@ export const SeekBar = (props: SeekBarProps) => {
   let [thumbWidth, setThumbWidth] = useState(0)
 
 
-  async function updateFromPlayer(presto?: any): Promise<number> {
-    presto = presto || await props.player.presto()
-    let range = presto.getSeekRange();
-    let currentTime = presto.getPosition();
-    let rangeDuration = range.end - range.start;
-    let positionInRange = currentTime - range.start;
+  function updateFromPlayer(position?: number): number {
+    const player = props.player
+    const range = player.seekRange
+    const rangeDuration = range.end - range.start;
+    position = position || props.player.position
+    const positionInRange = position! - range.start;
     const progress = Math.min(100, Math.max(0, 100.0 * (positionInRange / rangeDuration)));
     setProgress(progress)
     return progress
   }
 
-  usePrestoEvent("timeupdate", props.player, async (_, presto) => {
-    await updateFromPlayer(presto)
+  usePrestoUiEvent("position", props.player, async (position) => {
+    updateFromPlayer(position)
   })
 
   async function applyValue(progressValue: number) {
-    let presto = await props.player.presto()
-    let seekRange = presto.getSeekRange();
+    let seekRange = props.player.seekRange
     let range = seekRange.end - seekRange.start;
     let targetPosition = seekRange.start + (range * (progressValue / 100.0));
-    presto.seek(targetPosition)
+    props.player.seek(targetPosition)
   }
 
   async function applyHoverValue(hoverValue: number) {
@@ -56,8 +48,7 @@ export const SeekBar = (props: SeekBarProps) => {
       return
     }
 
-    let presto = await props.player.presto()
-    let seekRange = presto.getSeekRange()
+    let seekRange = props.player.seekRange
     let range = seekRange.end - seekRange.start;
     let hoverPosition = seekRange.start + (range * (hoverValue / 100.0));
     props.player.setHoverPosition(hoverPosition, hoverValue)
@@ -68,6 +59,7 @@ export const SeekBar = (props: SeekBarProps) => {
   const onThumbSize = (width:number, height:number) => {
     setThumbWidth(width)
   }
+
   const renderThumbnailSlider = () => {
     if(!props.enableThumbnailSlider) return;
     return (
@@ -82,19 +74,19 @@ export const SeekBar = (props: SeekBarProps) => {
   }
 
   const onKeyDown = async (e: KeyboardEvent) => {
-    let presto = await props.player.presto()
-    let range = presto.getSeekRange()
+    let player = props.player
+    let range = player.seekRange
     let targetPosition = -1
     let seekForward = p(props.keyboardSeekForward, 10)
     let seekBackward = p(props.keyboardSeekBackward, -10)
-    let currentTime = presto.getPosition();
+    let currentTime = player.position;
     if (e.key == "ArrowLeft" && seekBackward != 0) {
       targetPosition = Math.max(range.start, currentTime + seekBackward);
     }else if(e.key == "ArrowRight" && seekForward != 0) {
       targetPosition = Math.min(currentTime + seekForward, range.end);
     }
     if(targetPosition >= 0) {
-      presto.seek(targetPosition)
+      player.seek(targetPosition)
       let rangeDuration = range.end - range.start;
       let positionInRange = targetPosition - range.start;
       const progress = Math.min(100, Math.max(0, 100.0 * (positionInRange / rangeDuration)));

@@ -105,10 +105,8 @@ function App() {
   // to the fullscreen button to make put the player surface to fullscreen
   let playerSurfaceRef = createRef<HTMLDivElement>();
 
-  async function manuallyLoadThumb() {
-    let presto = await player.presto()
-    let position = presto.getPosition();
-    setThumbPosition(position)
+  function manuallyLoadThumb() {
+    setThumbPosition(player.position)
   }
 
   // set options for the default track labeler
@@ -163,7 +161,7 @@ function App() {
 
       <h2>Custom Theme</h2>
 
-      <PlayerSurface player={customPlayer1} config={CONFIG_1.config} style={{height: "320px"}}>
+      <PlayerSurface ref={customSurface1} player={customPlayer1} config={CONFIG_1.config} style={{height: "320px"}}>
         <PlayerControls player={customPlayer1}>
           {/* We are creating a vertical bar to build our controls top to bottom */}
           <VerticalBar className={"pp-ui-transparent"}>

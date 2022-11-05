@@ -13,7 +13,7 @@ export interface SliderProps extends BaseComponentProps {
   onApplyValue?: (value: number) => void
   onApplyHoverValue?: (value: number) => void
   onKeyDown?: (e:KeyboardEvent) => void
-  currentValue?: () => Promise<number>
+  currentValue?: () => number
 }
 
 export const Slider = (props: SliderProps) => {

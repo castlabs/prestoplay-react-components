@@ -10,10 +10,7 @@ export interface SeekButtonProps extends BasePlayerComponentButtonProps {
 }
 
 export const SeekButton = (props: SeekButtonProps) => {
-  async function seek() {
-    const presto = await props.player.presto()
-    await presto.seek(presto.getPosition() + props.seconds)
-  }
+  const seek = () => props.player.seek(props.player.position + props.seconds)
 
   if(!props.seconds) return <></>
 

@@ -8,24 +8,75 @@ import {
   TrackType,
 } from "./Track";
 import {LanguageCodes} from "./LanguageCodes";
+import {EventEmitter, EventListener, EventType} from "./EventEmitter";
 
-type Action = () => Promise<void>;
+/**
+ * The player initializer is a function that receives the presto play instance
+ * once it is created and can be used to configure and initialize the core
+ * player further. This allows you to, for instance, add components to the
+ * player, configure request and response modifiers and interact with the
+ * presto API just after player initialization.
+ */
+export type PlayerInitializer = (presto: any) => void
 
-type PlayerInitializer = (presto: any) => void
+/**
+ * Base interface for track labeler functions
+ */
+export interface TrackLabelerOptions {
+}
 
-export interface TrackLabelerOptions{}
-
+/**
+ * A track labeler is a function that receives a track, the player, and some
+ * options and returns a label for the track.
+ */
 export type TrackLabeler = (track: Track, player: Player, options?: TrackLabelerOptions) => string
+/**
+ * The track sorter is used to sort track lists
+ */
 export type TrackSorter = (a: Track, b: Track) => number
 
+/**
+ * The default track labeler options
+ */
 export interface DefaultTrackLabelerOptions extends TrackLabelerOptions {
+  /**
+   * If true, the currently playing rendition quality rendered as `<height>p`
+   * is added to the ABR label for video tracks when the player is in ABR mode
+   */
   usePlayingRenditionInAbrLabel?: boolean
+  /**
+   * We are translating language tags, i.e. 'de', by default ot the english
+   * name, i.e. 'German'. With this option set to true, the native language name
+   * will be used instead, i.e. 'Deutsch'
+   */
   useNativeLanguageNames?: boolean
+  /**
+   * The label that is used for ABR tracks, defaults to 'Auto'
+   */
   abrLabel?: string
+  /**
+   * The labels that is used for disabled track, defaults to 'Off'
+   */
   disabledTrackLabel?: string
+  /**
+   * The label that is used for unknown tracks, defaults to 'Unknown'
+   */
   unknownTrackLabel?: string
 }
 
+/**
+ * Internal helper to queue prestoplay function calls while the player is not
+ * yet initialized
+ */
+type Action = () => Promise<void>;
+
+/**
+ * The default track labeler
+ *
+ * @param t The track
+ * @param player The player
+ * @param _options Labeler options
+ */
 export const defaultTrackLabel: TrackLabeler = (t: Track, player: Player, _options?: DefaultTrackLabelerOptions) => {
   const opts = _options || {
     usePlayingRenditionInAbrLabel: false,
@@ -60,7 +111,7 @@ export const defaultTrackLabel: TrackLabeler = (t: Track, player: Player, _optio
     if (t.ppTrack.language) {
       // @ts-ignore
       let lang = LanguageCodes[t.ppTrack.language]
-      if(lang) {
+      if (lang) {
         if (opts.useNativeLanguageNames) {
           return lang.native
         }
@@ -70,14 +121,20 @@ export const defaultTrackLabel: TrackLabeler = (t: Track, player: Player, _optio
 
     let trackList = player[`${t.type}Tracks`];
     let i = trackList.indexOf(t);
-    if(i >= 0 && trackList.length > 1) {
-      return `${opts.unknownTrackLabel} (${i+1})`
+    if (i >= 0 && trackList.length > 1) {
+      return `${opts.unknownTrackLabel} (${i + 1})`
     }
     return `${opts.unknownTrackLabel}`
   }
 }
 
-export const defaultTrackSorter:TrackSorter = (a: Track, b: Track) => {
+/**
+ * The default track sorter sorts by height, label, and language
+ *
+ * @param a
+ * @param b
+ */
+export const defaultTrackSorter: TrackSorter = (a: Track, b: Track) => {
   if (!a.ppTrack) return -1
   if (!b.ppTrack) return 1
   if (a.ppTrack.height && b.ppTrack.height) {
@@ -86,15 +143,68 @@ export const defaultTrackSorter:TrackSorter = (a: Track, b: Track) => {
   if (a.label && b.label) {
     return a.label.localeCompare(b.label)
   }
-  if(a.ppTrack.language && b.ppTrack.language) {
+  if (a.ppTrack.language && b.ppTrack.language) {
     return a.ppTrack.language.localeCompare(b.ppTrack.language)
   }
   return 0
 }
 
 /**
- * UI related events triggered by the Player
+ * Player states
  */
+export enum State {
+  Idle = clpp.Player.State.IDLE,
+  Preparing = clpp.Player.State.PREPARING,
+  Buffering = clpp.Player.State.BUFFERING,
+  Playing = clpp.Player.State.PLAYING,
+  Paused = clpp.Player.State.PAUSED,
+  Ended = clpp.Player.State.ENDED,
+  Error = clpp.Player.State.ERROR,
+  Unset = clpp.Player.State.UNSET
+}
+
+/**
+ * Buffering reasons
+ */
+export enum BufferingReason {
+  Seeking = clpp.events.BufferingReasons.SEEKING,
+  NoData = clpp.events.BufferingReasons.NO_DATA
+}
+
+const toBufferingReason = (value?: number): BufferingReason | undefined => {
+  switch (value) {
+    case clpp.events.BufferingReasons.NO_DATA:
+      return BufferingReason.NoData
+    case clpp.events.BufferingReasons.SEEKING:
+      return BufferingReason.Seeking
+    default:
+      return undefined
+  }
+}
+
+const toState = (state: number): State => {
+  switch (state) {
+    case clpp.Player.State.IDLE:
+      return State.Idle
+    case clpp.Player.State.PREPARING:
+      return State.Preparing
+    case clpp.Player.State.BUFFERING:
+      return State.Buffering
+    case clpp.Player.State.PLAYING:
+      return State.Playing
+    case clpp.Player.State.PAUSED:
+      return State.Paused
+    case clpp.Player.State.ENDED:
+      return State.Ended
+    case clpp.Player.State.ERROR:
+      return State.Error
+    case clpp.Player.State.UNSET:
+      return State.Unset
+    default:
+      return State.Unset
+  }
+}
+
 export interface UIEvents {
   /**
    * Triggered when the slide in menu state changes
@@ -146,108 +256,197 @@ export interface UIEvents {
    * Triggered when the hover position changes
    */
   hoverPosition: { position: number, percent: number }
+  /**
+   * Position changes are posted using this event. The event posts the current
+   * position. This event is emitted when the underlying video element emits a
+   * timeupdate event or when a seek is issued.
+   */
+  position: number
+  /**
+   * Duration changes are exposed through this event
+   */
+  durationchange: number
+  /**
+   * Volume change event that is triggered when the volume or the muted
+   * state is changed
+   */
+  volumechange: { volume: number, muted: boolean }
+  /**
+   * State change events are triggered when the player state changes
+   */
+  statechanged: {
+    currentState: State,
+    previousState: State,
+    timeSinceLastStateChangeMS: number,
+    reason?: BufferingReason
+  },
+  /**
+   * Event triggered when the playback rate changed
+   */
+  ratechange: number
 }
 
-type EventPayload<E extends keyof UIEvents> = UIEvents[E]
-type EventListener<E extends keyof UIEvents> = (data: EventPayload<E>) => any
-type EventListenerList = Record<string, EventListener<any>[]>
-
-interface EventEmitter {
-  onUIEvent<E extends keyof UIEvents>(type: E, listener: EventListener<E>): void
-
-  offUIEvent<E extends keyof UIEvents>(type: E, listener: EventListener<E>): void
-
-  emitUIEvent<E extends keyof UIEvents>(type: E, data: UIEvents[E]): void
-}
-
-
-class UIEventEmitter implements EventEmitter {
-  private listeners: EventListenerList = {}
-
-  emitUIEvent<E extends keyof UIEvents>(type: E, data: EventPayload<E>): void {
-    let listeners = this.listeners[type];
-    if (listeners) {
-      listeners.forEach((listener) => {
-        listener.call(null, data)
-      })
-    }
-  }
-
-  offUIEvent<E extends keyof UIEvents>(type: E, listener: EventListener<E>): void {
-    let listeners = this.listeners[type];
-    if (listeners) {
-      let i
-      while ((i = listeners.indexOf(listener)) >= 0) {
-        listeners.splice(i, 1)
-      }
-    }
-  }
-
-  onUIEvent<E extends keyof UIEvents>(type: E, listener: (data: EventPayload<E>) => any): void {
-    let listeners = this.listeners[type];
-    if (!listeners) {
-      listeners = []
-      this.listeners[type] = listeners
-    }
-    listeners.push(listener)
-  }
-}
-
-
-const isSameTrack = (a: Track | undefined, b: Track | undefined): boolean => {
-  if (!a && !b) return true
-  if (!a && b) return false
-  if (a && !b) return false
-
-  return a!.type == b!.type &&
-    a!.ppTrack == b!.ppTrack &&
-    a!.selected == b!.selected &&
-    a!.id == b!.id
-}
-
-const isSameTrackList = (a: Track[], b: Track[]): boolean => {
-  return a.length == b.length
-    && a.every((at) => b.find(bt => isSameTrack(at, bt)))
-    && b.every((bt) => a.find(at => isSameTrack(bt, at)))
-}
-
-export class Player extends UIEventEmitter {
-  public static readonly slideInMenuVisibleEvent = "pp-ui-slide-in-menu-visible";
-  public static readonly controlsVisibleEvent = "pp-ui-controls-visible";
-  public static readonly surfaceInteractionEvent = "pp-ui-surface-interaction";
-
+/**
+ * The player class provides to top level interface to interact with the core
+ * player. It will create the PRESTOplay instance, and it offers access to the
+ * related apis as well as dedicated events that are important for UI interactions.
+ */
+export class Player {
+  /**
+   * The player instance
+   * @private
+   */
   private pp_: any = null;
-  private actionQueue_: Action[] = []
-  private actionQueueResolved?: () => void
-  private readonly actionQueuePromise: Promise<void>
-  private readonly initializer?: PlayerInitializer
+  /**
+   * We maintain a queue of actions that will be posted towards the player
+   * instance once it is initialized
+   *
+   * @private
+   */
+  private _actionQueue_: Action[] = []
+  /**
+   * Function that resolves the player initialization
+   *
+   * @private
+   */
+  private _actionQueueResolved?: () => void
+  /**
+   * A promise that resolves once the player is initialized
+   * @private
+   */
+  private readonly _actionQueuePromise: Promise<void>
+  /**
+   * The player initializer
+   * @private
+   */
+  private readonly _initializer?: PlayerInitializer
 
+  /**
+   * Internal state that indicates that the "controls" are visible
+   *
+   * @private
+   */
   private _controlsVisible = false
+  /**
+   * Internal controls that indicate that the slide in menu is visible
+   * @private
+   */
   private _slideInMenuVisible = false
+  /**
+   * The currently playing video track
+   *
+   * @private
+   */
   private _playingVideoTrack: Track | undefined;
 
+  /**
+   * The currently selected video track
+   *
+   * @private
+   */
   private _videoTrack: Track = getUnavailableTrack("video")
+  /**
+   * The currently selected audio track
+   * @private
+   */
   private _audioTrack: Track = getUnavailableTrack("audio")
+  /**
+   * The currently selected text track
+   *
+   * @private
+   */
   private _textTrack: Track = getUnavailableTrack("text")
 
+  /**
+   * All available video tracks
+   *
+   * @private
+   */
   private _videoTracks: Track[] = []
+  /**
+   * All available audio tracks
+   *
+   * @private
+   */
   private _audioTracks: Track[] = []
+
+  /**
+   * All available text tracks
+   *
+   * @private
+   */
   private _textTracks: Track[] = []
 
-  private _trackSorter:TrackSorter = defaultTrackSorter
-  private _trackLabeler:TrackLabeler = defaultTrackLabel
-  private _trackLabelerOptions?:TrackLabelerOptions
+  /**
+   * The track sorter
+   *
+   * @private
+   */
+  private _trackSorter: TrackSorter = defaultTrackSorter
+
+  /**
+   * The track labeler
+   *
+   * @private
+   */
+  private _trackLabeler: TrackLabeler = defaultTrackLabel
+
+  /**
+   * The track labeler options
+   * @private
+   */
+  private _trackLabelerOptions?: TrackLabelerOptions
+
+  /**
+   * The event emitter for UI related events
+   *
+   * @private
+   */
+  private readonly _eventEmitter = new EventEmitter<UIEvents>()
+
+  /**
+   * This is true while we are waiting for a user initiated seek even to
+   * complete
+   *
+   * @private
+   */
+  private _isUserSeeking = false
+
+  /**
+   * The target of the last user initiated seek event. We use this in case
+   * there were more seek events while we were waiting for the last event
+   * to complete
+   *
+   * @private
+   */
+  private _userSeekingTarget = -1
+
+  /**
+   * Proxy the playback rate
+   * @private
+   */
+  private _rate = 1;
 
   constructor(initializer?: PlayerInitializer) {
-    super()
-    this.initializer = initializer;
-    // noinspection JSIgnoredPromiseFromCall
-    this.actionQueuePromise = new Promise<void>((resolve) => {
-      this.actionQueueResolved = resolve
+    this._initializer = initializer;
+    this._actionQueuePromise = new Promise<void>((resolve) => {
+      this._actionQueueResolved = resolve
     })
   }
 
-  init(element: HTMLVideoElement | string) {
+  /**
+   * Initializer that is called with the video element (or the id of the
+   * video element) once it is available. The video element is used to create
+   * the presto play instance. Once the instance is created, the initializer
+   * is executed and all pending action are triggered.
+   *
+   * If the player is already initialized, this function does not do anything.
+   *
+   * @param element The video element or the ID of the video element
+   */
+  async init(element: HTMLVideoElement | string) {
+    if (this.pp_) return;
+
     this.pp_ = new clpp.Player(element)
 
     const handlePlayerTracksChanged = (type?: TrackType) => {
@@ -272,6 +471,38 @@ export class Player extends UIEventEmitter {
     this.pp_.on(clpp.events.VIDEO_TRACK_CHANGED, handlePlayerTracksChanged("video"))
     this.pp_.on(clpp.events.TEXT_TRACK_CHANGED, handlePlayerTracksChanged("text"))
 
+    this.pp_.on(clpp.events.STATE_CHANGED, (e: any) => {
+      this.emitUIEvent("statechanged", {
+        currentState: toState(e.detail.currentState),
+        previousState: toState(e.detail.previousState),
+        reason: toBufferingReason(e.detail.reason),
+        timeSinceLastStateChangeMS: e.detail.timeSinceLastStateChangeMS
+      })
+    })
+
+    this.pp_.on("timeupdate", () => {
+      this.emitUIEvent("position", this.pp_.getPosition())
+    })
+
+    this.pp_.on("ratechange", () => {
+      let ppRate = this.pp_.getPlaybackRate();
+      if (this.state != State.Buffering) {
+        this._rate = ppRate
+        this.emitUIEvent("ratechange", this.rate)
+      }
+    })
+
+    this.pp_.on("durationchange", () => {
+      this.emitUIEvent("durationchange", this.pp_.getDuration())
+    })
+
+    this.pp_.on("volumechange", () => {
+      this.emitUIEvent("volumechange", {
+        volume: this.volume,
+        muted: this.muted
+      })
+    })
+
     this.pp_.on(clpp.events.BITRATE_CHANGED, (e: any) => {
       if (e && e.detail) {
         this.playingVideoTrack = fromPrestoTrack(this.pp_, e.detail.rendition, 'video');
@@ -281,23 +512,125 @@ export class Player extends UIEventEmitter {
       handlePlayerTracksChanged("video")
     })
 
+    this._rate = this.pp_.getPlaybackRate()
 
-    if (this.initializer) {
-      this.initializer(this.pp_)
+    if (this._initializer) {
+      this._initializer(this.pp_)
     }
-    for (let i = 0; i < this.actionQueue_.length; i++) {
-      this.actionQueue_[i]()
+    for (let i = 0; i < this._actionQueue_.length; i++) {
+      await this._actionQueue_[i]()
     }
-    this.actionQueue_ = []
-    if (this.actionQueueResolved) {
-      this.actionQueueResolved()
+    this._actionQueue_ = []
+    if (this._actionQueueResolved) {
+      this._actionQueueResolved()
+    }
+  }
+
+  /**
+   * Seek to the given position. Calling this function has no effect unless the
+   * presto instance is already initialized.
+   *
+   * @param position The target position in seconds
+   */
+  seek(position: number) {
+    if (!this.pp_) return
+
+    if (!this._isUserSeeking) {
+      // issue a user seek to the target position and
+      // listen for the completion.
+      this.pp_.one(clpp.events.USER_SEEKED, () => {
+        this._isUserSeeking = false;
+        if (this._userSeekingTarget != position) {
+          // we received another seek in between and have to execute that now
+          this.seek(this._userSeekingTarget)
+        } else {
+          this._userSeekingTarget = -1
+          this.emitUIEvent("position", this.pp_.getPosition())
+        }
+      })
+      this._isUserSeeking = true
+      this._userSeekingTarget = position
+      this.pp_.seek(position)
+      this.emitUIEvent("position", position)
+    } else {
+      // we are already seeking. Update the target. When the current
+      // seek operation is completed, we will seek again to the final target
+      this._userSeekingTarget = position
+      this.emitUIEvent("position", position)
+    }
+  }
+
+  get position() {
+    if (!this.pp_) return 0
+    if (this._isUserSeeking) {
+      return this._userSeekingTarget
+    }
+    return this.pp_.getPosition()
+  }
+
+  get duration(): number {
+    return this.pp_ ? this.pp_.getDuration() : 0
+  }
+
+  get live(): boolean {
+    return this.pp_ ? this.pp_.isLive() : false
+  }
+
+  get seekRange(): { start: number, end: number } {
+    return this.pp_ ? this.pp_.getSeekRange() : {start: 0, end: 0}
+  }
+
+  get volume(): number {
+    return this.pp_ ? this.pp_.getVolume() : 1
+  }
+
+  set volume(volume: number) {
+    if (this.pp_) {
+      this.pp_.setVolume(volume)
+    }
+  }
+
+  get muted() {
+    return this.pp_ ? this.pp_.isMuted() : false
+  }
+
+  set muted(muted: boolean) {
+    if (this.pp_) {
+      this.pp_.setMuted(muted)
+    }
+  }
+
+  get state(): State {
+    return this.pp_ ? toState(this.pp_.getState()) : State.Unset
+  }
+
+  get rate() {
+    if (!this.pp_) return 1
+    return this._rate
+  }
+
+  set rate(value: number) {
+    if (this.pp_) {
+      this._rate = value
+      this.pp_.setPlaybackRate(value)
+      if (this.state == State.Buffering) {
+        this.emitUIEvent("ratechange", value)
+      }
+    }
+  }
+
+  get playing() {
+    return !this.pp_ ? false : !this.pp_.isPaused()
+  }
+
+  set playing(value: boolean) {
+    if (this.pp_) {
+      value ? this.pp_.play() : this.pp_.pause()
     }
   }
 
   load(config: any) {
-    this.action(() => {
-      return this.pp_.load(config)
-    })
+    return this.action(() => this.pp_.load(config))
   }
 
   release() {
@@ -382,16 +715,22 @@ export class Player extends UIEventEmitter {
   }
 
   async presto() {
-    await this.actionQueuePromise
+    await this._actionQueuePromise
     return this.pp_
   }
 
-  private action(a: Action) {
-    if (this.pp_) {
-      a()
-    } else {
-      this.actionQueue_.push(a)
-    }
+  /**
+   * Execute an action or queue it if the player is not yet available
+   *
+   * @param a The action
+   * @private
+   */
+  private async action(a: Action) {
+    this.pp_ ? await a() : new Promise((resolve) => {
+      this._actionQueue_.push(async () => {
+        resolve(await a())
+      })
+    })
   }
 
   get videoTrack(): Track {
@@ -432,7 +771,7 @@ export class Player extends UIEventEmitter {
   set textTracks(value: Track[]) {
     if (value.length > 0 && !value.find(t => t.id == 'abr')) {
       // since we have text tracks available, we add the off track
-      let hasSelected = value.find(t=> t.selected)
+      let hasSelected = value.find(t => t.selected)
       let offTrack = getDisabledTrack("text", !hasSelected);
       value.push(offTrack)
     }
@@ -459,7 +798,7 @@ export class Player extends UIEventEmitter {
   set videoTracks(value: Track[]) {
     if (value.length > 0 && !value.find(t => t.id == 'abr')) {
       // since we have video tracks available, we add the ABR track
-      let hasSelected = value.find(t=> t.selected)
+      let hasSelected = value.find(t => t.selected)
       let abrTrack = getAbrTrack();
       abrTrack.selected = !hasSelected
       value.push(abrTrack)
@@ -529,6 +868,18 @@ export class Player extends UIEventEmitter {
   set trackLabelerOptions(value: TrackLabelerOptions) {
     this._trackLabelerOptions = value;
   }
+
+  private emitUIEvent<K extends EventType<UIEvents>>(type: K, data: UIEvents[K]): void {
+    this._eventEmitter.emit(type, data)
+  }
+
+  offUIEvent<K extends EventType<UIEvents>>(type: K, listener: EventListener<UIEvents[K]>): void {
+    this._eventEmitter.off(type, listener)
+  }
+
+  onUIEvent<K extends EventType<UIEvents>>(type: K, listener: EventListener<UIEvents[K]>): void {
+    this._eventEmitter.on(type, listener)
+  }
 }
 
 export type EventHandler = (e: any, presto: any) => void
@@ -539,6 +890,7 @@ export function usePrestoEvent(eventName: string, player: Player, handler: Event
     let presto = await player.presto()
     handler(e, presto)
   }
+
   dependencies = dependencies || []
 
   useEffect(() => {
@@ -549,7 +901,7 @@ export function usePrestoEvent(eventName: string, player: Player, handler: Event
   }, [player, ...dependencies])
 }
 
-export function usePrestoUiEvent<E extends keyof UIEvents>(eventName: E, player: Player, handler: EventListener<E>) {
+export function usePrestoUiEvent<E extends EventType<UIEvents>>(eventName: E, player: Player, handler: EventListener<UIEvents[E]>) {
   useEffect(() => {
     player.onUIEvent(eventName, handler);
     return () => {
@@ -574,7 +926,7 @@ export function usePresto(player: Player, receiver: PrestoReceiver) {
 
 export function useGlobalHide(ref: React.RefObject<Element>, hide: () => any) {
   useEffect(() => {
-    let handleClick = async (event:MouseEvent) => {
+    let handleClick = async (event: MouseEvent) => {
       if (ref.current && !ref.current.contains((event.target as Node))) {
         await hide()
       }
@@ -585,5 +937,23 @@ export function useGlobalHide(ref: React.RefObject<Element>, hide: () => any) {
     }
   })
 }
+
+const isSameTrack = (a: Track | undefined, b: Track | undefined): boolean => {
+  if (!a && !b) return true
+  if (!a && b) return false
+  if (a && !b) return false
+
+  return a!.type == b!.type &&
+    a!.ppTrack == b!.ppTrack &&
+    a!.selected == b!.selected &&
+    a!.id == b!.id
+}
+
+const isSameTrackList = (a: Track[], b: Track[]): boolean => {
+  return a.length == b.length
+    && a.every((at) => b.find(bt => isSameTrack(at, bt)))
+    && b.every((bt) => a.find(at => isSameTrack(bt, at)))
+}
+
 
 export default Player
