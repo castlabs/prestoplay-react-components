@@ -1,54 +1,50 @@
-import React, {useRef, useState} from "react";
+import React, {useState} from "react";
 import {State} from "../Player";
 import BaseButton from "./BaseButton";
 import {BasePlayerComponentButtonProps} from "../utils";
 import {usePrestoUiEvent} from "../react";
 
-export interface PlayPauseButtonProps extends BasePlayerComponentButtonProps{
+/**
+ * Props for the play/pause toggle button
+ */
+export interface PlayPauseButtonProps extends BasePlayerComponentButtonProps {
+  /**
+   * If set to true, the button will change to the non-playing state if the
+   * playback rate is not 1 and will, when clicked, change the playback rate
+   * back to 1.
+   */
   resetRate?: boolean
 }
 
-export const PlayPauseButton = (props: PlayPauseButtonProps) => {
-  let [isPlaying, setIsPlaying] = useState(false)
-  let [rate, setRate] = useState(1);
-  let rateRef = useRef<number>();
-  rateRef.current = rate
+function isPlayingState(state: State, props: PlayPauseButtonProps): boolean {
+  if (state != State.Playing) return false
+  return !(props.resetRate && props.player.rate !== 1);
+}
 
-  usePrestoUiEvent('ratechange', props.player, (rate) => {
-    setRate(rate)
-    if (rate != 1 && props.resetRate) {
-      setIsPlaying(false)
-    }
+/**
+ * The play pause toggle button.
+ *
+ * @param props
+ * @constructor
+ */
+export const PlayPauseButton = (props: PlayPauseButtonProps) => {
+  let [isPlaying, setIsPlaying] = useState(isPlayingState(props.player.state, props))
+
+  usePrestoUiEvent('ratechange', props.player, () => {
+    setIsPlaying(isPlayingState(props.player.state, props))
   })
 
   usePrestoUiEvent("statechanged", props.player, ({currentState}) => {
-    switch (currentState) {
-      case State.Idle:
-        setIsPlaying(false)
-        break;
-      case State.Ended:
-        setIsPlaying(false)
-        break;
-      case State.Paused:
-        setIsPlaying(false)
-        break;
-      case State.Playing:
-        if (!props.resetRate || rateRef.current == 1) {
-          setIsPlaying(true)
-        }
-        break;
-      case State.Error:
-        setIsPlaying(false)
-        break;
-    }
+    setIsPlaying(isPlayingState(currentState, props))
   })
 
   async function toggle() {
-    if (!props.resetRate || rateRef.current == 1) {
-      props.player.playing = !props.player.playing
+    let player = props.player;
+    if (!props.resetRate || player.rate == 1) {
+      player.playing = !player.playing
     } else {
-      props.player.rate = 1
-      props.player.playing = true
+      player.rate = 1
+      player.playing = true
     }
   }
 
