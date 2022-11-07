@@ -15,6 +15,10 @@ export interface BaseButtonProps extends BaseComponentProps {
    * turn this into a text based button.
    */
   disableIcon?: boolean
+  /**
+   * Indicate that the button is disabled
+   */
+  disabled?: boolean
 }
 
 /**
@@ -29,10 +33,13 @@ export const BaseButton = (props: BaseButtonProps) => {
   const generateIcon = () => props.disableIcon ? undefined :
     <i className={"pp-ui pp-ui-icon"}/>
 
+  const nop = () => {}
+
   return (
     <button type="button"
-            className={`pp-ui pp-ui-button ${props.disableIcon ? 'pp-ui-button-no-icon': ''} ${props.className || ''}`}
-            onClick={props.onClick}>
+            tabIndex={props.disabled ? -1 : 0}
+            className={`pp-ui pp-ui-button ${props.disableIcon ? 'pp-ui-button-no-icon': ''} ${props.disabled ? 'pp-ui-disabled' : 'pp-ui-enabled'} ${props.className || ''}`}
+            onClick={props.disabled ? nop : props.onClick}>
       {generateIcon()}
       {props.children}
     </button>

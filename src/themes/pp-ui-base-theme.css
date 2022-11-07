@@ -1,6 +1,7 @@
 .pp-ui {
     --pp-bg-color: rgba(0, 0, 0, 0.5);
     --pp-fg-color: #e5e5e5;
+    --pp-fg-disabled-color: rgb(100, 100, 100);
     --pp-fg-dim-color: #b7b7b7;
     --pp-hover-color: #ffffff;
     --pp-scrollbar-fg-color: var(--pp-fg-dim-color);
@@ -8,6 +9,10 @@
     --pp-side-menu-hover-bg-color: rgba(255, 255, 255, 0.15);
     --pp-ui-poster-image-bg: rgb(0, 0, 0);
     --pp-ui-surface-bg: rgb(0, 0, 0);
+
+    --pp-ui-slider-range-bg: #b4b4b4;
+    --pp-ui-slider-range-progress: #ffffff;
+    --pp-ui-slider-range-thumb-bg: #ffffff;
 
     --pp-ui-icon-playpause-toggle-center-pause: url("resources/pause-circle.svg") no-repeat 50% 50%;
     --pp-ui-icon-playpause-toggle-center-play: url("resources/play-circle.svg") no-repeat 50% 50%;
@@ -351,19 +356,19 @@
 .pp-ui-slider-range {
     height: 4px;
     border-radius: 10px;
-    background-color: #b4b4b4;
+    background-color: var(--pp-ui-slider-range-bg);
     transition: height 200ms;
 }
 
 .pp-ui-slider-range-progress {
-    background-color: #ffffff;
+    background-color: var(--pp-ui-slider-range-progress);
 }
 
 .pp-ui-slider-range-thumb {
     height: 10px;
     width: 10px;
 
-    background-color: #FFF;
+    background-color: var(--pp-ui-slider-range-thumb-bg);
     border-radius: 50%;
 
     transform: translateX(-50%);
@@ -525,6 +530,39 @@
     transition: transform 0s, visibility 0s, opacity 250ms;
 }
 
+.pp-ui-label.pp-ui-disabled {
+    color: var(--pp-fg-disabled-color);
+}
+
+.pp-ui-controls .pp-ui-disabled {
+    color: var(--pp-fg-disabled-color);
+}
+
+.pp-ui-button.pp-ui-disabled {
+    color: var(--pp-fg-disabled-color);
+    cursor: default;
+}
+
+.pp-ui-button.pp-ui-disabled .pp-ui-icon {
+    background-color: var(--pp-fg-disabled-color);
+}
+
+.pp-ui-button.pp-ui-disabled:hover, .pp-ui-button.pp-ui-disabled:focus {
+    background-color: transparent;
+}
+
+.pp-ui-slider.pp-ui-disabled .pp-ui-slider-range {
+    background-color: var(--pp-fg-disabled-color);
+}
+
+.pp-ui-slider.pp-ui-disabled .pp-ui-slider-range-thumb {
+    display: none;
+}
+
+.pp-ui-slider.pp-ui-disabled .pp-ui-slider-range-progress {
+    display: none;
+}
+
 .pp-ui-basic-theme .pp-ui-volumebar {
     width: 200px;
     max-width: 200px;
@@ -554,6 +592,14 @@
     right: 0;
     bottom: 0;
     margin: auto;
+}
+
+.pp-ui-enabled {
+
+}
+
+.pp-ui-disabled {
+
 }
 
 @media (max-width: 800px) {

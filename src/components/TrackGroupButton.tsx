@@ -7,7 +7,7 @@ import {
 } from "../Player";
 import BaseButton from "./BaseButton";
 import Label from "./Label";
-import {usePrestoUiEvent} from "../react";
+import {usePrestoEnabledState, usePrestoUiEvent} from "../react";
 
 export interface TrackGroupButtonProps extends BasePlayerComponentProps {
   type: TrackType
@@ -22,6 +22,7 @@ export interface TrackGroupButtonProps extends BasePlayerComponentProps {
 export const TrackGroupButton = (props: TrackGroupButtonProps) => {
   let [activeTrack, setActiveTrack] = useState(props.player.activeTrack(props.type));
   let [_, setPlayingVideoTrack] = useState(props.player.playingVideoTrack);
+  let enabled = usePrestoEnabledState(props.player);
 
   usePrestoUiEvent(`${props.type}TrackChanged`, props.player, (track) => {
     setActiveTrack(track)
@@ -50,10 +51,12 @@ export const TrackGroupButton = (props: TrackGroupButtonProps) => {
         usePlayingRenditionInAbrLabel: props.usePlayingRenditionInAbrLabel == undefined ? true : props.usePlayingRenditionInAbrLabel
       } as DefaultTrackLabelerOptions)}/>
   }
+
   return (
     <BaseButton disableIcon={true}
                 style={props.style}
                 onClick={props.onClick}
+                disabled={!enabled}
                 className={classNames({
                   "pp-ui": true,
                   "pp-ui-track-group-button": true,

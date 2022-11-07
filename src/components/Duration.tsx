@@ -5,13 +5,15 @@ import {
   timeToString
 } from "../utils";
 import Label from "./Label";
-import {usePrestoUiEvent} from "../react";
+import {usePrestoEnabledStateClass, usePrestoUiEvent} from "../react";
 
 export interface DurationProps extends BasePlayerComponentProps{
 }
 
 export const Duration = (props: DurationProps) => {
   let [duration, setDuration] = useState("")
+  let enabledClass = usePrestoEnabledStateClass(props.player);
+
 
   usePrestoUiEvent("durationchange", props.player, (duration) => {
     if(duration == Infinity) {
@@ -22,7 +24,7 @@ export const Duration = (props: DurationProps) => {
   })
 
   return (
-    <Label label={duration} children={props.children} className={`pp-ui-label-duration ${props.className || ''}`}/>
+    <Label label={duration} children={props.children} className={`pp-ui-label-duration ${enabledClass} ${props.className || ''}`}/>
   )
 }
 

@@ -5,7 +5,11 @@ import {
   timeToString
 } from "../utils";
 import Label from "./Label";
-import {usePrestoUiEvent} from "../react";
+import {
+  usePrestoEnabledState,
+  usePrestoEnabledStateClass,
+  usePrestoUiEvent
+} from "../react";
 
 export interface CurrentTimeProps extends BasePlayerComponentProps {
   disableHoveringDisplay?: boolean
@@ -15,33 +19,33 @@ export const CurrentTime = (props: CurrentTimeProps) => {
   let [currentTime, setCurrentTime] = useState("")
   let [isHovering, setHovering] = useState(false)
   let hoveringRef = useRef<boolean>()
+  let enabledClass = usePrestoEnabledStateClass(props.player);
   hoveringRef.current = isHovering
 
-  function setPositionFromPlayer(position: number) {
+  const setTime = (time: number) => {
     setCurrentTime(
-      timeToString(position, getMinimalFormat(props.player.duration)))
+      timeToString(time, getMinimalFormat(props.player.duration)))
   }
 
   usePrestoUiEvent("position", props.player, async (position) => {
     if (hoveringRef.current) return;
-    setPositionFromPlayer(position);
+    setTime(position)
   })
 
   usePrestoUiEvent("hoverPosition", props.player, async (data) => {
     let hoverPosition = data.position
     if (hoverPosition < 0 || props.disableHoveringDisplay) {
       setHovering(false)
-      setPositionFromPlayer(props.player.position);
+      setTime(props.player.position)
     } else {
       setHovering(true)
-      setCurrentTime(
-        timeToString(hoverPosition, getMinimalFormat(props.player.duration)))
+      setTime(hoverPosition)
     }
   })
 
   return (
     <Label label={currentTime} children={props.children}
-           className={`pp-ui-label-current-time ${props.className || ''}`}/>
+           className={`pp-ui-label-current-time ${enabledClass} ${props.className || ''}`}/>
   )
 }
 

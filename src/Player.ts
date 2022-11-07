@@ -287,6 +287,21 @@ export interface UIEvents {
    * Event triggered when the playback rate changed
    */
   ratechange: number
+  /**
+   * Helper event that is triggered when the player enters (or leaves) a state
+   * where controls should be enabled. The player is considered disabled in
+   * Unset, Idle, and Error states.
+   */
+  enabled: boolean
+}
+
+/**
+ * Helper that returns true if the given state is considered to be one of the
+ * enabled states
+ * @param state
+ */
+const isEnabledState = (state:State):boolean => {
+  return state != State.Idle && state != State.Unset && state != State.Error
 }
 
 /**
@@ -488,12 +503,18 @@ export class Player {
     this.pp_.on(clpp.events.TEXT_TRACK_CHANGED, handlePlayerTracksChanged("text"))
 
     this.pp_.on(clpp.events.STATE_CHANGED, (e: any) => {
+      let currentState = toState(e.detail.currentState);
+      let previousState = toState(e.detail.previousState);
       this.emitUIEvent("statechanged", {
-        currentState: toState(e.detail.currentState),
-        previousState: toState(e.detail.previousState),
+        currentState: currentState,
+        previousState: previousState,
         reason: toBufferingReason(e.detail.reason),
         timeSinceLastStateChangeMS: e.detail.timeSinceLastStateChangeMS
       })
+
+      if (isEnabledState(currentState) != isEnabledState(previousState)) {
+        this.emitUIEvent("enabled", isEnabledState(currentState))
+      }
     })
 
     this.pp_.on("timeupdate", () => {
@@ -888,12 +909,15 @@ export class Player {
     }
   }
 
+  get enabled() {
+    return isEnabledState(this.state)
+  }
+
   getTrackLabel(track: Track, labelTrack: TrackLabeler | undefined, options?: TrackLabelerOptions) {
     options = options || this._trackLabelerOptions
     labelTrack = labelTrack || this._trackLabeler
     return labelTrack(track, this, options)
   }
-
 
   set trackLabeler(value: TrackLabeler) {
     this._trackLabeler = value;

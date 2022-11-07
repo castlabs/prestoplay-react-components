@@ -1,13 +1,18 @@
 import React, {useState} from "react";
 import {BasePlayerComponentButtonProps} from "../utils";
 import BaseButton from "./BaseButton";
-import {usePrestoUiEvent} from "../react";
+import {
+  usePrestoEnabledState,
+  usePrestoEnabledStateClass,
+  usePrestoUiEvent
+} from "../react";
 
 export interface MenuSlideinToggleProps extends BasePlayerComponentButtonProps{
 }
 
 export const MenuSlideinToggleButton = (props: MenuSlideinToggleProps) => {
   let [isVisible, setVisible] = useState(false);
+  let enabled = usePrestoEnabledState(props.player);
 
   async function toggle(event:React.MouseEvent) {
     setVisible(!isVisible)
@@ -21,7 +26,7 @@ export const MenuSlideinToggleButton = (props: MenuSlideinToggleProps) => {
 
   // @ts-ignore
   return (
-    <BaseButton onClick={toggle} disableIcon={false}
+    <BaseButton onClick={toggle} disableIcon={false} disabled={!enabled}
                 className={`pp-ui-slideinmenu-toggle ${props.className || ''}`}>
       {props.children}
     </BaseButton>

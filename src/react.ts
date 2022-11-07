@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {EventListener, EventType} from "./EventEmitter";
 import {Player, UIEvents} from "./Player";
 
@@ -111,4 +111,32 @@ export function useGlobalHide(ref: React.RefObject<Element>, hide: () => any) {
       document.removeEventListener("click", handleClick)
     }
   })
+}
+
+/**
+ * Helper to track enabled state of the player. The returned boolean represents
+ * the enabled state of the player
+ *
+ * @param player
+ */
+export function usePrestoEnabledState(player: Player): boolean {
+  let [enabled, setEnabled] = useState(player.enabled)
+  usePrestoUiEvent("enabled", player, (e) => {
+    setEnabled(e)
+  })
+  return enabled
+}
+
+/**
+ * Helper to track enabled state of the player and return the state as the
+ * appropriate css class
+ *
+ * @param player
+ */
+export function usePrestoEnabledStateClass(player: Player): string {
+  let [enabled, setEnabled] = useState(player.enabled)
+  usePrestoUiEvent("enabled", player, (e) => {
+    setEnabled(e)
+  })
+  return enabled ? "pp-ui-enabled" : "pp-ui-disabled"
 }

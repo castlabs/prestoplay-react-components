@@ -1,6 +1,7 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {BasePlayerComponentButtonProps} from "../utils";
 import BaseButton from "./BaseButton";
+import {usePrestoEnabledState} from "../react";
 
 export interface FullscreenButtonProps extends BasePlayerComponentButtonProps{
   fullscreenContainer: React.MutableRefObject<HTMLElement | null>;
@@ -8,6 +9,7 @@ export interface FullscreenButtonProps extends BasePlayerComponentButtonProps{
 
 export const FullscreenButton = (props: FullscreenButtonProps) => {
   let [fullscreen, setFullscreen] = useState(!!document.fullscreenElement);
+  let enabled = usePrestoEnabledState(props.player);
 
   function toggle() {
     if(props.fullscreenContainer.current) {
@@ -21,8 +23,22 @@ export const FullscreenButton = (props: FullscreenButtonProps) => {
     }
   }
 
+  useEffect(() => {
+    let handler = () => {
+      if (document.fullscreenElement) {
+        setFullscreen(true)
+      } else {
+        setFullscreen(false)
+      }
+    };
+    document.addEventListener("fullscreenchange", handler)
+    return () => {
+      document.removeEventListener("fullscreenchange", handler)
+    }
+  })
+
   return (
-    <BaseButton onClick={toggle} disableIcon={props.disableIcon}
+    <BaseButton onClick={toggle} disableIcon={props.disableIcon} disabled={!enabled}
                 className={`pp-ui-fullscreen pp-ui-fullscreen-${fullscreen ? "enabled" : "disabled"} ${props.className || ''}`}>
       {props.children}
     </BaseButton>

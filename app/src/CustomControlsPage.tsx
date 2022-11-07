@@ -47,7 +47,7 @@ export const CustomControlsPage = (props: {
   return (
     <div>
 
-      <PlayerSurface ref={playerSurfaceRef} player={player} config={playerConfig} style={{height: "320px"}}>
+      <PlayerSurface ref={playerSurfaceRef} player={player} config={playerConfig} autoload={props.autoload} style={{height: "320px"}}>
         <PlayerControls player={player}>
           {/* We are creating a vertical bar to build our controls top to bottom */}
           <VerticalBar className={"pp-ui-transparent"}>

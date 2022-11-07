@@ -66,6 +66,7 @@ export const ComponentsOverviewPage = (props: {
       <PlayerSurface ref={playerSurfaceRef}
                      player={player}
                      config={playerConfig}
+                     autoload={props.autoload}
                      style={{height: "320px"}}>
       </PlayerSurface>
 

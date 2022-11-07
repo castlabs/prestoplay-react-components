@@ -14,6 +14,7 @@ export interface SliderProps extends BaseComponentProps {
   onApplyHoverValue?: (value: number) => void
   onKeyDown?: (e:KeyboardEvent) => void
   currentValue?: () => number
+  disabled?: boolean
 }
 
 export const Slider = (props: SliderProps) => {
@@ -168,18 +169,20 @@ export const Slider = (props: SliderProps) => {
     right: 100 - currentProgress() + "%",
   }
 
+  const nop = () => {}
+
   return (
     <div ref={containerRef}
-         className={`pp-ui-slider ${interacting ? "pp-ui-slider-interacting" : ""}${props.className || ''}`}
+         className={`pp-ui-slider ${interacting ? "pp-ui-slider-interacting" : ""} ${props.disabled ? 'pp-ui-disabled' : 'pp-ui-enabled'} ${props.className || ''}`}
          style={sliderStyles}
-         onMouseMove={mouseMove}
-         onMouseDown={mouseDown}
-         onMouseUp={mouseUp}
-         onMouseLeave={mouseLeave}
-         onTouchMove={mouseMove}
-         onTouchStart={mouseDown}
-         onTouchEnd={mouseLeave}
-         tabIndex={0}
+         onMouseMove={props.disabled ? nop : mouseMove}
+         onMouseDown={props.disabled ? nop : mouseDown}
+         onMouseUp={props.disabled ? nop : mouseUp}
+         onMouseLeave={props.disabled ? nop : mouseLeave}
+         onTouchMove={props.disabled ? nop : mouseMove}
+         onTouchStart={props.disabled ? nop : mouseDown}
+         onTouchEnd={props.disabled ? nop : mouseLeave}
+         tabIndex={props.disabled ? -1 : 0 }
     >
       <div ref={barContainer}
            style={rangeStyles}

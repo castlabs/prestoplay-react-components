@@ -5,7 +5,7 @@ import {
   timeToString
 } from "../utils";
 import Label from "./Label";
-import {usePrestoUiEvent} from "../react";
+import {usePrestoEnabledStateClass, usePrestoUiEvent} from "../react";
 
 export interface TimeLeftProps extends BasePlayerComponentProps {
   disableHoveringDisplay?: boolean
@@ -14,6 +14,7 @@ export interface TimeLeftProps extends BasePlayerComponentProps {
 export const TimeLeft = (props: TimeLeftProps) => {
   let [timeLeft, setTimeLeft] = useState("")
   let [isHovering, setHovering] = useState(false)
+  let enabledClass = usePrestoEnabledStateClass(props.player);
   let hoveringRef = useRef<boolean>()
   hoveringRef.current = isHovering
 
@@ -22,7 +23,10 @@ export const TimeLeft = (props: TimeLeftProps) => {
       setTimeLeft("Live")
       return
     }
-    const duration = props.player.duration
+    let duration = props.player.duration
+    if (duration == Infinity) {
+      duration = 0
+    }
     const timeLeft = Math.max(0, duration - position);
     setTimeLeft("-" + timeToString(timeLeft, getMinimalFormat(duration)))
   }
@@ -44,7 +48,7 @@ export const TimeLeft = (props: TimeLeftProps) => {
 
   return (
     <Label label={timeLeft} children={props.children}
-           className={`pp-ui-label-time-left ${props.className || ''}`}/>
+           className={`pp-ui-label-time-left ${enabledClass} ${props.className || ''}`}/>
   )
 }
 

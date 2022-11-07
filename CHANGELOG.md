@@ -39,6 +39,12 @@
 * Added seek chaining to make sure that we are not issuing seeks that will not be the
   final target position. This will make consecutive seeks faster
 
+## New Features
+
+* Added `enabled` state to the player and tracking utilities for components. Where it makes sense, the 
+  components now track the enabled state of the player using `usePrestoEnabledState` and implement a 
+  "disabled" state if no content is loaded.
+
 # 0.5.0
 
 The first public release

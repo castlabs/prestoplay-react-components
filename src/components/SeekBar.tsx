@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import Slider from "./Slider";
 import {BasePlayerComponentProps, p} from "../utils";
 import Thumbnail from "./Thumbnail";
-import {usePrestoUiEvent} from "../react";
+import {usePrestoEnabledState, usePrestoUiEvent} from "../react";
 
 export interface SeekBarProps extends BasePlayerComponentProps {
   adjustWhileDragging?: boolean
@@ -16,7 +16,7 @@ export const SeekBar = (props: SeekBarProps) => {
   let [hoverPosition, setHoverPosition] = useState(-1)
   let [hoverValue, setHoverValue] = useState(0)
   let [thumbWidth, setThumbWidth] = useState(0)
-
+  let enabled = usePrestoEnabledState(props.player);
 
   function updateFromPlayer(position?: number): number {
     const player = props.player
@@ -60,7 +60,7 @@ export const SeekBar = (props: SeekBarProps) => {
   }
 
   const renderThumbnailSlider = () => {
-    if(!props.enableThumbnailSlider) return;
+    if(!props.enableThumbnailSlider || !enabled) return;
     return (
       <Thumbnail player={props.player} position={hoverPosition}
                  onThumbSize={onThumbSize}
@@ -104,6 +104,7 @@ export const SeekBar = (props: SeekBarProps) => {
         onApplyHoverValue={applyHoverValue}
         currentValue={updateFromPlayer}
         adjustWhileDragging={props.adjustWhileDragging}
+        disabled={!enabled}
       >
       </Slider>
       {renderThumbnailSlider()}
