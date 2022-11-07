@@ -1,0 +1,26 @@
+.app {
+    font-family: sans-serif;
+}
+
+nav {
+    display: flex;
+
+    gap: 16px;
+    justify-content: flex-end;
+    align-items: center;
+}
+nav button {
+    border: 1px solid gray;
+    background: transparent;
+    cursor: pointer;
+
+    padding: 16px;
+
+}
+nav button:hover {
+    text-decoration: underline;
+}
+
+.selected {
+    background-color: #b4b4b4;
+}
