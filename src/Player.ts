@@ -687,7 +687,9 @@ export class Player {
   }
 
   private async reset_() {
-    await this.pp_.release()
+    if (this.pp_) {
+      await this.pp_.release()
+    }
     this._configLoaded = false
     this.emitUIEvent("position", 0)
     this.emitUIEvent("durationchange", 0)

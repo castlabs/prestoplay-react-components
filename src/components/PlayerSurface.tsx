@@ -35,6 +35,9 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
     if (video.current) {
       props.player.init(video.current)
     }
+    return () => {
+      props.player.release()
+    }
   }, [props.player, video.current])
 
   useEffect(() => {
