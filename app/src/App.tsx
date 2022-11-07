@@ -1,9 +1,8 @@
 import React, {useCallback, useState} from 'react';
-import {Asset, TestAssets} from "./Asset";
+import {TestAssets} from "./Asset";
 import {BasicOverlayPage} from "./BasicOverlayPage";
 import {CustomControlsPage} from "./CustomControlsPage";
 import {ComponentsOverviewPage} from "./ComponentsOverviewPage";
-import Label from "../../src/components/Label";
 
 // load app styles
 import "./styles.css"

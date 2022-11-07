@@ -14,6 +14,13 @@ export interface PlayerProps extends BasePlayerComponentProps {
    * The PRESTOplay player configuration
    */
   config?: any,
+
+  /**
+   * Indicate that the configuration should be applied immediately. If this is
+   * set to false, the config will be passed to the player, but not applied
+   * immediately.
+   */
+  autoload?: boolean
 }
 
 /**
@@ -31,11 +38,7 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
   }, [props.player, video.current])
 
   useEffect(() => {
-    if (props.config) {
-      props.player.load(props.config)
-    } else {
-      props.player.release()
-    }
+    props.player.load(props.config, props.autoload)
   }, [props.config, props.player])
 
   const mouseMove = () => {

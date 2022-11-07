@@ -18,6 +18,9 @@ export const BasicOverlayPage = (props: {
   autoload?: boolean
 }) => {
 
+  let [showStartButton, setShowStartButton] = useState<boolean>(true)
+  let [showPoster, setShowPoster] = useState<boolean>(true)
+
   // Create the player as state of this component
   let [player, setPlayer] = useState(new Player((pp:any) => {
     pp.use(clpp.dash.DashComponent);
@@ -46,13 +49,14 @@ export const BasicOverlayPage = (props: {
   return (
     <div>
       <PlayerSurface player={player}
-                     config={props.autoload ? playerConfig : null}
+                     config={playerConfig}
+                     autoload={props.autoload}
                      ref={playerSurfaceRef}
       >
         <BaseThemeOverlay
           player={player}
-          startConfig={props.autoload ? undefined : playerConfig}
-          posterUrl={asset?.poster}
+          startButton={!props.autoload && showStartButton}
+          posterUrl={showPoster ? asset?.poster: ''}
           fullscreenRef={playerSurfaceRef}
           seekForward={10}
           seekBackward={-10}
@@ -64,6 +68,17 @@ export const BasicOverlayPage = (props: {
         />
       </PlayerSurface>
 
+      <div className={"options"}>
+        <label>
+          <input type={"checkbox"} checked={showStartButton} onChange={() => {setShowStartButton(!showStartButton)}}/>
+          Show Start Button
+        </label>
+        <label>
+          <input type={"checkbox"} checked={showPoster} onChange={() => {setShowPoster(!showPoster)}}/>
+          Show Poster
+        </label>
+
+      </div>
     </div>
   )
 }

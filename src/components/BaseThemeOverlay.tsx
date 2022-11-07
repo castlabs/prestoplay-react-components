@@ -31,12 +31,12 @@ import VolumeBar from "./VolumeBar";
  */
 export interface BaseThemeOverlayProps extends BasePlayerComponentProps {
   /**
-   * Player configuration that is used to create a "start" button that loads
-   * the configuration. Before the button is clicked, no video content is loaded
-   * and only the poster image might be displayed. This is optional and if the
-   * configuration is not provided, the start button will not be rendered.
+   * Creates the start button. Before the button is clicked, no video content is loaded
+   * and only the poster image might be displayed. To make this work as expected
+   * and not load content before the button is clicked, you need to pass `autoload=false` to
+   * the player surface.
    */
-  startConfig?: any
+  startButton?: boolean
   /**
    * Optional poster image URL. If specified, an image from the provided URL
    * will be loaded before video content is available.
@@ -101,9 +101,8 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   }
 
   const renderStartButton = () => {
-    if (!props.startConfig) return
+    if (!props.startButton) return
     return <StartButton player={props.player}
-                        config={props.startConfig}
                         className={"pp-ui-absolute-center"}/>
   }
 

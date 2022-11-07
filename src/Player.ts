@@ -430,6 +430,19 @@ export class Player {
    */
   private _rate = 1;
 
+  /**
+   * The current player configuration
+   *
+   * @private
+   */
+  private _config: any;
+
+  /**
+   * Indicate that the config was loaded
+   * @private
+   */
+  private _configLoaded = false;
+
   constructor(initializer?: PlayerInitializer) {
     this._initializer = initializer;
     this._actionQueuePromise = new Promise<void>((resolve) => {
@@ -623,23 +636,67 @@ export class Player {
   }
 
   get playing() {
-    return !this.pp_ ? false : !this.pp_.isPaused()
+    if(!this.pp_) return false
+    if (this.state == State.Idle) return false
+    return !this.pp_.isPaused()
   }
 
   set playing(value: boolean) {
     if (this.pp_) {
-      value ? this.pp_.play() : this.pp_.pause()
+      if (!this._configLoaded && value) {
+        this.load().then(() => {
+          value ? this.pp_.play() : this.pp_.pause()
+        })
+      } else {
+        if (this._configLoaded) {
+          value ? this.pp_.play() : this.pp_.pause()
+        }
+      }
     }
   }
 
-  load(config: any) {
-    return this.action(() => this.pp_.load(config))
+  load(config?: any, autoload: boolean = false) {
+    if (!config) {
+      return this.action(async () => {
+        await this.pp_.release()
+        if (this._config) {
+          this._configLoaded = true
+          await this.pp_.load(this._config)
+
+        }
+      })
+    } else {
+      this._config = config
+      return this.action(async () => {
+        await this.reset_()
+        if (config && autoload) {
+          this._configLoaded = true
+          await this.pp_.load(config)
+        }
+      })
+    }
   }
 
-  release() {
-    if (this.pp_) {
-      this.pp_.release()
-    }
+  get config() {
+    return this._config
+  }
+
+  async release() {
+    this._config = null
+    await this.reset_()
+  }
+
+  private async reset_() {
+    await this.pp_.release()
+    this._configLoaded = false
+    this.emitUIEvent("position", 0)
+    this.emitUIEvent("durationchange", 0)
+    this.videoTracks = []
+    this.audioTracks = []
+    this.textTracks = []
+    this.videoTrack = getDisabledTrack("video", true)
+    this.audioTrack = getDisabledTrack("audio", true)
+    this.textTrack = getDisabledTrack("text", true)
   }
 
   setHoverPosition(position: number, percent: number) {

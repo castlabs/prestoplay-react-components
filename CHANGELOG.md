@@ -17,8 +17,11 @@
   you can use `await player.presto()` to get an instance of the core.
 * Removed the `use` wrapper from the player. Instead, use the initializer function
   that can be passed to the `Player` constructor. This is more explicit, provided
-  better timing (the order of execution is clear and we wait for the initializer to
+  better timing (the order of execution is clear, and we wait for the initializer to
   complete before we use the player core) and simplifies the player wrapper.
+* The `StartButton` does no longer receive the start config. Instead, the `PlayerSurface` now has the 
+  option to configure if the passed configuration should be loaded or not. If `autoload` is set to false, 
+  the passed config will be cached but only applied with a call to `load()` or `playing = true`.
 
 ## Improvements and fixes
 

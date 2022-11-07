@@ -1,3 +1,8 @@
+body {
+    margin: 0;
+    padding: 0
+}
+
 .app {
     font-family: sans-serif;
 }
@@ -8,7 +13,10 @@ nav {
     gap: 16px;
     justify-content: flex-end;
     align-items: center;
+
+    padding: 8px;
 }
+
 nav button {
     border: 1px solid gray;
     background: transparent;
@@ -17,10 +25,16 @@ nav button {
     padding: 16px;
 
 }
+
 nav button:hover {
     text-decoration: underline;
+}
+
+.options {
+    padding: 8px;
 }
 
 .selected {
     background-color: #b4b4b4;
 }
+

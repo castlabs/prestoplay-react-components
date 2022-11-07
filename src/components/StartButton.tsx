@@ -1,33 +1,24 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {BasePlayerComponentButtonProps} from "../utils";
 import BaseButton from "./BaseButton";
+import {State} from "../Player";
+import {usePrestoUiEvent} from "../react";
 
 export interface StartButtonProps extends BasePlayerComponentButtonProps {
-  config: any
 }
 
 export const StartButton = (props: StartButtonProps) => {
-  let [visible, setVisible] = useState(!!props.config);
+  let [visible, setVisible] = useState(props.player.state == State.Idle || props.player.state == State.Unset);
+
+  usePrestoUiEvent("statechanged", props.player, ({currentState}) => {
+    setVisible(props.player.state == State.Idle || props.player.state == State.Unset)
+  })
 
   const start = async () => {
-    let presto = await props.player.presto();
-    if (props.config) {
-      let cfg = props.config
-      cfg.autoplay = true
-      presto.load(cfg)
-    } else {
-      presto.play()
-    }
+    await props.player.load()
+    props.player.playing = true
     setVisible(false)
   }
-
-  useEffect(() => {
-    if (!props.config) {
-      setVisible(false)
-    } else {
-      setVisible(true)
-    }
-  }, [props.config])
 
   return (
     <BaseButton onClick={start}
