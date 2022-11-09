@@ -13,6 +13,20 @@ import "@castlabs/prestoplay/cl.thumbnails"
 import {usePresto, usePrestoUiEvent} from "../react";
 
 
+Document.prototype.replaceChildren ||= replaceChildren;
+DocumentFragment.prototype.replaceChildren ||= replaceChildren;
+Element.prototype.replaceChildren ||= replaceChildren;
+
+function replaceChildren(...new_children:any) {
+  // @ts-ignore
+  const { childNodes } = this;
+  while (childNodes.length) {
+    childNodes[0].remove();
+  }
+  // @ts-ignore
+  this.append(...new_children);
+}
+
 export interface ThumbnailProps extends BasePlayerComponentProps {
   position?: number,
   listenToHover?: boolean,

@@ -1,5 +1,9 @@
-import React, {createRef, useState} from "react";
-import {BasePlayerComponentButtonProps} from "../utils";
+import React, {createRef, useLayoutEffect, useState} from "react";
+import {
+  BasePlayerComponentButtonProps,
+  focusNextElement,
+  getFocusableElements
+} from "../utils";
 import {TrackGroupButton} from "./TrackGroupButton";
 import TrackSelectionList from "./TrackSelectionList";
 import {TrackType} from "../Track";
@@ -61,6 +65,16 @@ export const MenuSlidein = (props: MenuSlideinProps) => {
   useGlobalHide(ref, hide)
 
   let options: SelectionOption[] = props.selectionOptions || DEFAULT_SELECTION_OPTIONS
+
+  useLayoutEffect(() => {
+    if (isVisible && ref.current) {
+      let focusItems = getFocusableElements(ref.current);
+      let index = focusItems.indexOf(document.activeElement as HTMLElement)
+      if (index < 0 && focusItems.length) {
+        focusNextElement(focusItems)
+      }
+    }
+  })
 
   const renderOption = (option:SelectionOption) => {
     switch (option.type) {

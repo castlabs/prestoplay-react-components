@@ -1,5 +1,14 @@
-import React, {createRef, useEffect, useRef, useState} from "react";
-import {BasePlayerComponentProps} from "../utils";
+import React, {
+  createRef,
+  useEffect,
+  useRef,
+  useState
+} from "react";
+import {
+  BasePlayerComponentProps, focusElement,
+  focusNextElement,
+  getFocusableElements
+} from "../utils";
 import {usePrestoUiEvent} from "../react";
 
 const DEFAULT_HIDE_DELAY = 5
@@ -10,6 +19,8 @@ export interface PlayerControlsProps extends BasePlayerComponentProps {
 
 export const PlayerControls = (props: PlayerControlsProps) => {
   let [controlsVisible, setControlsVisible_] = useState(props.player.controlsVisible);
+  let [lastFocusIndex, setLastFocusIndex] = useState(-1);
+
   const timer = useRef<any>(null);
   const ref = createRef<HTMLDivElement>();
 
@@ -17,34 +28,32 @@ export const PlayerControls = (props: PlayerControlsProps) => {
     if(!fromUiEvent) {
       props.player.controlsVisible = visible
     }
+    controlsVisible = visible
     setControlsVisible_(visible)
   }
 
   usePrestoUiEvent("controlsVisible", props.player, (visible) => {
     setControlsVisible(visible, true)
+    if (visible) {
+      createTimer()
+    }
   })
 
   usePrestoUiEvent("slideInMenuVisible", props.player, (visible) => {
     setControlsVisible(!visible)
+    if(!visible) {
+      createTimer()
+    }
   })
 
   usePrestoUiEvent("surfaceInteraction", props.player, () => {
-    setControlsVisible(true)
-    createTimer()
+    if(!props.player.slideInMenuVisible) {
+      setControlsVisible(true)
+      createTimer()
+    }
   })
 
   const interactionTimerCallback = () => {
-    if (ref.current) {
-      // we are supposed to hide the setting because the interaction timer
-      // ran out, but we should only do this if there is either no active
-      // element or the active element is not inside the controls.
-      if (document.activeElement &&
-        (document.activeElement == ref.current ||
-          ref.current.contains(document.activeElement))) {
-        createTimer();
-        return
-      }
-    }
     setControlsVisible(false)
   }
 
@@ -64,6 +73,40 @@ export const PlayerControls = (props: PlayerControlsProps) => {
       if (timer.current) {
         clearTimeout(timer.current)
         timer.current = null
+      }
+    }
+  })
+
+  useEffect(() => {
+    let onFocusIn = () => {
+      if(ref.current) {
+        let focusItems = getFocusableElements(ref.current);
+        let index = focusItems.indexOf(document.activeElement as HTMLElement)
+        if(index >= 0) {
+          setLastFocusIndex(index)
+        }
+      }
+    }
+
+    if(ref.current) {
+      ref.current.addEventListener("focusin", onFocusIn)
+    }
+
+
+    if (controlsVisible && ref.current) {
+      let focusItems = getFocusableElements(ref.current);
+      let index = focusItems.indexOf(document.activeElement as HTMLElement)
+      if (index < 0) {
+        if (lastFocusIndex >= 0 && lastFocusIndex < focusItems.length) {
+          focusElement(focusItems[lastFocusIndex])
+        } else {
+          focusNextElement(focusItems)
+        }
+      }
+    }
+    return () => {
+      if(ref.current) {
+        ref.current.removeEventListener("focusin", onFocusIn)
       }
     }
   })

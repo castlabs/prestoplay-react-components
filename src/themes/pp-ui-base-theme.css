@@ -295,7 +295,7 @@
 }
 
 .pp-ui-track-label.pp-ui-selected {
-    font-weight: 600;
+    font-weight: bold;
 }
 
 .pp-ui-track-selection-list {
@@ -466,19 +466,21 @@
     top: 0;
     right: 0;
     z-index: 10;
-    transition: transform 250ms, visibility 0s 250ms;
+    transition: transform 250ms, visibility 0s 250ms, display 0s 250ms;
     overflow: auto;
     transform: translateX(100%);
     visibility: hidden;
+    display: none;
 
     scrollbar-color: var(--pp-scrollbar-fg-color) var(--pp-scrollbar-bg-color);
     scrollbar-width: thin;
 }
 
 .pp-ui-overlay-menu-visible {
-    transition: visibility 0s, transform 250ms;
+    transition: display 0s, visibility 0s, transform 250ms;
     transform: translateX(0);
     visibility: visible;
+    display: block;
 }
 
 

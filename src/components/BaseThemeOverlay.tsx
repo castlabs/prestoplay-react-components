@@ -125,6 +125,7 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
             <SeekButton player={props.player} seconds={p(props.seekBackward, -10)}/>
             <SeekButton player={props.player} seconds={p(props.seekForward, 10)}/>
             <SeekBar player={props.player} adjustWhileDragging={true}
+                     adjustWithKeyboard={true}
                      enableThumbnailSlider={false}/>
 
             <CurrentTime player={props.player}/>

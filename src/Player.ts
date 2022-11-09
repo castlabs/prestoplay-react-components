@@ -752,10 +752,14 @@ export class Player {
     }
   }
 
+  /**
+   * This method registers a surface interaction. We consider any user
+   * interaction with the interface or the controls here. This can be used for
+   * instance to show overlays for a short period of time and hide them
+   * if no interaction was registered.
+   */
   surfaceInteraction() {
-    if (!this.controlsVisible && !this.slideInMenuVisible) {
-      this.emitUIEvent("surfaceInteraction", undefined)
-    }
+    this.emitUIEvent("surfaceInteraction", undefined)
   }
 
 

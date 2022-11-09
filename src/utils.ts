@@ -1,5 +1,7 @@
 import {Player} from "./Player";
 import React, {CSSProperties} from "react";
+import {Simulate} from "react-dom/test-utils";
+import focus = Simulate.focus;
 
 /**
  * Base properties for components created by this library
@@ -130,3 +132,58 @@ function pad(str: string, max: number): string {
 function padReplace(value: string) {
   return (_: any, group: string) => pad(value, group.length - 1)
 }
+
+export function getFocusableElements(parent: HTMLElement): HTMLElement[] {
+  const focusQuery = 'a:not([disabled]):not([style*="display:none"]), button:not([disabled]):not([style*="display:none"]), input[type=text]:not([disabled]):not([style*="display:none"]), [tabindex]:not([disabled]):not([tabindex="-1"]):not([style*="display:none"])';
+  let items = parent.querySelectorAll(focusQuery);
+  return Array.prototype.filter.call(
+    items,
+    (element:HTMLElement) => element.offsetWidth > 0 || element.offsetHeight > 0 || element === document.activeElement
+  ).filter(e => {
+    return e.offsetParent !== null && getComputedStyle(e).display != 'none' && !e.classList.contains("pp-ui-disabled")
+  })
+}
+
+export function focusNextElement(items: HTMLElement[]) {
+  let index:number = -1;
+  if (document.activeElement) {
+    index = items.indexOf(document.activeElement as HTMLElement)
+  }
+  index = index == -1 ? 0 : index + 1
+  if(index >= items.length) {
+    index = 0
+  }
+  focusElement(items[index])
+}
+
+export function focusPreviousElement(items: HTMLElement[]) {
+  let index:number = -1;
+  if (document.activeElement) {
+    index = items.indexOf(document.activeElement as HTMLElement)
+  }
+
+  index = index == -1 ? items.length - 1 : index - 1
+  if(index < 0) {
+    index = items.length - 1
+  }
+  focusElement(items[index])
+}
+
+let focusElementTimerId_:any;
+
+export function focusElement(item: HTMLElement) {
+  if (focusElementTimerId_) {
+    clearTimeout(focusElementTimerId_)
+  }
+
+  if (document.activeElement == item) {
+    return
+  }
+  item.focus()
+  if (document.activeElement != item) {
+    focusElementTimerId_ = setTimeout(() => {
+      focusElement(item)
+    }, 64)
+  }
+}
+

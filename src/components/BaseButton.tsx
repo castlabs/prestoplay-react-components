@@ -1,4 +1,4 @@
-import React, {MouseEventHandler} from "react";
+import React, {ForwardedRef, forwardRef, MouseEventHandler} from "react";
 import {BaseComponentProps} from "../utils";
 
 /**
@@ -29,21 +29,30 @@ export interface BaseButtonProps extends BaseComponentProps {
  * @param props
  * @constructor
  */
-export const BaseButton = (props: BaseButtonProps) => {
+export const BaseButton = forwardRef((props: BaseButtonProps, ref: ForwardedRef<HTMLButtonElement>) => {
   const generateIcon = () => props.disableIcon ? undefined :
     <i className={"pp-ui pp-ui-icon"}/>
 
-  const nop = () => {}
+  const click = (e:React.MouseEvent) => {
+    if(props.disabled) {
+      return
+    }
+
+    if(props.onClick) {
+      props.onClick(e)
+      e.preventDefault()
+    }
+  }
 
   return (
-    <button type="button"
+    <button type="button" ref={ref}
             tabIndex={props.disabled ? -1 : 0}
             className={`pp-ui pp-ui-button ${props.disableIcon ? 'pp-ui-button-no-icon': ''} ${props.disabled ? 'pp-ui-disabled' : 'pp-ui-enabled'} ${props.className || ''}`}
-            onClick={props.disabled ? nop : props.onClick}>
+            onClick={click}>
       {generateIcon()}
       {props.children}
     </button>
   );
-}
+})
 
 export default BaseButton

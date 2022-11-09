@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {State} from "../Player";
+import {BufferingReason, State} from "../Player";
 import BaseButton from "./BaseButton";
 import {BasePlayerComponentButtonProps} from "../utils";
 import {usePrestoUiEvent} from "../react";
@@ -16,8 +16,13 @@ export interface PlayPauseButtonProps extends BasePlayerComponentButtonProps {
   resetRate?: boolean
 }
 
-function isPlayingState(state: State, props: PlayPauseButtonProps): boolean {
-  if (state != State.Playing) return false
+function isPlayingState(state: State, props: PlayPauseButtonProps, bufferingReason?: BufferingReason): boolean {
+  if (state != State.Playing) {
+    if(state == State.Buffering && bufferingReason == BufferingReason.Seeking) {
+      return props.player.playing
+    }
+    return false
+  }
   return !(props.resetRate && props.player.rate !== 1);
 }
 
@@ -34,8 +39,8 @@ export const PlayPauseButton = (props: PlayPauseButtonProps) => {
     setIsPlaying(isPlayingState(props.player.state, props))
   })
 
-  usePrestoUiEvent("statechanged", props.player, ({currentState}) => {
-    setIsPlaying(isPlayingState(currentState, props))
+  usePrestoUiEvent("statechanged", props.player, ({currentState, reason}) => {
+    setIsPlaying(isPlayingState(currentState, props, reason))
   })
 
   async function toggle() {

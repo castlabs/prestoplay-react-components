@@ -49,10 +49,14 @@ export default [
         open: true,
         verbose: true,
         contentBase: ["", "app", "app/src"],
-        host: "localhost",
+        host: "0.0.0.0",
         port: 3000,
       }),
-      livereload({watch: "app/dist"})
+      livereload({
+        watch: "app/dist",
+        // port: 12345,
+        // clientUrl: 'http://<localip>:12345/livereload.js?snipver=1'
+      })
     ]
   }
 ]

@@ -6,6 +6,7 @@ import {usePrestoEnabledState, usePrestoUiEvent} from "../react";
 
 export interface SeekBarProps extends BasePlayerComponentProps {
   adjustWhileDragging?: boolean
+  adjustWithKeyboard?: boolean
   enableThumbnailSlider?: boolean
   keyboardSeekForward?: number
   keyboardSeekBackward?: number
@@ -34,6 +35,8 @@ export const SeekBar = (props: SeekBarProps) => {
   })
 
   async function applyValue(progressValue: number) {
+    props.player.surfaceInteraction()
+
     let seekRange = props.player.seekRange
     let range = seekRange.end - seekRange.start;
     props.player.position = seekRange.start + (range * (progressValue / 100.0))
@@ -46,6 +49,8 @@ export const SeekBar = (props: SeekBarProps) => {
       setHoverValue(0)
       return
     }
+
+    props.player.surfaceInteraction()
 
     let seekRange = props.player.seekRange
     let range = seekRange.end - seekRange.start;
@@ -99,7 +104,8 @@ export const SeekBar = (props: SeekBarProps) => {
       <Slider
         hoverMovement={true}
         value={progress}
-        onKeyDown={onKeyDown}
+        onKeyDown={props.adjustWithKeyboard ? undefined : onKeyDown}
+        disableKeyboardAdjustments={!props.adjustWithKeyboard}
         onApplyValue={applyValue}
         onApplyHoverValue={applyHoverValue}
         currentValue={updateFromPlayer}
