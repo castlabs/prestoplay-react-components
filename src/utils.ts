@@ -1,7 +1,5 @@
 import {Player} from "./Player";
 import React, {CSSProperties} from "react";
-import {Simulate} from "react-dom/test-utils";
-import focus = Simulate.focus;
 
 /**
  * Base properties for components created by this library
@@ -193,4 +191,20 @@ export function isTouchDevice() {
   return (('ontouchstart' in window) ||
     (navigator.maxTouchPoints > 0) ||
     (msTouchValue > 0));
+}
+
+export function isIOS() {
+  if (/iPad|iPhone|iPod/.test(navigator.platform)) {
+    return true;
+  } else {
+    return navigator.maxTouchPoints &&
+      navigator.maxTouchPoints > 2 &&
+      /MacIntel/.test(navigator.platform);
+  }
+}
+
+export function isIpadOS() {
+  return navigator.maxTouchPoints &&
+    navigator.maxTouchPoints > 2 &&
+    /MacIntel/.test(navigator.platform);
 }

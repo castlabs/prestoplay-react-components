@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {BasePlayerComponentButtonProps} from "../utils";
+import {BasePlayerComponentButtonProps, isIOS, isIpadOS} from "../utils";
 import BaseButton from "./BaseButton";
 import {usePrestoEnabledState} from "../react";
 
@@ -40,7 +40,46 @@ const FULLSCREEN_CHANGE = [
 ];
 
 export interface FullscreenButtonProps extends BasePlayerComponentButtonProps {
+  /**
+   * Reference to the container that will be put to fullscreen mode
+   */
   fullscreenContainer: React.MutableRefObject<HTMLElement | null>;
+  /**
+   * Configure if the video element should be used for fullscreen mode instead
+   * if the passed container. The default is to use the passed container unless
+   * on iOS or iPadOS
+   */
+  useVideoElementForFullscreen?: UseVideoElement[]
+}
+
+/**
+ * The fullscreen button will try to put the passed element to
+ * fullscreen mode if that is possible. However, on some platforms, it is not
+ * possible to put a random DOM element to fullscreen mode and instead the video
+ * element needs to be put in fullscreen. This also means that no custom overlays
+ * and controls are possible and that the native controls will be used.
+ *
+ * This is currently needed on iOS and the default option for iPadOS. On an iPad
+ * you can put a random DOM element to full screen, however, the user experience
+ * is slightly degraded. You can use custom controls and overlays, but the status
+ * bar of the iPad will always be visible and the upper left corner will show
+ * a fullscreen exit button permanently. For that reason the default behaviour
+ * of the fullscreen button is to use the video element for fullscreen mode on
+ * both iPad and iOS.
+ */
+export enum UseVideoElement {
+  /**
+   * Always use the video element for fullscreen mode
+   */
+  "Always"="Always",
+  /**
+   * Use the video element for fullscreen mode on iOS
+   */
+  "iOS"="iOS",
+  /**
+   * Use the fullscreen mode on iPadOS
+   */
+  "iPadOS"="iPadOS"
 }
 
 const isFullscreenEnabled = () => {
@@ -57,6 +96,22 @@ const findApi = (element: any, choices: string[]) => {
   });
 }
 
+const useVideoElementForFullscreen = (settings: UseVideoElement[]) => {
+  if (settings.indexOf(UseVideoElement.Always) >= 0) {
+    return true
+  }
+
+  if (settings.indexOf(UseVideoElement.iOS) >= 0 && isIOS()) {
+    return true
+  }
+
+  // noinspection RedundantIfStatementJS
+  if (settings.indexOf(UseVideoElement.iPadOS) >= 0 && isIpadOS()) {
+    return true
+  }
+  return false
+}
+
 
 export const FullscreenButton = (props: FullscreenButtonProps) => {
   let [fullscreen, setFullscreen] = useState(!!document.fullscreenElement);
@@ -68,7 +123,8 @@ export const FullscreenButton = (props: FullscreenButtonProps) => {
     if (!element) return
 
     let name = findApi(element, REQUEST_FULLSCREEN);
-    if (!name) {
+    let useVideoSettings = props.useVideoElementForFullscreen ?? [UseVideoElement.iOS, UseVideoElement.iPadOS]
+    if (!name || useVideoElementForFullscreen(useVideoSettings)) {
       // we could not find a valid fullscreen API on the provided element
       // This can happen, for instance, on iOS, where only the video element
       // can be put in fullscreen.

@@ -48,6 +48,11 @@
 * Added `enabled` state to the player and tracking utilities for components. Where it makes sense, the 
   components now track the enabled state of the player using `usePrestoEnabledState` and implement a 
   "disabled" state if no content is loaded.
+* Added a prop to the `FullscreenButton` to decide to use the video element or the passed container based
+  on the target platform. The default now is to use the video element instead of the container on iOS and
+  iPadOS. While it is possible to use fullscreen overlays on iPadOS, it has some downsides as well. Primarily,
+  it is currently not possible to hide the status bar and the exit fullscreen button, which can be very 
+  distracting. That is why we decided to also use the native controls on iPadOS in fullscreen mode.
 
 # 0.5.0
 
