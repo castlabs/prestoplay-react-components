@@ -1,7 +1,6 @@
 import React, {
   createRef,
   CSSProperties, useEffect,
-  useRef,
   useState
 } from "react";
 import {BaseComponentProps} from "../utils";
@@ -51,10 +50,6 @@ export interface SliderProps extends BaseComponentProps {
    */
   disableKeyboardAdjustments?: boolean
   /**
-   * The current value
-   */
-  currentValue?: () => number
-  /**
    * Disable the slider
    */
   disabled?: boolean
@@ -70,14 +65,10 @@ export const Slider = (props: SliderProps) => {
   let [interacting, setInteracting] = useState(false)
   let [adjustPosition, setAdjustPosition] = useState(false)
   let [progress, setProgress] = useState(props.value)
-  let valueRef = useRef<number>()
-  let progressRef = useRef<number>()
-  valueRef.current = props.value
-  progressRef.current = progress
 
   const containerRef = createRef<HTMLDivElement>();
   const barContainer = createRef<HTMLDivElement>();
-  const currentProgress = (): number => interacting ? progress : valueRef.current!
+  const currentProgress = (): number => interacting ? progress : props.value
 
   function getPositionFromMouseEvent(e: React.MouseEvent | React.TouchEvent): number {
     let bg = barContainer.current
@@ -107,13 +98,14 @@ export const Slider = (props: SliderProps) => {
     }
   }
 
-  async function drag(e: React.MouseEvent | React.TouchEvent) {
+  async function setProgressAndHoverValueFromMouseEvent(e: React.MouseEvent | React.TouchEvent, maybeApplyHover=true) {
     let progress = getPositionFromMouseEvent(e);
     if (progress < 0) {
       return
     }
     setProgress(progress)
-    if (props.onApplyHoverValue) {
+
+    if (maybeApplyHover && props.onApplyHoverValue) {
       props.onApplyHoverValue(progress)
     }
   }
@@ -121,28 +113,43 @@ export const Slider = (props: SliderProps) => {
   async function mouseDown(e: React.MouseEvent | React.TouchEvent) {
     setInteracting(true)
     setAdjustPosition(true)
-    await drag(e)
-    e.preventDefault()
+    await setProgressAndHoverValueFromMouseEvent(e, false)
   }
 
   async function mouseUp(e: React.MouseEvent | React.TouchEvent) {
-    await drag(e)
+    if (e.type.startsWith("touch")) {
+      // We need to prevent the default here in case of a touch event to make
+      // sure that mouse events are not triggered, and we operate exclusively
+      // on touch
+      e.preventDefault()
+    }
+
+    await setProgressAndHoverValueFromMouseEvent(e, false)
     await setPositionFromMouseEvent(e);
     setAdjustPosition(false)
-    if (!props.hoverMovement) {
+
+    // We stop interaction only of we were not tracking the hover position,
+    // since this means no thumb was ever shown or if the event was a touch
+    // event. In that case we are also not "hovering" so any thumb and hover
+    // tracking should be stopped and we stop interaction
+    if (!props.hoverMovement || e.type.startsWith("touch")) {
       setInteracting(false)
+      if (props.onApplyHoverValue) {
+        props.onApplyHoverValue(-1)
+      }
     }
-    e.preventDefault()
   }
 
   async function mouseMove(e: React.MouseEvent | React.TouchEvent) {
+    // If we are tracking hover movement or iwe are interacting
+    // we need to update the hover position and maybe also the
+    // actual position
     if (props.hoverMovement || interacting) {
       setInteracting(true)
-      await drag(e)
+      await setProgressAndHoverValueFromMouseEvent(e)
       if (adjustPosition && props.adjustWhileDragging) {
         await setPositionFromMouseEvent(e);
       }
-      e.preventDefault()
     }
   }
 
@@ -151,22 +158,18 @@ export const Slider = (props: SliderProps) => {
   }
 
   async function mouseLeave(e: React.MouseEvent | React.TouchEvent) {
-    if (adjustPosition) {
-      setInteracting(false)
-      await setPositionFromMouseEvent(e);
-      setAdjustPosition(false)
-    } else {
-      setAdjustPosition(false)
-      if (props.currentValue) {
-        valueRef.current = await props.currentValue()
-      }
-      setInteracting(false)
-    }
+    // we left the tracking area, so we are no longer interacting
+    setInteracting(false)
+
+    // if we were adjusting the position, we need to apply that now
+    if (adjustPosition) await setPositionFromMouseEvent(e)
+    setAdjustPosition(false)
+
+    // Reset any hover values
     if (props.onApplyHoverValue) {
       props.onApplyHoverValue(-1)
     }
   }
-
 
   useEffect(() => {
     let keyListener = (e: KeyboardEvent) => {
@@ -187,7 +190,8 @@ export const Slider = (props: SliderProps) => {
         adjustPosition = true
         setAdjustPosition(true)
         setInteracting(true)
-        progressRef.current = valueRef.current || 0
+        progress = props.value
+        setProgress(progress)
       }
 
       // if we are not in adjust mode by now, there is nothing to do
@@ -210,14 +214,14 @@ export const Slider = (props: SliderProps) => {
         }
 
         if (props.onApplyValue) {
-          props.onApplyValue(progressRef.current || 0)
+          props.onApplyValue(progress)
         }
         setAdjustPosition(false)
         setInteracting(false)
         e.preventDefault()
       } else if(e.code == "ArrowLeft" || e.code == "ArrowRight") {
         let increment = 1
-        let value = progressRef.current || 0
+        let value = progress
         value = Math.min(100, Math.max(0, value + (e.code == "ArrowLeft" ? -increment : +increment)))
         setProgress(Math.min(100, value))
         if (props.onApplyHoverValue) {
@@ -288,13 +292,17 @@ export const Slider = (props: SliderProps) => {
          className={`pp-ui-slider ${interacting ? "pp-ui-slider-interacting" : ""} ${props.disabled ? 'pp-ui-disabled' : 'pp-ui-enabled'} ${props.className || ''}`}
          style={sliderStyles}
          onClick={props.disabled ? nop : mouseClick}
-         onMouseMove={props.disabled ? nop : mouseMove}
+
          onMouseDown={props.disabled ? nop : mouseDown}
+         onMouseMove={props.disabled ? nop : mouseMove}
          onMouseUp={props.disabled ? nop : mouseUp}
+
          onMouseLeave={props.disabled ? nop : mouseLeave}
-         onTouchMove={props.disabled ? nop : mouseMove}
+
          onTouchStart={props.disabled ? nop : mouseDown}
-         onTouchEnd={props.disabled ? nop : mouseLeave}
+         onTouchMove={props.disabled ? nop : mouseMove}
+         onTouchEnd={props.disabled ? nop : mouseUp}
+
          tabIndex={props.disabled ? -1 : 0 }
     >
       <div ref={barContainer}

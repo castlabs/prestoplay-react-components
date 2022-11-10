@@ -62,5 +62,22 @@ export const TestAssets:Asset[] = [
       autoplay: true,
       muted: true
     },
-  }
+  },
+  {
+    title: "Maldives HLS",
+    subtitle: "HLS Content",
+    poster: "https://cl-player-content.s3.amazonaws.com/340p-maldives.jpg",
+    config: {
+      source: {
+        "url": "https://content.players.castlabs.com/demos/clear-segmented/master.m3u8",
+        "type": "application/x-mpegurl",
+        "drmProtected": false
+      },
+      autoplay: false,
+      muted: true,
+      thumbnails: {
+        url: "https://content.players.castlabs.com/demos/clear-segmented/thumbs/thumbs.bif"
+      },
+    },
+  },
 ]

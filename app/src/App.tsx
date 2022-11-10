@@ -1,4 +1,10 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {
+  createRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import {TestAssets} from "./Asset";
 import {BasicOverlayPage} from "./BasicOverlayPage";
 import {CustomControlsPage} from "./CustomControlsPage";
@@ -12,6 +18,7 @@ import "@castlabs/prestoplay/clpp.styles.css"
 
 // load the theme
 import "../../src/themes/pp-ui-base-theme.css"
+import {useGlobalHide} from "../../src";
 
 function getQueryVariable(variable:string):any {
   const searchParams = new URLSearchParams(window.location.search);
@@ -30,6 +37,9 @@ function App() {
   let [pageId, setPageId] = useState<string>(getQueryVariable("page") || "basic")
   let [asset, setAsset] = useState<any>(TestAssets[assetId]);
   let [autoload, setAutoload] = useState<boolean>(false)
+  let [navVisible, setNavVisible] = useState<boolean>(false)
+
+  let navRef = createRef<HTMLElement>();
 
   const selectAsset = (id:number) => () => {
     setAssetId(id)
@@ -52,18 +62,29 @@ function App() {
     return <div>Unknown Page!</div>
   }, [pageId, asset])
 
+  const toggleNav = () => {
+    setNavVisible(!navVisible)
+  }
+
   return (
     <div className={"app"}>
-
-      <nav className={"sidenav"}>
+      <div className={"header"}>
+        <button onClick={toggleNav} className={"nav-toggle"}>Options</button>
+        <h1>PRESTOplay React Components</h1>
+      </div>
+      <nav className={`sidenav ${navVisible ? 'visible' : ''}`} ref={navRef}>
+        <button onClick={toggleNav} className={`nav-toggle`}>Hide</button>
+        <h3>Content</h3>
         <button onClick={selectAsset(0)} className={`${assetId == 0 ? 'selected' : ''}`}>{TestAssets[0].title}</button>
         <button onClick={selectAsset(1)} className={`${assetId == 1 ? 'selected' : ''}`}>{TestAssets[1].title}</button>
         <button onClick={selectAsset(2)} className={`${assetId == 2 ? 'selected' : ''}`}>{TestAssets[2].title}</button>
+        <button onClick={selectAsset(3)} className={`${assetId == 3 ? 'selected' : ''}`}>{TestAssets[3].title}</button>
+        <h3>Options</h3>
         <label>
           <input type={"checkbox"} checked={autoload} onChange={() => {setAutoload(!autoload)}}/>
           Auto Load
         </label>
-        <div style={{flexGrow: 1}}></div>
+        <h3>Layouts</h3>
         <button onClick={selectPage("basic")} className={`${pageId == 'basic' ? 'selected' : ''}`}>Basic Overlay</button>
         <button onClick={selectPage("custom")} className={`${pageId == 'custom' ? 'selected' : ''}`}>Custom Overlay</button>
         <button onClick={selectPage("components")} className={`${pageId == 'components' ? 'selected' : ''}`}>Components</button>

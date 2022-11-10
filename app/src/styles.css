@@ -5,26 +5,94 @@ body {
     background-color: white;
 }
 
+.header {
+    display: flex;
+    align-items: center;
+}
+
+.header h1 {
+    font-size: 18px;
+}
+
 .app {
     font-family: sans-serif;
 }
 
 nav {
-    display: flex;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 200px;
 
-    gap: 16px;
-    justify-content: flex-end;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
 
     padding: 8px;
+
+    z-index: 1000;
+    background-color: white;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    text-align: left;
+
+    border-right: 1px solid gray;
+    transform: translateX(-100%);
+    transition: transform 250ms;
 }
+
+nav.visible {
+    transform: translateX(0);
+}
+
+nav label {
+    font-size: 14px;
+}
+
+label input[type=checkbox] {
+    /*margin: 0 8px 0 8px;*/
+    margin-right: 8px;
+    vertical-align: middle;
+    position: relative;
+    bottom: 1px;
+}
+nav h3 {
+    font-size: 14px;
+    text-align: center;
+    font-weight: bold;
+    padding: 16px 0 8px;
+    margin: 0;
+}
+
+.nav-toggle {
+    background: transparent;
+    border: 1px solid gray;
+    cursor: pointer;
+    color: black;
+    padding: 8px;
+
+    margin: 16px;
+}
+
+nav .nav-toggle {
+    width: 100%;
+    margin: 0;
+}
+
 
 nav button {
     border: 1px solid gray;
     background: transparent;
     cursor: pointer;
 
-    padding: 16px;
+    color: black;
+
+    padding: 8px;
+    width: 100%;
 
 }
 
@@ -34,6 +102,8 @@ nav button:hover {
 
 .options {
     padding: 8px;
+    display: flex;
+    gap: 16px;
 }
 
 .selected {

@@ -108,7 +108,6 @@ export const SeekBar = (props: SeekBarProps) => {
         disableKeyboardAdjustments={!props.adjustWithKeyboard}
         onApplyValue={applyValue}
         onApplyHoverValue={applyHoverValue}
-        currentValue={updateFromPlayer}
         adjustWhileDragging={props.adjustWhileDragging}
         disabled={!enabled}
       >

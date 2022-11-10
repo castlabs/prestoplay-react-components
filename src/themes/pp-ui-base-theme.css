@@ -91,6 +91,11 @@
     min-height: var(--pp-ui-button-size);
     max-width: var(--pp-ui-button-size);
     max-height: var(--pp-ui-button-size);
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .pp-ui-button-no-icon {
@@ -156,6 +161,9 @@
 .pp-ui-playpause-toggle-pause .pp-ui-icon {
     -webkit-mask: var(--pp-ui-icon-playpause-toggle-pause);
     mask: var(--pp-ui-icon-playpause-toggle-pause);
+    /*This one is needed for safari, otherwise transitioning the mask will flicker*/
+    mask-size: contain;
+
 }
 
 .pp-ui-slideinmenu-toggle {
@@ -351,6 +359,11 @@
     height: 100%;
     margin: auto 8px;
     top: 50%;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .pp-ui-slider-range {
@@ -374,6 +387,11 @@
     transform: translateX(-50%);
     transition: transform 200ms;
     visibility: hidden;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .pp-ui-slider:focus {

@@ -19,6 +19,7 @@ import FullscreenButton from "../../src/components/FullscreenButton";
 import {clpp} from "@castlabs/prestoplay"
 import "@castlabs/prestoplay/cl.mse"
 import "@castlabs/prestoplay/cl.dash"
+import "@castlabs/prestoplay/cl.hls"
 import "@castlabs/prestoplay/cl.htmlcue"
 import "@castlabs/prestoplay/cl.ttml"
 import "@castlabs/prestoplay/cl.vtt"
@@ -43,6 +44,7 @@ export const ComponentsOverviewPage = (props: {
   // Create the player as state of this component
   let [player, _] = useState(new Player((pp:any) => {
     pp.use(clpp.dash.DashComponent);
+    pp.use(clpp.hls.HlsComponent);
     pp.use(clpp.htmlcue.HtmlCueComponent)
     pp.use(clpp.ttml.TtmlComponent)
     pp.use(clpp.vtt.VttComponent)
@@ -67,6 +69,7 @@ export const ComponentsOverviewPage = (props: {
                      player={player}
                      config={playerConfig}
                      autoload={props.autoload}
+                     playsInline={true}
                      style={{height: "320px"}}>
       </PlayerSurface>
 

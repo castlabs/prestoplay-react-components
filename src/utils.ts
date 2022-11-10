@@ -138,38 +138,38 @@ export function getFocusableElements(parent: HTMLElement): HTMLElement[] {
   let items = parent.querySelectorAll(focusQuery);
   return Array.prototype.filter.call(
     items,
-    (element:HTMLElement) => element.offsetWidth > 0 || element.offsetHeight > 0 || element === document.activeElement
+    (element: HTMLElement) => element.offsetWidth > 0 || element.offsetHeight > 0 || element === document.activeElement
   ).filter(e => {
     return e.offsetParent !== null && getComputedStyle(e).display != 'none' && !e.classList.contains("pp-ui-disabled")
   })
 }
 
 export function focusNextElement(items: HTMLElement[]) {
-  let index:number = -1;
+  let index: number = -1;
   if (document.activeElement) {
     index = items.indexOf(document.activeElement as HTMLElement)
   }
   index = index == -1 ? 0 : index + 1
-  if(index >= items.length) {
+  if (index >= items.length) {
     index = 0
   }
   focusElement(items[index])
 }
 
 export function focusPreviousElement(items: HTMLElement[]) {
-  let index:number = -1;
+  let index: number = -1;
   if (document.activeElement) {
     index = items.indexOf(document.activeElement as HTMLElement)
   }
 
   index = index == -1 ? items.length - 1 : index - 1
-  if(index < 0) {
+  if (index < 0) {
     index = items.length - 1
   }
   focusElement(items[index])
 }
 
-let focusElementTimerId_:any;
+let focusElementTimerId_: any;
 
 export function focusElement(item: HTMLElement) {
   if (focusElementTimerId_) {
@@ -187,3 +187,10 @@ export function focusElement(item: HTMLElement) {
   }
 }
 
+export function isTouchDevice() {
+  // @ts-ignore
+  let msTouchValue = navigator.msMaxTouchPoints;
+  return (('ontouchstart' in window) ||
+    (navigator.maxTouchPoints > 0) ||
+    (msTouchValue > 0));
+}

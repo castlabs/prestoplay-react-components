@@ -19,6 +19,7 @@ import FullscreenButton from "../../src/components/FullscreenButton";
 import {clpp} from "@castlabs/prestoplay"
 import "@castlabs/prestoplay/cl.mse"
 import "@castlabs/prestoplay/cl.dash"
+import "@castlabs/prestoplay/cl.hls"
 import "@castlabs/prestoplay/cl.htmlcue"
 import "@castlabs/prestoplay/cl.ttml"
 import "@castlabs/prestoplay/cl.vtt"
@@ -32,6 +33,7 @@ export const CustomControlsPage = (props: {
   // Create the player as state of this component
   let [player, _] = useState(new Player((pp:any) => {
     pp.use(clpp.dash.DashComponent);
+    pp.use(clpp.hls.HlsComponent);
     pp.use(clpp.htmlcue.HtmlCueComponent)
     pp.use(clpp.ttml.TtmlComponent)
     pp.use(clpp.vtt.VttComponent)
@@ -47,7 +49,12 @@ export const CustomControlsPage = (props: {
   return (
     <div>
 
-      <PlayerSurface ref={playerSurfaceRef} player={player} config={playerConfig} autoload={props.autoload} style={{height: "320px"}}>
+      <PlayerSurface ref={playerSurfaceRef}
+                     player={player}
+                     config={playerConfig}
+                     playsInline={true}
+                     autoload={props.autoload}
+                     style={{height: "320px"}}>
         <PlayerControls player={player}>
           {/* We are creating a vertical bar to build our controls top to bottom */}
           <VerticalBar className={"pp-ui-transparent"}>

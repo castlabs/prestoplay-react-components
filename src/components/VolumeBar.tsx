@@ -68,7 +68,6 @@ export const VolumeBar = (props: VolumeBarProps) => {
       <Slider
         value={progress}
         onApplyValue={applyValue}
-        currentValue={currentValue}
         onKeyDown={onKeyDown}
         adjustWhileDragging={props.adjustWhileDragging}
       />

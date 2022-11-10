@@ -8,6 +8,7 @@ import {DefaultTrackLabelerOptions, Player} from "../../src";
 import {clpp} from "@castlabs/prestoplay"
 import "@castlabs/prestoplay/cl.mse"
 import "@castlabs/prestoplay/cl.dash"
+import "@castlabs/prestoplay/cl.hls"
 import "@castlabs/prestoplay/cl.htmlcue"
 import "@castlabs/prestoplay/cl.ttml"
 import "@castlabs/prestoplay/cl.vtt"
@@ -24,6 +25,7 @@ export const BasicOverlayPage = (props: {
   // Create the player as state of this component
   let [player, setPlayer] = useState(new Player((pp:any) => {
     pp.use(clpp.dash.DashComponent);
+    pp.use(clpp.hls.HlsComponent);
     pp.use(clpp.htmlcue.HtmlCueComponent)
     pp.use(clpp.ttml.TtmlComponent)
     pp.use(clpp.vtt.VttComponent)
@@ -52,6 +54,7 @@ export const BasicOverlayPage = (props: {
                      config={playerConfig}
                      autoload={props.autoload}
                      ref={playerSurfaceRef}
+                     playsInline={true}
       >
         <BaseThemeOverlay
           player={player}

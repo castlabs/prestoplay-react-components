@@ -106,6 +106,9 @@ export const defaultTrackLabel: TrackLabeler = (t: Track, player: Player, _optio
   }
 
   if (t.type == "video") {
+    if (!t.ppTrack.height) {
+       return opts.unknownTrackLabel
+    }
     return t.ppTrack.height + "p"
   } else {
     if (t.label) {
@@ -125,7 +128,7 @@ export const defaultTrackLabel: TrackLabeler = (t: Track, player: Player, _optio
     let trackList = player[`${t.type}Tracks`];
     let i = trackList.indexOf(t);
     if (i >= 0 && trackList.length > 1) {
-      return `${opts.unknownTrackLabel} (${i + 1})`
+      return `${opts.unknownTrackLabel}`
     }
     return `${opts.unknownTrackLabel}`
   }
@@ -479,7 +482,8 @@ export class Player {
     if (this.pp_) return;
 
     this.pp_ = new clpp.Player(element)
-
+    // @ts-ignore
+    window.pp = this.pp_
     const handlePlayerTracksChanged = (type?: TrackType) => {
       return () => {
         if (!type || type == "video") {
@@ -575,7 +579,7 @@ export class Player {
     if (!this._isUserSeeking) {
       // issue a user seek to the target position and
       // listen for the completion.
-      this.pp_.one(clpp.events.USER_SEEKED, () => {
+      const handleSeekCompleted = () => {
         this._isUserSeeking = false;
         if (this._userSeekingTarget != position) {
           // we received another seek in between and have to execute that now
@@ -584,10 +588,10 @@ export class Player {
           this._userSeekingTarget = -1
           this.emitUIEvent("position", this.pp_.getPosition())
         }
-      })
+      }
       this._isUserSeeking = true
       this._userSeekingTarget = position
-      this.pp_.seek(position)
+      this.pp_.seek(position).finally(handleSeekCompleted)
       this.emitUIEvent("position", position)
     } else {
       // we are already seeking. Update the target. When the current
@@ -855,6 +859,9 @@ export class Player {
   }
 
   set videoTracks(value: Track[]) {
+    value = value.filter(v => {
+      return v.ppTrack && v.ppTrack.height && v.ppTrack.width
+    })
     if (value.length > 0 && !value.find(t => t.id == 'abr')) {
       // since we have video tracks available, we add the ABR track
       let hasSelected = value.find(t => t.selected)

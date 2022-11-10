@@ -38,6 +38,10 @@
   * `playing` (read/write)
 * Added seek chaining to make sure that we are not issuing seeks that will not be the
   final target position. This will make consecutive seeks faster
+* Improved support for Touch devices and touch vs mouse interaction
+* Fixed fullscreen button behaviour on iOS devices
+* Fixed issue with the default labeler with some HLS content tracks. Now video tracks
+  that do not expose a size are excluded.
 
 ## New Features
 

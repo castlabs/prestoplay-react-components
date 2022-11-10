@@ -26,6 +26,12 @@ export interface PlayerProps extends BasePlayerComponentProps {
    * immediately.
    */
   autoload?: boolean
+  /**
+   * Pass the plays inline flag to the video element. This is relevant for mobile
+   * and iPad devices to decide if the playback can start embedded in the page or the
+   * player will go to full-screen mode and no overlay will be possible
+   */
+  playsInline?: boolean
 }
 
 /**
@@ -196,7 +202,11 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
          onKeyDown={onKeyDown}
          tabIndex={0}
     >
-      <video className={"pp-ui pp-ui-video"} ref={video} tabIndex={-1}></video>
+      <video className={"pp-ui pp-ui-video"}
+             ref={video}
+             tabIndex={-1}
+             playsInline={props.playsInline}>
+      </video>
       <div className={"pp-ui pp-ui-overlay"}>
         {props.children}
       </div>
