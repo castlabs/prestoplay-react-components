@@ -76,11 +76,11 @@ export function classNames(classes: Record<string, boolean>, classNames?: string
  *
  * The formatters can be repeated to pad the output.
  * For example, <code>'%m'</code> will return '1' if you pass 60 seconds,
- * while <code>'%mm'</code> will left pad the output and return '01'.
+ * while <code>'%mm'</code> will left pad the output and return <code>01</code>.
  *
  * @param {number} timeInSeconds The duration in seconds
  * @param {string} [opt_format] The output format
- * @returns {string} The formated duration as a string
+ * @returns {string} The formatted duration as a string
  * @export
  */
 export function timeToString(timeInSeconds: number, opt_format = '%hh:%mm:%ss') {
@@ -185,6 +185,7 @@ export function focusElement(item: HTMLElement) {
   }
 }
 
+// noinspection JSUnusedGlobalSymbols
 export function isTouchDevice() {
   // @ts-ignore
   let msTouchValue = navigator.msMaxTouchPoints;
