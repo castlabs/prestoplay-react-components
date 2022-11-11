@@ -1,4 +1,4 @@
-import React, {createRef, useLayoutEffect, useState} from "react";
+import React, {createRef, useEffect, useLayoutEffect, useState} from "react";
 import {
   BasePlayerComponentButtonProps,
   focusNextElement,
@@ -66,13 +66,19 @@ export const MenuSlidein = (props: MenuSlideinProps) => {
 
   let options: SelectionOption[] = props.selectionOptions || DEFAULT_SELECTION_OPTIONS
 
-  useLayoutEffect(() => {
-    if (isVisible && ref.current) {
-      let focusItems = getFocusableElements(ref.current);
-      let index = focusItems.indexOf(document.activeElement as HTMLElement)
-      if (index < 0 && focusItems.length) {
-        focusNextElement(focusItems)
+  useEffect(() => {
+    const handleTransitionEnd = () => {
+      if (isVisible && ref.current) {
+        let focusItems = getFocusableElements(ref.current);
+        let index = focusItems.indexOf(document.activeElement as HTMLElement)
+        if (index < 0 && focusItems.length) {
+          focusNextElement(focusItems)
+        }
       }
+    }
+    ref.current?.addEventListener("transitionend", handleTransitionEnd)
+    return () => {
+      ref.current?.removeEventListener("transitionend", handleTransitionEnd)
     }
   })
 
@@ -107,7 +113,7 @@ export const MenuSlidein = (props: MenuSlideinProps) => {
   return (
     <div
       ref={ref}
-      className={`pp-ui pp-ui-overlay-menu ${isVisible ? 'pp-ui-overlay-menu-visible' : ''}`}>
+      className={`pp-ui pp-ui-overlay-menu ${isVisible ? 'pp-ui-overlay-menu-visible' : 'pp-ui-overlay-menu-hidden'}`}>
       {renderOptions()}
     </div>
   );

@@ -7,6 +7,7 @@
     --pp-scrollbar-fg-color: var(--pp-fg-dim-color);
     --pp-scrollbar-bg-color: rgb(100, 100, 100);
     --pp-side-menu-hover-bg-color: rgba(255, 255, 255, 0.15);
+    --pp-ui-overlay-menu-width: 250px;
     --pp-ui-poster-image-bg: rgb(0, 0, 0);
     --pp-ui-surface-bg: rgb(0, 0, 0);
 
@@ -39,6 +40,9 @@
     --pp-ui-start-button-size: 96px;
 
     --pp-ui-overlay-offset-fullscreen: 24px;
+
+    --pp-ui-controls-animation-time: 250ms;
+    --pp-ui-overlay-menu-animation-time: 250ms;
 
     color: var(--pp-fg-color);
     font-family: sans-serif;
@@ -84,7 +88,6 @@
 
     text-align: center;
 
-    transition: all 0.2s;
 
     padding: 4px;
     width: var(--pp-ui-button-size);
@@ -98,6 +101,8 @@
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
+    transition: color 250ms, background-color 250ms;
 }
 
 .pp-ui-button-no-icon {
@@ -117,10 +122,9 @@
 
 .pp-ui-button:focus {
     outline: none;
+    transition: color 0s, background-color 0s;
     color: var(--pp-hover-color);
-    transition: all 0s;
     background-color: var(--pp-side-menu-hover-bg-color);
-
 }
 
 .pp-ui-button:hover {
@@ -490,27 +494,26 @@
 
 .pp-ui-overlay-menu {
     background-color: var(--pp-bg-color);
-    width: 200px;
+    width: var(--pp-ui-overlay-menu-width);
     height: 100%;
     position: absolute;
     top: 0;
     right: 0;
-    z-index: 10;
-    transition: transform 250ms, visibility 0s 250ms, display 0s 250ms;
     overflow: auto;
-    transform: translateX(100%);
-    visibility: hidden;
-    display: none;
 
     scrollbar-color: var(--pp-scrollbar-fg-color) var(--pp-scrollbar-bg-color);
     scrollbar-width: thin;
 }
 
+.pp-ui-overlay-menu-hidden {
+    right: calc(var(--pp-ui-overlay-menu-width) * -1);
+    visibility: hidden;
+    transition: right var(--pp-ui-overlay-menu-animation-time), visibility var(--pp-ui-overlay-menu-animation-time);
+}
 .pp-ui-overlay-menu-visible {
-    transition: display 0s, visibility 0s, transform 250ms;
-    transform: translateX(0);
+    right: 0;
     visibility: visible;
-    display: block;
+    transition: right var(--pp-ui-overlay-menu-animation-time);
 }
 
 
@@ -549,17 +552,15 @@
     width: 100%;
     height: 100%;
 
-    transform: translate(9999px);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 250ms, visibility 0s 250ms, transform 0s 250ms;
+    transition: opacity var(--pp-ui-controls-animation-time), visibility var(--pp-ui-controls-animation-time);
 }
 
 .pp-ui-controls-visible {
-    transform: translate(0);
     opacity: 1;
     visibility: visible;
-    transition: transform 0s, visibility 0s, opacity 250ms;
+    transition: visibility 0s, opacity var(--pp-ui-controls-animation-time);
 }
 
 .pp-ui-label.pp-ui-disabled {
