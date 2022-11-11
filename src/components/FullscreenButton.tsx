@@ -59,13 +59,7 @@ export interface FullscreenButtonProps extends BasePlayerComponentButtonProps {
  * element needs to be put in fullscreen. This also means that no custom overlays
  * and controls are possible and that the native controls will be used.
  *
- * This is currently needed on iOS and the default option for iPadOS. On an iPad
- * you can put a random DOM element to full screen, however, the user experience
- * is slightly degraded. You can use custom controls and overlays, but the status
- * bar of the iPad will always be visible and the upper left corner will show
- * a fullscreen exit button permanently. For that reason the default behaviour
- * of the fullscreen button is to use the video element for fullscreen mode on
- * both iPad and iOS.
+ * This is currently needed on iOS and can be enabled for iPadOS.
  */
 export enum UseVideoElement {
   /**
@@ -97,16 +91,18 @@ const findApi = (element: any, choices: string[]) => {
 }
 
 const useVideoElementForFullscreen = (settings: UseVideoElement[]) => {
-  if (settings.indexOf(UseVideoElement.Always) >= 0) {
+  const useVideoAlways = settings.indexOf(UseVideoElement.Always) >= 0;
+  const useVideoOnIPad = settings.indexOf(UseVideoElement.iPadOS) >= 0;
+  const useVideoOnIOs = settings.indexOf(UseVideoElement.iOS) >= 0;
+
+  if (useVideoAlways) {
     return true
   }
-
-  if (settings.indexOf(UseVideoElement.iOS) >= 0 && isIOS()) {
+  if(isIpadOS() && useVideoOnIPad) {
     return true
   }
-
   // noinspection RedundantIfStatementJS
-  if (settings.indexOf(UseVideoElement.iPadOS) >= 0 && isIpadOS()) {
+  if(isIOS() && useVideoOnIOs) {
     return true
   }
   return false
@@ -123,7 +119,7 @@ export const FullscreenButton = (props: FullscreenButtonProps) => {
     if (!element) return
 
     let name = findApi(element, REQUEST_FULLSCREEN);
-    let useVideoSettings = props.useVideoElementForFullscreen ?? [UseVideoElement.iOS, UseVideoElement.iPadOS]
+    let useVideoSettings = props.useVideoElementForFullscreen ?? [UseVideoElement.iOS]
     if (!name || useVideoElementForFullscreen(useVideoSettings)) {
       // we could not find a valid fullscreen API on the provided element
       // This can happen, for instance, on iOS, where only the video element

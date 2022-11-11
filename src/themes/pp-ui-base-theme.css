@@ -38,6 +38,8 @@
     --pp-ui-bar-gap: 8px;
     --pp-ui-start-button-size: 96px;
 
+    --pp-ui-overlay-offset-fullscreen: 24px;
+
     color: var(--pp-fg-color);
     font-family: sans-serif;
 }
@@ -241,6 +243,8 @@
 .pp-ui-mute-toggle-muted .pp-ui-icon {
     -webkit-mask: var(--pp-ui-icon-unmuted);
     mask: var(--pp-ui-icon-unmuted);
+    /*This one is needed for safari, otherwise transitioning the mask will flicker*/
+    mask-size: contain;
 }
 
 
@@ -452,6 +456,14 @@
 .pp-ui-overlay {
     position: absolute;
     top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+:-webkit-full-screen .pp-ui-overlay.pp-ui-ipad {
+    position: absolute;
+    top: var(--pp-ui-overlay-offset-fullscreen);
     bottom: 0;
     left: 0;
     right: 0;

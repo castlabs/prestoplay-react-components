@@ -49,7 +49,7 @@ export const BasicOverlayPage = (props: {
 
 
   return (
-    <div>
+    <>
       <PlayerSurface player={player}
                      config={playerConfig}
                      autoload={props.autoload}
@@ -82,6 +82,6 @@ export const BasicOverlayPage = (props: {
         </label>
 
       </div>
-    </div>
+    </>
   )
 }

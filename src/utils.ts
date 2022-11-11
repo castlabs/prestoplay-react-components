@@ -195,10 +195,10 @@ export function isTouchDevice() {
 }
 
 export function isIOS() {
-  if (/iPad|iPhone|iPod/.test(navigator.platform)) {
+  if (/iPhone|iPod/.test(navigator.platform)) {
     return true;
   } else {
-    return navigator.maxTouchPoints &&
+    return !isIpadOS() && navigator.maxTouchPoints &&
       navigator.maxTouchPoints > 2 &&
       /MacIntel/.test(navigator.platform);
   }

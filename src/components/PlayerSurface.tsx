@@ -6,7 +6,7 @@ import React, {
 import {
   BasePlayerComponentProps, focusElement,
   focusNextElement, focusPreviousElement,
-  getFocusableElements
+  getFocusableElements, isIpadOS
 } from "../utils";
 import {usePrestoUiEvent} from "../react";
 
@@ -195,7 +195,7 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
 
   return (
     <div ref={handleContainerRef}
-         className={`pp-ui pp-ui-surface ${props.className || ''}`}
+         className={`pp-ui pp-ui-surface ${isIpadOS() ? 'pp-ui-ipad' : ''} ${props.className || ''}`}
          style={props.style}
          onClick={mouseClick}
          // onMouseMove={mouseMove}
@@ -207,7 +207,7 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
              tabIndex={-1}
              playsInline={props.playsInline}>
       </video>
-      <div className={"pp-ui pp-ui-overlay"}>
+      <div className={`pp-ui pp-ui-overlay ${isIpadOS() ? 'pp-ui-ipad' : ''}`}>
         {props.children}
       </div>
     </div>
