@@ -122,11 +122,16 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
           props.player.slideInMenuVisible = false
           props.player.controlsVisible = false
           maybeFocusSurface(true)
+          e.preventDefault()
         } else if(props.player.controlsVisible) {
           props.player.controlsVisible = false
           maybeFocusSurface(true)
-        } else {
+          e.preventDefault()
+        }
+      } else if (e.code == 'Enter') {
+        if (!props.player.slideInMenuVisible && !props.player.controlsVisible) {
           props.player.surfaceInteraction()
+          e.preventDefault()
         }
       }
 
