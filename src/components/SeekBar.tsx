@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {ForwardedRef, forwardRef, useState} from "react";
 import Slider from "./Slider";
 import {BasePlayerComponentProps, p} from "../utils";
 import Thumbnail from "./Thumbnail";
@@ -10,9 +10,10 @@ export interface SeekBarProps extends BasePlayerComponentProps {
   enableThumbnailSlider?: boolean
   keyboardSeekForward?: number
   keyboardSeekBackward?: number
+  notFocusable?: boolean
 }
 
-export const SeekBar = (props: SeekBarProps) => {
+export const SeekBar = forwardRef((props: SeekBarProps, ref: ForwardedRef<HTMLDivElement>) => {
   let [progress, setProgress] = useState(0)
   let [hoverPosition, setHoverPosition] = useState(-1)
   let [hoverValue, setHoverValue] = useState(0)
@@ -100,7 +101,7 @@ export const SeekBar = (props: SeekBarProps) => {
   }
 
   return (
-    <div className={`pp-ui-seekbar ${props.className || ''}`}>
+    <div className={`pp-ui-seekbar ${props.className || ''}`} style={props.style} ref={ref}>
       <Slider
         hoverMovement={true}
         value={progress}
@@ -110,10 +111,11 @@ export const SeekBar = (props: SeekBarProps) => {
         onApplyHoverValue={applyHoverValue}
         adjustWhileDragging={props.adjustWhileDragging}
         disabled={!enabled}
+        notFocusable={props.notFocusable}
       >
       </Slider>
       {renderThumbnailSlider()}
     </div>
   )
-}
+})
 export default SeekBar

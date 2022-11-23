@@ -1,7 +1,7 @@
 import {Asset} from "./Asset";
 import PlayerSurface from "../../src/components/PlayerSurface";
-import React, {createRef, useState} from "react";
-import {Player} from "../../src";
+import React, {createRef, useEffect, useRef, useState} from "react";
+import {Player, usePrestoEnabledState} from "../../src";
 
 import PlayerControls from "../../src/components/PlayerControls";
 import VerticalBar from "../../src/components/VerticalBar";
@@ -23,10 +23,14 @@ import "@castlabs/prestoplay/cl.hls"
 import "@castlabs/prestoplay/cl.htmlcue"
 import "@castlabs/prestoplay/cl.ttml"
 import "@castlabs/prestoplay/cl.vtt"
+import Duration from "../../src/components/Duration";
+import MuteButton from "../../src/components/MuteButton";
 import HoverContainer from "../../src/components/HoverContainer";
+import VolumeBar from "../../src/components/VolumeBar";
+import SettingsButton from "../../src/components/SettingsButton";
 
 
-export const CustomControlsPage = (props: {
+export const YoutubeControlsPage = (props: {
   asset?: Asset,
   autoload?: boolean
 }) => {
@@ -40,29 +44,43 @@ export const CustomControlsPage = (props: {
     pp.use(clpp.vtt.VttComponent)
   }));
 
+  let playerEnabled = usePrestoEnabledState(player);
+
   // Create a ref to the player surface component. We use this here to pass it
   // to the fullscreen button to make put the player surface to fullscreen
-  let playerSurfaceRef = createRef<HTMLDivElement>();
-  let seekbarRef = createRef<HTMLDivElement>();
+  let playerSurfaceRef = useRef<HTMLDivElement>(null);
+  let settingsRef = useRef<HTMLButtonElement>(null);
 
   const asset = props.asset
   const playerConfig = asset?.config
 
+  useEffect(() => {
+    const style = document.createElement("link");
+    style.rel = "stylesheet"
+    style.href = "youtube.css"
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    }
+  })
+
   return (
     <div>
-
       <PlayerSurface ref={playerSurfaceRef}
                      player={player}
                      config={playerConfig}
                      playsInline={true}
                      autoload={props.autoload}
                      style={{height: "320px"}}>
-        <PlayerControls player={player}>
+        <PlayerControls player={player} showWhenDisabled={true}>
+
+          <div className="pp-yt-gradient-bottom"></div>
+
           {/* We are creating a vertical bar to build our controls top to bottom */}
-          <VerticalBar className={"pp-ui-spacer"}>
+          <VerticalBar className={"pp-ui-spacer"} style={{gap: "0", position: "absolute"}}>
             {/* The first horizontal row shows some custom title for the content */}
-            <HorizontalBar style={{padding: "8px"}}>
-              <div>
+            <HorizontalBar>
+              <div style={{flexGrow: 1}}>
                 <div>
                   <Label label={asset?.title} className={"pp-ui-label-title"}/>
                 </div>
@@ -73,25 +91,46 @@ export const CustomControlsPage = (props: {
             </HorizontalBar>
 
             {/* We add a spacer to push the rest of the content to the bottom */}
-            <Spacer/>
+            <div style={{flex: 1, display: "flex", alignItems: "stretch", justifyContent: "stretch"}}>
+              <PlayPauseButton player={player} className={"pp-yt-center-toggle"} style={{width: "100%", display:playerEnabled ? "block" : "none"}}>
+                <div className={"pp-yt-center-background"}></div>
+              </PlayPauseButton>
+            </div>
 
             {/* We create a horizontal bar for the thumbnails */}
-            <HorizontalBar className={"pp-ui-transparent"}>
-              <HoverContainer player={player} listenToHover={true} notTrackFullWidth={false} style={{margin: 0, padding: 0}} targetRef={seekbarRef}>
-                <Thumbnail player={player} listenToHover={true} moveRelativeToParent={false} style={{borderRadius: "1rem"}}/>
+            <HorizontalBar>
+              <HoverContainer player={player} listenToHover={true}>
+                <Thumbnail player={player} listenToHover={true} moveRelativeToParent={false}/>
                 <CurrentTime player={player} disableHoveringDisplay={false}/>
               </HoverContainer>
             </HorizontalBar>
 
-            {/* The primary controls at the bottom */}
-            <HorizontalBar style={{padding: "8px"}}>
-              <PlayPauseButton player={player} resetRate={true}/>
-              <CurrentTime player={player}/>
-              <SeekBar ref={seekbarRef} player={player} adjustWhileDragging={true} enableThumbnailSlider={false} adjustWithKeyboard={true} style={{marginInline: "0px"}}/>
-              <TimeLeft player={player}/>
-              <FullscreenButton fullscreenContainer={playerSurfaceRef} player={player}/>
-            </HorizontalBar>
+
+            <VerticalBar>
+              <HorizontalBar style={{alignItems: "flex-end", marginBottom: "-8px"}}>
+                <SeekBar player={player} adjustWhileDragging={true} enableThumbnailSlider={false} notFocusable={true}/>
+              </HorizontalBar>
+
+              <HorizontalBar className={"pp-yt-bottom-bar"}>
+                <PlayPauseButton player={player} resetRate={true}/>
+                <MuteButton player={player}>
+                  <VolumeBar player={player} notFocusable={true} adjustWhileDragging={true}/>
+                </MuteButton>
+
+                <HorizontalBar className={"pp-ui-yt-timebar"}>
+                  <CurrentTime player={player} disableHoveringDisplay={true}>
+                    &nbsp;/&nbsp;
+                  </CurrentTime>
+                  <Duration player={player}/>
+                </HorizontalBar>
+
+                <Spacer/>
+
+                <FullscreenButton fullscreenContainer={playerSurfaceRef} player={player}/>
+              </HorizontalBar>
+            </VerticalBar>
           </VerticalBar>
+
         </PlayerControls>
       </PlayerSurface>
 

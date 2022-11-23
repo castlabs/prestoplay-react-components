@@ -14,11 +14,12 @@ import {usePrestoUiEvent} from "../react";
 const DEFAULT_HIDE_DELAY = 5
 
 export interface PlayerControlsProps extends BasePlayerComponentProps {
-  hideDelay?: number
+  hideDelay?: number,
+  showWhenDisabled?: boolean
 }
 
 export const PlayerControls = (props: PlayerControlsProps) => {
-  let [controlsVisible, setControlsVisible_] = useState(props.player.controlsVisible);
+  let [controlsVisible, setControlsVisible_] = useState(props.player.controlsVisible || (props.showWhenDisabled && !props.player.enabled));
   let [lastFocusIndex, setLastFocusIndex] = useState(-1);
 
   const timer = useRef<any>(null);
@@ -118,6 +119,7 @@ export const PlayerControls = (props: PlayerControlsProps) => {
   return (
     <div ref={ref}
       className={`pp-ui-controls ${isIpadOS() ? 'pp-ui-ipad' : ''} ${controlsVisible ? "pp-ui-controls-visible" : ""}${props.className || ''}`}
+         style={props.style}
       onMouseMove={mouseMove}
     >
       {props.children}

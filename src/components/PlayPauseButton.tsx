@@ -54,7 +54,7 @@ export const PlayPauseButton = (props: PlayPauseButtonProps) => {
   }
 
   return (
-    <BaseButton onClick={toggle} disableIcon={props.disableIcon}
+    <BaseButton onClick={toggle} disableIcon={props.disableIcon} style={props.style}
                 className={`pp-ui-playpause-toggle pp-ui-playpause-toggle-${isPlaying ? "pause" : "play"} ${props.className || ''}`}>
       {props.children}
     </BaseButton>

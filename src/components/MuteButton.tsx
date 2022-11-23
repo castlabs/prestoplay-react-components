@@ -17,7 +17,9 @@ export const MuteButton = (props: MuteButtonProps) => {
     setMuted(presto.isMuted())
   })
 
-  async function toggle() {
+  async function toggle(e: React.MouseEvent) {
+    if(e.defaultPrevented) return
+
     const presto = await props.player.presto()
     presto.setMuted(!presto.isMuted())
   }

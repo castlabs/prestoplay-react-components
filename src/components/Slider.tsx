@@ -53,6 +53,10 @@ export interface SliderProps extends BaseComponentProps {
    * Disable the slider
    */
   disabled?: boolean
+  /**
+   * Sliders are also focusable by default.
+   */
+  notFocusable?: boolean
 }
 
 /**
@@ -303,7 +307,7 @@ export const Slider = (props: SliderProps) => {
          onTouchMove={props.disabled ? nop : mouseMove}
          onTouchEnd={props.disabled ? nop : mouseUp}
 
-         tabIndex={props.disabled ? -1 : 0 }
+         tabIndex={props.disabled ? -1 : (props.notFocusable ? -1 : 0) }
     >
       <div ref={barContainer}
            style={rangeStyles}

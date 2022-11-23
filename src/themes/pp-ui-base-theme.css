@@ -11,9 +11,18 @@
     --pp-ui-poster-image-bg: rgb(0, 0, 0);
     --pp-ui-surface-bg: rgb(0, 0, 0);
 
+    --pp-horizontal-bar-bg-color: var(--pp-bg-color);
+    --pp-vertical-bar-bg-color: transparent;
+
+    --pp-ui-slider-height: .25rem;
+    --pp-ui-slider-height-interaction: .5rem;
     --pp-ui-slider-range-bg: #b4b4b4;
     --pp-ui-slider-range-progress: #ffffff;
     --pp-ui-slider-range-thumb-bg: #ffffff;
+    --pp-ui-slider-border-radius: .625rem;
+    --pp-ui-slider-size: 2rem;
+    --pp-ui-slider-margin: auto .75rem;
+    --pp-ui-slider-thumb-transform: translateX(-50%) scale(2);
 
     --pp-ui-icon-playpause-toggle-center-pause: url("resources/pause-circle.svg") no-repeat 50% 50%;
     --pp-ui-icon-playpause-toggle-center-play: url("resources/play-circle.svg") no-repeat 50% 50%;
@@ -28,18 +37,19 @@
     --pp-ui-icon-unmuted: url("resources/unmuted.svg") no-repeat 50% 50%;
     --pp-ui-icon-spinner: url("resources/spinner.svg") no-repeat 50% 50%;
     --pp-ui-icon-options: url("resources/options.svg") no-repeat 50% 50%;
+    --pp-ui-icon-settings: url("resources/settings.svg") no-repeat 50% 50%;
     --pp-ui-icon-fullscreen-enter: url("resources/fullscreen.svg") no-repeat 50% 50%;
     --pp-ui-icon-fullscreen-exit: url("resources/fullscreen_exit.svg") no-repeat 50% 50%;
 
-    --pp-ui-button-size: 48px;
-    --pp-ui-spinner-size: 64px;
-    --pp-ui-lable-font-size: 20px;
-    --pp-ui-lable-subtitle-font-size: 14px;
+    --pp-ui-button-size: 2rem;
+    --pp-ui-spinner-size: 4rem;
+    --pp-ui-lable-font-size: 1.25rem;
+    --pp-ui-lable-subtitle-font-size: 0.875rem;
     --pp-ui-thumnail-height: 180px;
-    --pp-ui-bar-gap: 8px;
-    --pp-ui-start-button-size: 96px;
+    --pp-ui-bar-gap: 0px;
+    --pp-ui-start-button-size: 6rem;
 
-    --pp-ui-overlay-offset-fullscreen: 24px;
+    --pp-ui-overlay-offset-fullscreen: 1.5rem;
 
     --pp-ui-controls-animation-time: 250ms;
     --pp-ui-overlay-menu-animation-time: 250ms;
@@ -49,23 +59,23 @@
 }
 
 .pp-ui-horizontal-bar {
-    background-color: var(--pp-bg-color);
-    padding: 4px;
+    background-color: var(--pp-horizontal-bar-bg-color);
+    padding: 0;
 
     display: flex;
+    flex-wrap: nowrap;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
     column-gap: var(--pp-ui-bar-gap);
-
-    flex-grow: 1;
 }
 
 .pp-ui-vertical-bar {
-    background-color: var(--pp-bg-color);
-    height: 100%;
+    background-color: var(--pp-vertical-bar-bg-color);
+    padding: 0;
 
     display: flex;
+    flex-wrap: nowrap;
     flex-direction: column;
     align-items: stretch;
     justify-content: stretch;
@@ -88,14 +98,8 @@
 
     text-align: center;
 
-
-    padding: 4px;
-    width: var(--pp-ui-button-size);
-    height: var(--pp-ui-button-size);
-    min-width: var(--pp-ui-button-size);
-    min-height: var(--pp-ui-button-size);
-    max-width: var(--pp-ui-button-size);
-    max-height: var(--pp-ui-button-size);
+    padding: 0;
+    margin: 0;
 
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -142,19 +146,22 @@
     mask-size: cover;
     clip-path: padding-box;
     display: block;
-    transition: all 0.2s;
 }
 
 .pp-ui-button .pp-ui-icon {
     background-color: var(--pp-fg-color);
-    width: 100%;
-    height: 100%;
+    min-width: var(--pp-ui-button-size);
+    min-height: var(--pp-ui-button-size);
 }
 
 .pp-ui-button:hover .pp-ui-icon, .pp-ui-button:focus .pp-ui-icon {
     background-color: var(--pp-hover-color);
 }
 
+.pp-ui-settings-button {
+    -webkit-mask: var(--pp-ui-icon-settings);
+    mask: var(--pp-ui-icon-settings);
+}
 
 .pp-ui-playpause-toggle {
 }
@@ -191,12 +198,12 @@
 }
 
 .pp-ui-start-button {
-    width: var(--pp-ui-start-button-size);
-    height: var(--pp-ui-start-button-size);
+    padding: 1rem;
+}
+
+.pp-ui-start-button .pp-ui-icon {
     min-width: var(--pp-ui-start-button-size);
-    max-width: var(--pp-ui-start-button-size);
     min-height: var(--pp-ui-start-button-size);
-    max-height: var(--pp-ui-start-button-size);
 }
 
 .pp-ui-start-button-hidden {
@@ -363,10 +370,9 @@
 
 
 .pp-ui-slider {
-    min-height: 32px;
+    min-height: var(--pp-ui-slider-size);
     height: 100%;
-    margin: auto 8px;
-    top: 50%;
+    margin: var(--pp-ui-slider-margin);
 
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -375,8 +381,8 @@
 }
 
 .pp-ui-slider-range {
-    height: 4px;
-    border-radius: 10px;
+    height: var(--pp-ui-slider-height);
+    border-radius: var(--pp-ui-slider-border-radius);
     background-color: var(--pp-ui-slider-range-bg);
     transition: height 200ms;
 }
@@ -410,12 +416,12 @@
 .pp-ui-slider-interacting .pp-ui-slider-range-thumb,
 .pp-ui-slider:focus .pp-ui-slider-range-thumb {
     transform-origin: center;
-    transform: translateX(-50%) scale(2);
+    transform: var(--pp-ui-slider-thumb-transform);
     visibility: visible;
 }
 
 .pp-ui-slider-interacting .pp-ui-slider-range {
-    height: 8px;
+    height: var(--pp-ui-slider-height-interaction);
 }
 
 .pp-ui-seekbar {
@@ -452,6 +458,23 @@
     border-color: var(--pp-hover-color);
 }
 
+.pp-ui-hover-container {
+    width: 100%;
+    margin: var(--pp-ui-slider-margin);
+}
+
+.pp-ui-hover-container-content {
+    width: fit-content;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: .25rem;
+
+    /*padding: 8px;*/
+}
 
 .pp-cursor-pointer {
     cursor: pointer;
@@ -596,6 +619,14 @@
     display: none;
 }
 
+.pp-ui-basic-theme .pp-ui-horizontal-bar {
+    padding: .5rem 0;
+}
+
+.pp-ui-basic-theme .pp-ui-horizontal-bar .pp-ui-button {
+    padding: .25rem;
+}
+
 .pp-ui-basic-theme .pp-ui-volumebar {
     width: 200px;
     max-width: 200px;
@@ -603,8 +634,9 @@
 
 .pp-ui-spacer {
     flex-grow: 1;
-    height: 100%;
+    flex-shrink: 1;
     width: 100%;
+    height: 100%;
 }
 
 .pp-ui-transparent {
@@ -625,6 +657,7 @@
     right: 0;
     bottom: 0;
     margin: auto;
+    height: fit-content;
 }
 
 .pp-ui-enabled {
@@ -638,12 +671,11 @@
 @media (max-width: 800px) {
 
     .pp-ui {
-        --pp-ui-button-size: 32px;
-        --pp-ui-lable-font-size: 14px;
-        --pp-ui-lable-subtitle-font-size: 12px;
-        --pp-ui-bar-gap: 2px;
+        --pp-ui-button-size: 2rem;
+        --pp-ui-lable-font-size: .875rem;
+        --pp-ui-lable-subtitle-font-size: .75rem;
         --pp-ui-thumnail-height: 120px;
-        --pp-ui-start-button-size: 48px;
+        --pp-ui-start-button-size: 3rem;
     }
 
     .pp-ui-basic-theme .pp-ui-volumebar {

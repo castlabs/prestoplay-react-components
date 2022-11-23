@@ -1,15 +1,17 @@
 import React, {useState} from "react";
 import Slider from "./Slider";
 import {BasePlayerComponentProps, p} from "../utils";
-import {usePresto, usePrestoUiEvent} from "../react";
+import {usePresto, usePrestoEnabledState, usePrestoUiEvent} from "../react";
 
 
 export interface VolumeBarProps extends BasePlayerComponentProps{
   adjustWhileDragging?: boolean
+  notFocusable?: boolean
 }
 
 export const VolumeBar = (props: VolumeBarProps) => {
   let [progress, setProgress] = useState(100)
+  let enabled = usePrestoEnabledState(props.player);
 
   function updateFromPlayer(): number {
     const player = props.player;
@@ -31,11 +33,9 @@ export const VolumeBar = (props: VolumeBarProps) => {
   })
 
   async function applyValue(progressValue:number) {
-    let presto = await props.player.presto()
-    if (presto.isMuted() && progressValue > 0) {
-      presto.setMuted(false)
-    }
-    presto.setVolume(progressValue / 100.0)
+    setProgress(progressValue)
+    progress = progressValue
+    props.player.volume = progressValue / 100.0
   }
 
   function currentValue() {
@@ -70,6 +70,8 @@ export const VolumeBar = (props: VolumeBarProps) => {
         onApplyValue={applyValue}
         onKeyDown={onKeyDown}
         adjustWhileDragging={props.adjustWhileDragging}
+        disabled={!enabled}
+        notFocusable={props.notFocusable}
       />
     </div>
   )

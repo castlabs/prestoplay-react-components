@@ -6,7 +6,6 @@ import {
 } from "../utils";
 import Label from "./Label";
 import {
-  usePrestoEnabledState,
   usePrestoEnabledStateClass,
   usePrestoUiEvent
 } from "../react";

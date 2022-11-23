@@ -109,7 +109,7 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   return (
     <div className={"pp-ui pp-ui-overlay pp-ui-basic-theme"}>
       <PlayerControls player={props.player}>
-        <VerticalBar className={"pp-ui-transparent"}>
+        <VerticalBar className={"pp-ui-spacer"}>
 
           {renderTopBar()}
 

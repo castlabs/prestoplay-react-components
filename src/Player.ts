@@ -627,6 +627,9 @@ export class Player {
 
   set volume(volume: number) {
     if (this.pp_) {
+      if(this.muted && volume > 0) {
+        this.muted = false
+      }
       this.pp_.setVolume(volume)
     }
   }

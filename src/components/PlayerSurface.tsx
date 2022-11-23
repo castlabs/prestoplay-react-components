@@ -104,8 +104,6 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
     if(e.defaultPrevented) return
 
     if(containerRef && containerRef.current) {
-      // console.log('>>> Player Surface Key Down:', {code:e.code, key:e.key}, 'register surface interaction')
-
       let element:HTMLDivElement = containerRef.current
       let items = getFocusableElements(element)
 

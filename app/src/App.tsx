@@ -18,7 +18,7 @@ import "@castlabs/prestoplay/clpp.styles.css"
 
 // load the theme
 import "../../src/themes/pp-ui-base-theme.css"
-import {useGlobalHide} from "../../src";
+import {YoutubeControlsPage} from "./YoutubeControlsPage";
 
 function getQueryVariable(variable:string):any {
   const searchParams = new URLSearchParams(window.location.search);
@@ -58,6 +58,8 @@ function App() {
       return <CustomControlsPage asset={asset} autoload={autoload}/>
     } else if(pageId == "components") {
       return <ComponentsOverviewPage asset={asset} autoload={autoload}/>
+    } else if(pageId == "youtube") {
+      return <YoutubeControlsPage asset={asset} autoload={autoload}/>
     }
     return <div>Unknown Page!</div>
   }, [pageId, asset])
@@ -87,6 +89,7 @@ function App() {
         <h3>Layouts</h3>
         <button onClick={selectPage("basic")} className={`${pageId == 'basic' ? 'selected' : ''}`}>Basic Overlay</button>
         <button onClick={selectPage("custom")} className={`${pageId == 'custom' ? 'selected' : ''}`}>Custom Overlay</button>
+        <button onClick={selectPage("youtube")} className={`${pageId == 'youtube' ? 'selected' : ''}`}>Youtube Overlay</button>
         <button onClick={selectPage("components")} className={`${pageId == 'components' ? 'selected' : ''}`}>Components</button>
       </nav>
       <div>

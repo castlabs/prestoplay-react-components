@@ -47,6 +47,7 @@ export const BaseButton = forwardRef((props: BaseButtonProps, ref: ForwardedRef<
   return (
     <button type="button" ref={ref}
             tabIndex={props.disabled ? -1 : 0}
+            style={props.style}
             className={`pp-ui pp-ui-button ${props.disableIcon ? 'pp-ui-button-no-icon': ''} ${props.disabled ? 'pp-ui-disabled' : 'pp-ui-enabled'} ${props.className || ''}`}
             onClick={click}>
       {generateIcon()}
