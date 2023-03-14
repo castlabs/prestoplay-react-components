@@ -16,9 +16,13 @@ import {usePrestoUiEvent} from "../react";
  */
 export interface PlayerProps extends BasePlayerComponentProps {
   /**
-   * The PRESTOplay player configuration
+   * The PRESTOplay player configuration to load and play a video
    */
   config?: any,
+  /**
+   * The PRESTOplay player configuration to initialize the player
+   */
+  baseConfig?: any,
 
   /**
    * Indicate that the configuration should be applied immediately. If this is
@@ -40,17 +44,17 @@ export interface PlayerProps extends BasePlayerComponentProps {
  * that ref can be use for instance to initiate full screen playback.
  */
 export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: PlayerProps, ref: ForwardedRef<HTMLDivElement>) => {
-  const video = createRef<HTMLVideoElement>();
   const containerRef = useRef<HTMLDivElement>()
 
+  const createVideo = (video: HTMLVideoElement) => {
+    props.player.init(video, props.baseConfig)
+  }
+
   useEffect(() => {
-    if (video.current) {
-      props.player.init(video.current)
-    }
     return () => {
       props.player.release()
     }
-  }, [props.player, video.current])
+  }, [])
 
   useEffect(() => {
     props.player.load(props.config, props.autoload)
@@ -206,7 +210,7 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
          tabIndex={0}
     >
       <video className={"pp-ui pp-ui-video"}
-             ref={video}
+             ref={createVideo}
              tabIndex={-1}
              playsInline={props.playsInline}>
       </video>
