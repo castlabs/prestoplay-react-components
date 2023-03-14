@@ -50,7 +50,8 @@
   "disabled" state if no content is loaded.
 * Added a prop to the `FullscreenButton` to decide to use the video element or the passed container based
   on the target platform.
-* Added platform specific `pp-ui-ipad` css class to the player controls, overlay and the surface
+* Add platform specific `pp-ui-ipad` CSS class to the player controls, overlay and player surface
+  on isIpadOS platform.
 
 # 0.5.0
 
