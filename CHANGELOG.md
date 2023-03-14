@@ -46,6 +46,7 @@
   player will automatically go to full-screen mode when playback starts or not.
   * Fix an issue where event listeners were not being properly detached from the underlying
   video element on unmount.
+  * Fix an error occurring when `PlayerSurface.config` is undefined.
 * Add a lot of API-level documentation to the modules.
 * Add shortcut getters and setters to `Player`.
   * `position` (read/write) Use this setter to seek.
