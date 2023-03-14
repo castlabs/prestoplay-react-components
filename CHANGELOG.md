@@ -36,12 +36,12 @@
   * `state` (read only)
   * `rate` (read/write)
   * `playing` (read/write)
-* Added seek chaining to make sure that we are not issuing seeks that will not be the
-  final target position. This will make consecutive seeks faster
-* Improved support for Touch devices and touch vs mouse interaction
+* Fix seeking logic and avoid unnecessary seeking in a situation where seek is being called repeatedly
+  in a short period of time.
+* Improve support for touch screens and touch vs mouse interaction.
 * Fix `FullscreenButton` behaviour on iOS devices. Now it by default ignores the `fullscreenContainer`
   props on iOS and displays video element in fullscreen instead.
-* Fixed issue with the default labeler with some HLS content tracks. Now video tracks
+* Fix issue with the default labeler with some HLS content tracks. Now video tracks
   that do not expose a size are excluded.
 
 ## New Features
