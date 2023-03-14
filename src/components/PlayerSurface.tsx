@@ -16,9 +16,13 @@ import {usePrestoUiEvent} from "../react";
  */
 export interface PlayerProps extends BasePlayerComponentProps {
   /**
-   * The PRESTOplay player configuration to load and play
+   * The PRESTOplay player configuration to load and play a video
    */
   config?: any,
+  /**
+   * The PRESTOplay player configuration to initialize the player
+   */
+  baseConfig?: any,
 
   /**
    * Indicate that the configuration should be applied immediately. If this is
@@ -41,9 +45,9 @@ export interface PlayerProps extends BasePlayerComponentProps {
  */
 export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: PlayerProps, ref: ForwardedRef<HTMLDivElement>) => {
   const containerRef = useRef<HTMLDivElement>()
-  
+
   const createVideo = (video: HTMLVideoElement) => {
-    props.player.init(video)
+    props.player.init(video, props.baseConfig)
   }
 
   useEffect(() => {

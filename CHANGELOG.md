@@ -5,32 +5,32 @@
 * Moved hooks `usePrestoCoreEvent`, `usePrestoUiEvent`, `usePresto` to a different subfolder. This will only affect
   you if you are using subfolder imports.
   
-  ```js
-  // Instead if this import
-  import { usePrestoCoreEvent, usePrestoUiEven, usePresto } from '@castlabs/prestoplay-react-components/Player';
-  // Use this import:
-  import { usePrestoCoreEvent, usePrestoUiEvent, usePresto } from '@castlabs/prestoplay-react-components/react';
-  ```
+    ```js
+    // Instead if this import
+    import { usePrestoCoreEvent, usePrestoUiEven, usePresto } from '@castlabs/prestoplay-react-components/Player';
+    // Use this import:
+    import { usePrestoCoreEvent, usePrestoUiEvent, usePresto } from '@castlabs/prestoplay-react-components/react';
+    ```
 * Removed `usePrestoEvent` hook. It has been renamed to `usePrestoCoreEvent`. Note, that the use
   of the more high-level hook `usePrestoUiEvent` is preferred whenever possible over `usePrestoCoreEvent`.
 * Removed `Player.on/off/one()` methods. Use `usePrestoCoreEvent` hook to listen
   to `Player` events instead. Alternatively, for you can use:
 
-  ```js
-  const prestoPlayer = await Player.presto()
-  prestoPlayer.on('event', () => {})
-  prestoPlayer.off('event')
-  ```
+    ```js
+    const prestoPlayer = await Player.presto()
+    prestoPlayer.on('event', () => {})
+    prestoPlayer.off('event')
+    ```
 * Removed `Player.use()` method. Use the initializer callback passed to the constructor
   instead.
   
-  e.g.:
-  ```js
-  new Player((pp:any) => {
-    pp.use(clpp.dash.DashComponent);
-    pp.use(clpp.hls.HlsComponent);
-  })
-  ```
+    e.g.:
+    ```js
+    new Player((pp:any) => {
+      pp.use(clpp.dash.DashComponent);
+      pp.use(clpp.hls.HlsComponent);
+    })
+    ```
 * Removed `StartButton.config` props. Instead, the `PlayerSurface` now has the 
   option to configure if the `config` passed to it should be loaded immediately or not
   via the `PlayerSurface.autoload` prop.
@@ -43,7 +43,13 @@
 * Fix an issue where Escape key press brings up player controls.
 * For `PlayerSurface`
   * Add `PlayerSurface.playsInline` prop to be used on mobile or iPad. It configures whether
-  player will automatically go to full-screen mode when playback starts or not.
+    player will automatically go to full-screen mode when playback starts or not.
+  * Add `PlayerSurface.baseConfig` prop to pass initial configuration to PRESTOplay player. (#3)
+
+    e.g.:
+    ```jsx
+    <PlayerSurface player={player} baseConfig={{ license: "..." }} />
+    ```
   * Fix an issue where event listeners were not being properly detached from the underlying
   video element on unmount.
   * Fix an error occurring when `PlayerSurface.config` is undefined.

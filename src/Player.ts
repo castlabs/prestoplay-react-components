@@ -477,11 +477,12 @@ export class Player {
    * If the player is already initialized, this function does not do anything.
    *
    * @param element The video element or the ID of the video element
+   * @param baseConfig PRESTOplay config to initialize the player with
    */
-  async init(element: HTMLVideoElement | string) {
+  async init(element: HTMLVideoElement | string, baseConfig: any) {
     if (this.pp_) return;
 
-    this.pp_ = new clpp.Player(element)
+    this.pp_ = new clpp.Player(element, baseConfig)
     const handlePlayerTracksChanged = (type?: TrackType) => {
       return () => {
         if (!type || type == "video") {
