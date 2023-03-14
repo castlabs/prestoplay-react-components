@@ -40,6 +40,18 @@
 ## Improvements and fixes
 
 * Update `@castlabs/prestoplay` to v6.2.7.
+* Add options to disable or hide seek bar.
+  * Add `SeekBar.enabled` prop to disable seek bar.
+  * Add `BaseThemeOverlay.seekBar` prop that can be configure with `'enabled' | 'disabled' | 'none'` to enable,
+    disable or the hide seek bar.
+* Add `Player.trackLabelerOptions.showVideoBitrate` option to configure track selection UI. This is useful for videos
+  which have multiple qualities of same resolution but at different bitrates.
+* Fix an issue with `BufferingIndicator` where it was not visible.
+* Extend `BaseThemeOverlay.startButton` prop. Now it can be passed a config object `{ onClick?: () => Promise<void> }`
+  which can override the default on-click behavior.
+* For `StartButton`
+  * Fix styles.
+  * Fix issue where it blocks interaction with any other player controls.
 * Fix animation of player controls and side menu (slide-in).
 * Fix an issue where Escape key press brings up player controls.
 * For `PlayerSurface`
@@ -53,6 +65,7 @@
     ```
   * Fix an issue where event listeners were not being properly detached from the underlying
   video element on unmount.
+  * Fix an error occurring when `PlayerSurface.config` is undefined.
 * Add a lot of API-level documentation to the modules.
 * Add shortcut getters and setters to `Player`.
   * `position` (read/write) Use this setter to seek.

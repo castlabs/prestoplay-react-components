@@ -36,7 +36,7 @@ export interface BaseThemeOverlayProps extends BasePlayerComponentProps {
    * and not load content before the button is clicked, you need to pass `autoload=false` to
    * the player surface.
    */
-  startButton?: boolean
+  startButton?: boolean | { onClick?: () => Promise<void> }
   /**
    * Optional poster image URL. If specified, an image from the provided URL
    * will be loaded before video content is available.
@@ -63,6 +63,11 @@ export interface BaseThemeOverlayProps extends BasePlayerComponentProps {
    * to -10. 0 will disable the seek back button.
    */
   seekBackward?: number
+  /**
+   * Seekbar configuration. Defaults to 'enabled'. 'disabled' displays a disabled
+   * seekbar, 'none' hides the seekbar.
+   */
+  seekBar?: 'enabled' | 'disabled' | 'none'
 }
 
 export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
@@ -70,8 +75,14 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
 
   const renderOptionsMenuButton = () => {
     if(!selectionOptions || selectionOptions.length == 0) return
-    return <MenuSlideinToggleButton player={props.player}/>
+    
+    return (
+      <div className="pp-ui-margin-horizontal-sm">
+        <MenuSlideinToggleButton player={props.player} />
+      </div>
+    )
   }
+
   const renderOptionsMenu = () => {
     if(!selectionOptions || selectionOptions.length == 0) return
     return <MenuSlidein player={props.player} selectionOptions={selectionOptions}/>
@@ -103,7 +114,7 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   const renderStartButton = () => {
     if (!props.startButton) return
     return <StartButton player={props.player}
-                        className={"pp-ui-absolute-center"}/>
+                        onClick={typeof props.startButton === 'object' ? props.startButton.onClick : undefined}/>
   }
 
   return (
@@ -111,32 +122,43 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
       <PlayerControls player={props.player}>
         <VerticalBar className={"pp-ui-spacer"}>
 
+          {/* Top bar */}
           {renderTopBar()}
 
           <Spacer/>
 
+          {/* Thumbnails */}
           <HorizontalBar className={"pp-ui-transparent"}>
             <Thumbnail player={props.player} listenToHover={true}
                        moveRelativeToParent={true}/>
           </HorizontalBar>
 
-          <HorizontalBar>
-            <PlayPauseButton player={props.player} resetRate={true}/>
-            <SeekButton player={props.player} seconds={p(props.seekBackward, -10)}/>
-            <SeekButton player={props.player} seconds={p(props.seekForward, 10)}/>
-            <SeekBar player={props.player} adjustWhileDragging={true}
-                     adjustWithKeyboard={true}
-                     enableThumbnailSlider={false}/>
+          {/* Bottom bar */}
+          <HorizontalBar className="pp-ui-flex-space-between">
+            <div className="pp-ui-row pp-ui-margin-horizontal-sm">
+              <PlayPauseButton player={props.player} resetRate={true}/>
+              <SeekButton player={props.player} seconds={p(props.seekBackward, -10)}/>
+              <SeekButton player={props.player} seconds={p(props.seekForward, 10)}/>
 
-            <CurrentTime player={props.player}/>
-            <Label label={"/"}/>
-            <Duration player={props.player}/>
+              {props.seekBar === 'none' ? null : <SeekBar
+                player={props.player}
+                adjustWhileDragging={true}
+                adjustWithKeyboard={true}
+                enableThumbnailSlider={false}
+                enabled={(props.seekBar ?? 'enabled') === 'enabled'}
+              />}
+            </div>
+            
+            <div className="pp-ui-row pp-ui-margin-horizontal-sm">
+              <CurrentTime player={props.player}/>
+              <Label label={"/"}/>
+              <Duration player={props.player}/>
 
-            <MuteButton player={props.player}/>
-            <VolumeBar player={props.player} adjustWhileDragging={true}/>
+              <MuteButton player={props.player}/>
+              <VolumeBar player={props.player} adjustWhileDragging={true}/>
 
-            {renderFullscreenButton()}
-
+              {renderFullscreenButton()}  
+            </div>
           </HorizontalBar>
 
         </VerticalBar>

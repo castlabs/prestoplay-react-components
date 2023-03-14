@@ -57,6 +57,8 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
   }, [])
 
   useEffect(() => {
+    if (!props.config) return
+
     props.player.load(props.config, props.autoload)
   }, [props.config, props.player])
 
