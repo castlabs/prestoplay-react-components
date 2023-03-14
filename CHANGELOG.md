@@ -46,9 +46,11 @@
 
 ## New Features
 
-* Added `enabled` state to the player and tracking utilities for components. Where it makes sense, the 
-  components now track the enabled state of the player using `usePrestoEnabledState` and implement a 
-  "disabled" state if no content is loaded.
+* Disable buttons, sliders and other components or hide them when the player is not in an "OK"/"enabled" state.
+  The player is considered to be in an enabled state e.g. when it is playing and it is not considered
+  to be in an enabled state e.g. when it is idle or stopped due to an error.
+  Changes to this state can be subscribed to via `Player.onUIEvent('enabled', ...)` and the current
+  value can be retrieved using `Player.enabled`.
 * Add `useVideoElementForFullscreen` prop to the `FullscreenButton`, which allows configuration of whether
   video element should be displayed in fullscreen mode instead of `fullscreenContainer`.
 * Add platform specific `pp-ui-ipad` CSS class to the player controls, overlay and player surface
