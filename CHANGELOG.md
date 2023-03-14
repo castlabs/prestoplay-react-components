@@ -39,7 +39,8 @@
 * Added seek chaining to make sure that we are not issuing seeks that will not be the
   final target position. This will make consecutive seeks faster
 * Improved support for Touch devices and touch vs mouse interaction
-* Fixed fullscreen button behaviour on iOS devices
+* Fix `FullscreenButton` behaviour on iOS devices. Now it by default ignores the `fullscreenContainer`
+  props on iOS and displays video element in fullscreen instead.
 * Fixed issue with the default labeler with some HLS content tracks. Now video tracks
   that do not expose a size are excluded.
 
@@ -48,8 +49,8 @@
 * Added `enabled` state to the player and tracking utilities for components. Where it makes sense, the 
   components now track the enabled state of the player using `usePrestoEnabledState` and implement a 
   "disabled" state if no content is loaded.
-* Added a prop to the `FullscreenButton` to decide to use the video element or the passed container based
-  on the target platform.
+* Add `useVideoElementForFullscreen` prop to the `FullscreenButton`, which allows configuration of whether
+  video element should be displayed in fullscreen mode instead of `fullscreenContainer`.
 * Add platform specific `pp-ui-ipad` CSS class to the player controls, overlay and player surface
   on iPadOS platform.
 
