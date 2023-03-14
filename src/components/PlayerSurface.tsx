@@ -16,7 +16,7 @@ import {usePrestoUiEvent} from "../react";
  */
 export interface PlayerProps extends BasePlayerComponentProps {
   /**
-   * The PRESTOplay player configuration
+   * The PRESTOplay player configuration to load and play
    */
   config?: any,
 
@@ -53,6 +53,8 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
   }, [])
 
   useEffect(() => {
+    if (!props.config) return
+
     props.player.load(props.config, props.autoload)
   }, [props.config, props.player])
 
