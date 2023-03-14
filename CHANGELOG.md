@@ -39,6 +39,11 @@
 
 ## Improvements and fixes
 
+* Extend `BaseThemeOverlay.startButton` prop. Now it can be passed a config object `{ onClick?: () => Promise<void> }`
+  which can override the default on-click behavior.
+* For `StartButton`
+  * Fix styles.
+  * Fix issue where it blocks interaction with any other player controls.
 * Fix animation of player controls and side menu (slide-in).
 * Fix an issue where Escape key press brings up player controls.
 * For `PlayerSurface`

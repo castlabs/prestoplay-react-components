@@ -36,7 +36,7 @@ export interface BaseThemeOverlayProps extends BasePlayerComponentProps {
    * and not load content before the button is clicked, you need to pass `autoload=false` to
    * the player surface.
    */
-  startButton?: boolean
+  startButton?: boolean | { onClick?: () => Promise<void> }
   /**
    * Optional poster image URL. If specified, an image from the provided URL
    * will be loaded before video content is available.
@@ -103,7 +103,7 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   const renderStartButton = () => {
     if (!props.startButton) return
     return <StartButton player={props.player}
-                        className={"pp-ui-absolute-center"}/>
+                        onClick={typeof props.startButton === 'object' ? props.startButton.onClick : undefined}/>
   }
 
   return (
