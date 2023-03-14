@@ -12,9 +12,11 @@ export * from './components/CurrentTime'
 export * from './components/Duration'
 export * from './components/FullscreenButton'
 export * from './components/HorizontalBar'
+export * from './components/HoverContainer'
 export * from './components/Label'
 export * from './components/MenuSlidein'
 export * from './components/MenuSlideinToggleButton'
+export * from './components/MuteButton'
 export * from './components/PlayerControls'
 export * from './components/PlayerSurface'
 export * from './components/PlayPauseButton'
@@ -34,6 +36,7 @@ export * from './components/TrackSelectionButton'
 export * from './components/TrackSelectionList'
 export * from './components/VerticalBar'
 export * from './components/VolumeBar'
+
 export {useGlobalHide} from "./react";
 export {usePresto} from "./react";
 export {usePrestoUiEvent} from "./react";
