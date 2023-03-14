@@ -41,3 +41,4 @@ export {useGlobalHide} from "./react";
 export {usePresto} from "./react";
 export {usePrestoUiEvent} from "./react";
 export {usePrestoCoreEvent} from "./react";
+export * from './mt/MediaTailorPlayer'

@@ -750,6 +750,10 @@ export class Player {
     await this.reset_()
   }
 
+  setConfigLoaded_() {
+    this._configLoaded = true
+  }
+
   private async reset_() {
     if (this.pp_) {
       await this.pp_.release()

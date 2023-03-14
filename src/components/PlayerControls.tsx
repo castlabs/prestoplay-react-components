@@ -118,7 +118,8 @@ export const PlayerControls = (props: PlayerControlsProps) => {
 
   return (
     <div ref={ref}
-      className={`pp-ui-controls ${isIpadOS() ? 'pp-ui-ipad' : ''} ${controlsVisible ? "pp-ui-controls-visible" : ""}${props.className || ''}`}
+      className={`pp-ui-controls ${isIpadOS() ? 'pp-ui-ipad' : ''} pp-ui-controls-visible ${props.className || ''}`}
+      // className={`pp-ui-controls ${isIpadOS() ? 'pp-ui-ipad' : ''} ${controlsVisible ? "pp-ui-controls-visible" : ""}${props.className || ''}`}
          style={props.style}
       onMouseMove={mouseMove}
     >

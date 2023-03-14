@@ -19,6 +19,7 @@ import "@castlabs/prestoplay/clpp.styles.css"
 // load the theme
 import "../../src/themes/pp-ui-base-theme.css"
 import {YoutubeControlsPage} from "./YoutubeControlsPage";
+import { MediaTailorPage } from './MediaTailorPage';
 
 function getQueryVariable(variable:string):any {
   const searchParams = new URLSearchParams(window.location.search);
@@ -53,7 +54,7 @@ function App() {
 
   const renderPage = useCallback(() => {
     if(pageId == "basic") {
-      return <BasicOverlayPage asset={asset} autoload={autoload}/>
+      return <MediaTailorPage/>
     } else if(pageId == "custom") {
       return <CustomControlsPage asset={asset} autoload={autoload}/>
     } else if(pageId == "components") {

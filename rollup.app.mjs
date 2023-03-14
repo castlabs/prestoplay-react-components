@@ -7,6 +7,7 @@ import serve from "rollup-plugin-serve";
 import livereload from "rollup-plugin-livereload";
 import replace from '@rollup/plugin-replace';
 import url from 'postcss-url';
+import image from '@rollup/plugin-image';
 
 export default [
   {
@@ -17,6 +18,7 @@ export default [
       sourcemap: true,
     },
     plugins: [
+      image(),
       resolve({
         extensions: [".js"],
       }),
@@ -31,6 +33,10 @@ export default [
           outDir: './app/dist'
         },
         include: [
+          "./app/src/**/*.jsx",
+          "./app/src/**/*.js",
+          "./src/**/*.jsx",
+          "./src/**/*.js",
           "./app/src/**/*.tsx",
           "./app/src/**/*.ts",
           "./src/**/*.tsx",
