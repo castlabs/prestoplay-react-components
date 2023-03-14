@@ -482,8 +482,6 @@ export class Player {
     if (this.pp_) return;
 
     this.pp_ = new clpp.Player(element)
-    // @ts-ignore
-    window.pp = this.pp_
     const handlePlayerTracksChanged = (type?: TrackType) => {
       return () => {
         if (!type || type == "video") {
