@@ -197,6 +197,16 @@
     mask: var(--pp-ui-icon-fullscreen-exit);
 }
 
+.pp-ui-start-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+}
+
 .pp-ui-start-button {
     padding: 1rem;
 }
@@ -204,10 +214,6 @@
 .pp-ui-start-button .pp-ui-icon {
     min-width: var(--pp-ui-start-button-size);
     min-height: var(--pp-ui-start-button-size);
-}
-
-.pp-ui-start-button-hidden {
-    display: none;
 }
 
 .pp-ui-start-button .pp-ui-icon {

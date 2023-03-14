@@ -5,6 +5,7 @@ import {State} from "../Player";
 import {usePrestoUiEvent} from "../react";
 
 export interface StartButtonProps extends BasePlayerComponentButtonProps {
+  onClick?: () => Promise<void>
 }
 
 export const StartButton = (props: StartButtonProps) => {
@@ -22,17 +23,27 @@ export const StartButton = (props: StartButtonProps) => {
   }, [ref])
 
   const start = async () => {
-    await props.player.load()
-    props.player.playing = true
+    if (props.onClick) {
+      await props.onClick()
+    } else {
+      await props.player.load()
+      props.player.playing = true
+    }
     setVisible(false)
     props.player.surfaceInteraction()
   }
 
+  if (!visible) {
+    return  null
+  }
+
   return (
-    <BaseButton onClick={start} ref={ref}
+    <div className="pp-ui-start-button-container">
+        <BaseButton onClick={start} ref={ref}
                 disableIcon={false}
                 style={props.style}
-                className={`pp-ui pp-ui-start-button ${visible ? '' : 'pp-ui-start-button-hidden'} ${props.className}`}/>
+                className={`pp-ui pp-ui-start-button ${props.className}`}/>
+    </div>
   )
 }
 
