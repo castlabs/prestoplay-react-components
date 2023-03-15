@@ -39,6 +39,7 @@
 
 ## Improvements and fixes
 
+* Update `@castlabs/prestoplay` to v6.2.7.
 * Fix animation of player controls and side menu (slide-in).
 * Fix an issue where Escape key press brings up player controls.
 * For `PlayerSurface`
