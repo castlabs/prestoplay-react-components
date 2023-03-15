@@ -1,20 +1,32 @@
-import React, {createRef, useEffect, useRef, useState} from "react";
+import React, {createRef, useDebugValue, useEffect, useState} from "react";
 import {BasePlayerComponentButtonProps, focusElement} from "../utils";
 import BaseButton from "./BaseButton";
-import {State} from "../Player";
+import {State, Player } from "../Player";
 import {usePrestoUiEvent} from "../react";
 
 export interface StartButtonProps extends BasePlayerComponentButtonProps {
   onClick?: () => Promise<void>
 }
 
-export const StartButton = (props: StartButtonProps) => {
-  let [visible, setVisible] = useState(props.player.state == State.Idle || props.player.state == State.Unset);
-  let ref = createRef<HTMLButtonElement>();
+const isVisibleState = (state: State) => {
+  return state == State.Idle || state == State.Unset
+}
 
-  usePrestoUiEvent("statechanged", props.player, ({currentState}) => {
-    setVisible(props.player.state == State.Idle || props.player.state == State.Unset)
+const useVisibility = (player: Player) => {
+  const [visible, setVisible] = useState<boolean>(isVisibleState(player.state))
+
+  usePrestoUiEvent("statechanged", player, () => {
+    setVisible(isVisibleState(player.state))
   })
+
+  useDebugValue(visible ? "visible" : "hidden")
+
+  return { visible, setVisible }
+}
+
+export const StartButton = (props: StartButtonProps) => {
+  const { visible, setVisible } = useVisibility(props.player)
+  const ref = createRef<HTMLButtonElement>()
 
   useEffect(() =>{
     if(ref.current && visible) {
@@ -34,7 +46,7 @@ export const StartButton = (props: StartButtonProps) => {
   }
 
   if (!visible) {
-    return  null
+    return null
   }
 
   return (
