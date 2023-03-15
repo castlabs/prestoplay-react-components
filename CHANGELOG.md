@@ -27,15 +27,15 @@
 
 * Added a lot of API level documentation to the modules
 * Added testing infrastructure
-* Added wrapper properties and functions for 
-  * `position` (read/write) Use this property to seek
-  * `volume` (read/write)
-  * `muted` (read/write)
-  * `live` (read only)
-  * `seekRange` (read only)
-  * `state` (read only)
-  * `rate` (read/write)
-  * `playing` (read/write)
+* Add shortcut getters and setters to `Player`.
+  * `position` (read/write) Use this setter to seek.
+  * `volume` (read/write).
+  * `muted` (read/write).
+  * `live` (read only).
+  * `rate` (read/write).
+  * `playing` (read/write).
+  * `seekRange` (read only).
+  * `state` (read only).
 * Fix seeking logic and avoid unnecessary seeking in a situation where seek is being called repeatedly
   in a short period of time.
 * Improve support for touch screens and touch vs mouse interaction.
