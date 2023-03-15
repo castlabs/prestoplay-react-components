@@ -26,7 +26,6 @@
 ## Improvements and fixes
 
 * Added a lot of API level documentation to the modules
-* Added testing infrastructure
 * Add shortcut getters and setters to `Player`.
   * `position` (read/write) Use this setter to seek.
   * `volume` (read/write).
