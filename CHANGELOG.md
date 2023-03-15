@@ -39,6 +39,7 @@
 
 ## Improvements and fixes
 
+* Update `@castlabs/prestoplay` to v6.2.7.
 * Extend `BaseThemeOverlay.startButton` prop. Now it can be passed a config object `{ onClick?: () => Promise<void> }`
   which can override the default on-click behavior.
 * For `StartButton`
