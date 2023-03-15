@@ -2,30 +2,44 @@
 
 ## Breaking changes
 
-* Moved the react hooks, `usePrestoCoreEvent`, `usePrestoUiEvent`, `usePresto` to
-  a dedicated `react` module. This will only affect you if you are using
-  individual module imports.
-  We decided to go this route to keep the `Player` module as much as possible
-  independent of the react implementation.
-* Renamed `usePresoEvent` to `usePresoCoreEvent` since we wanted to make it very
-  explicit that using this event will hook against the core. While this might be
-  needed in some cases, it should generally be avoided and one should try to use
-  `usePrestoUiEvent` instead.
-* Removed the `on`, `off`, `one` wrapper methods from the `Player` module. They were
-  used to add core listeners to the player once initialized. This should be done now
-  using the `usePrestoCoreEvent` hook. Alternatively, for instance outside a component,
-  you can use `await player.presto()` to get an instance of the core.
-* Removed the `use` wrapper from the player. Instead, use the initializer function
-  that can be passed to the `Player` constructor. This is more explicit, provided
-  better timing (the order of execution is clear, and we wait for the initializer to
-  complete before we use the player core) and simplifies the player wrapper.
-* The `StartButton` does no longer receive the start config. Instead, the `PlayerSurface` now has the 
-  option to configure if the passed configuration should be loaded or not. If `autoload` is set to false, 
-  the passed config will be cached but only applied with a call to `load()` or `playing = true`.
+* Moved hooks `usePrestoCoreEvent`, `usePrestoUiEvent`, `usePresto` to a different subfolder. This will only affect
+  you if you are using subfolder imports.
+  
+  ```js
+  // Instead if this import
+  import { usePrestoCoreEvent, usePrestoUiEven, usePresto } from '@castlabs/prestoplay-react-components/Player';
+  // Use this import:
+  import { usePrestoCoreEvent, usePrestoUiEvent, usePresto } from '@castlabs/prestoplay-react-components/react';
+  ```
+* Removed `usePrestoEvent` hook. It has been renamed to `usePrestoCoreEvent`. Note, that the use
+  of the more high-level hook `usePrestoUiEvent` is preferred whenever possible over `usePrestoCoreEvent`.
+* Removed `Player.on/off/one()` methods. Use `usePrestoCoreEvent` hook to listen
+  to `Player` events instead. Alternatively, for you can use:
+
+  ```js
+  const prestoPlayer = await Player.presto()
+  prestoPlayer.on('event', () => {})
+  prestoPlayer.off('event')
+  ```
+* Removed `Player.use()` method. Use the initializer callback passed to the constructor
+  instead.
+  
+  e.g.:
+  ```js
+  new Player((pp:any) => {
+    pp.use(clpp.dash.DashComponent);
+    pp.use(clpp.hls.HlsComponent);
+  })
+  ```
+* Removed `StartButton.config` props. Instead, the `PlayerSurface` now has the 
+  option to configure if the `config` passed to it should be loaded immediately or not
+  via the `PlayerSurface.autoload` prop.
+  If `autoload` is set to false, the passed config will be cached but only applied with
+  a call to `Player.load()` or after setting `Player.playing = true`.
 
 ## Improvements and fixes
 
-* Added a lot of API level documentation to the modules
+* Add a lot of API-level documentation to the modules.
 * Add shortcut getters and setters to `Player`.
   * `position` (read/write) Use this setter to seek.
   * `volume` (read/write).
