@@ -13,7 +13,7 @@ Please note that you should also install the peer dependencies, i.e. react, reac
 `@castlabs/prestoplay`:
 
 ```
-npm install react react-dom @castlabs/prestoplay
+npm i react@18 react-dom@18 @castlabs/prestoplay@6.2
 ```
 
 ## Getting started

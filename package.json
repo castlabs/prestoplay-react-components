@@ -50,9 +50,9 @@
     "typescript": "^4.8.4"
   },
   "peerDependencies": {
-    "@castlabs/prestoplay": "^6.2.6",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@castlabs/prestoplay": "~6.2.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "keywords": [
     "prestoplay",
