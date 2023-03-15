@@ -39,6 +39,13 @@
 
 ## Improvements and fixes
 
+* Fix animation of player controls and side menu (slide-in).
+* Fix an issue where Escape key press brings up player controls.
+* For `PlayerSurface`
+  * Add `PlayerSurface.playsInline` prop to be used on mobile or iPad. It configures whether
+  player will automatically go to full-screen mode when playback starts or not.
+  * Fix an issue where event listeners were not being properly detached from the underlying
+  video element on unmount.
 * Add a lot of API-level documentation to the modules.
 * Add shortcut getters and setters to `Player`.
   * `position` (read/write) Use this setter to seek.
@@ -59,6 +66,10 @@
 
 ## New Features
 
+* Add support for keyboard control. Use up/down arrow to switch between UI controls, left/right to use sliders, Enter
+  to accept and Escape to go back.
+* Add `MuteButton` component intended to mute audio.
+* Add `HoverContainer` component intended for displaying thumbnails when hovering over the seek bar.
 * Disable buttons, sliders and other components or hide them when the player is not in an "OK"/"enabled" state.
   The player is considered to be in an enabled state e.g. when it is playing and it is not considered
   to be in an enabled state e.g. when it is idle or stopped due to an error.
@@ -71,4 +82,5 @@
 
 # 0.5.0
 
-The first public release
+The first public release.
+

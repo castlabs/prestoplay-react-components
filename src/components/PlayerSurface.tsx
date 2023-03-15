@@ -12,7 +12,7 @@ import {usePrestoUiEvent} from "../react";
 
 /**
  * The properties of the player surface. This is the element that receives
- * the prestoplay configuration.
+ * the PRESTOplay configuration.
  */
 export interface PlayerProps extends BasePlayerComponentProps {
   /**
@@ -29,7 +29,7 @@ export interface PlayerProps extends BasePlayerComponentProps {
   /**
    * Pass the plays inline flag to the video element. This is relevant for mobile
    * and iPad devices to decide if the playback can start embedded in the page or the
-   * player will go to full-screen mode and no overlay will be possible
+   * player will go to full-screen mode and no overlay will be possible.
    */
   playsInline?: boolean
 }
@@ -37,7 +37,7 @@ export interface PlayerProps extends BasePlayerComponentProps {
 /**
  * The Player Surface receives they player instance and a configuration
  * and renders the related video element. The component can be referenced, and
- * that ref can be use for instance to initiate full screen playback
+ * that ref can be use for instance to initiate full screen playback.
  */
 export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: PlayerProps, ref: ForwardedRef<HTMLDivElement>) => {
   const video = createRef<HTMLVideoElement>();
