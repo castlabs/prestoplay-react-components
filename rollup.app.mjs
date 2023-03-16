@@ -2,12 +2,18 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import postcss from 'rollup-plugin-postcss';
+import excludeDependenciesFromBundle from "rollup-plugin-exclude-dependencies-from-bundle";
 
 import serve from "rollup-plugin-serve";
 import livereload from "rollup-plugin-livereload";
 import replace from '@rollup/plugin-replace';
 import url from 'postcss-url';
 import image from '@rollup/plugin-image';
+
+/**
+ * @fileoverview Rollup configuration for local development & dev server.
+ * It builds ./app.
+ */
 
 export default [
   {
@@ -18,6 +24,10 @@ export default [
       sourcemap: true,
     },
     plugins: [
+      excludeDependenciesFromBundle({
+        peerDependencies: true,
+        dependencies: true,
+      }),
       image(),
       resolve({
         extensions: [".js"],

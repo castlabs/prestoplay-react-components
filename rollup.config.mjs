@@ -6,11 +6,11 @@ import glob from 'glob'
 import dts from 'rollup-plugin-dts';
 import url from "postcss-url";
 import copy from 'rollup-plugin-copy'
-import replace from "@rollup/plugin-replace";
-import commonjs from "@rollup/plugin-commonjs";
-import serve from "rollup-plugin-serve";
-import livereload from "rollup-plugin-livereload";
 
+/**
+ * @fileoverview Rollup configuration for building the library.
+ * It builds ./src.
+ */
 
 let allInputFiles = glob.sync("src/**/*.ts*");
 const entries = allInputFiles.reduce((p, f) => {
@@ -33,28 +33,25 @@ function libsTypescript() {
   });
 }
 
+const jsPlugins = [
+  external(),
+  resolve(),
+  libsTypescript(),
+  postcss(),
+]
+
 export default [
   // Build the individual module
   {
     input: entries,
     output: [{dir: "dist", format: 'esm'}],
-    plugins: [
-      external(),
-      resolve(),
-      libsTypescript(),
-      postcss()
-    ]
+    plugins: jsPlugins,
   },
   // build the packaged single file module
   {
     input: ['src/index.ts'],
     output: [{file: "dist/prestoplay-react.js", format: 'esm'}],
-    plugins: [
-      external(),
-      resolve(),
-      libsTypescript(),
-      postcss()
-    ]
+    plugins: jsPlugins,
   },
   // build the types for the single file module
   {
