@@ -77,7 +77,7 @@ export const MediaTailorPlayer = (props: Props) => {
         >
         <BaseThemeOverlay
           player={uiPlayer.current}
-          startButton={startButtonConfig}
+          startButton={props.autoplay ? false : startButtonConfig}
           posterUrl={props.poster}
           seekBackward={0}
           seekForward={0}
