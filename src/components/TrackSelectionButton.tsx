@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import {Track} from "../Track";
 import {BasePlayerComponentProps, classNames} from "../utils";
 import TrackLabel from "./TrackLabel";
@@ -10,8 +10,7 @@ export interface TrackSelectionButtonProps extends BasePlayerComponentProps {
   trackLabel?: TrackLabeler
 }
 
-export const TrackSelectionButton = (props: TrackSelectionButtonProps) => {
-
+export const TrackSelectionButton = memo((props: TrackSelectionButtonProps) => {
   const selectTrack = async () => {
     await props.player.selectTrack(props.track)
   }
@@ -31,5 +30,6 @@ export const TrackSelectionButton = (props: TrackSelectionButtonProps) => {
       <TrackLabel label={label()} selected={props.track.selected}/>
     </BaseButton>
   )
-}
+})
+
 export default TrackSelectionButton
