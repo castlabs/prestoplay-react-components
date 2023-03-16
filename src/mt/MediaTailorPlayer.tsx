@@ -20,6 +20,7 @@ type Props = {
     adPollingFrequencySeconds?: number
   }
   poster?: string,
+  autoplay?: boolean,
 }
 
 /**
@@ -49,17 +50,25 @@ export const MediaTailorPlayer = (props: Props) => {
     }
   }, [])
 
+  const play = async (config: Props['mediaTailorConfig']) => {
+    await pmiPlayer.current.playMediaTailor(config)
+    // FUTURE improve the way of starting playback via clpp.Player instead
+    // of via a prop. The mechanism is not fully ready yet, and that is why
+    // here I have to cal setConfigLoaded_()
+    uiPlayer.current.setConfigLoaded_()
+  }
+
+  useEffect(() => {
+    if (props.autoplay) {
+      play(props.mediaTailorConfig)
+    }
+  }, [props.mediaTailorConfig])
+
   const startButtonConfig = useMemo(() => {
     return {
-      onClick: async () => {
-        await pmiPlayer.current.playMediaTailor(props.mediaTailorConfig)
-        // FUTURE improve the way of starting playback via clpp.Player instead
-        // of via a prop. The mechanism is not fully ready yet, and that is why
-        // here I have to cal setConfigLoaded_()
-        uiPlayer.current.setConfigLoaded_()
-      }
+      onClick: () => play(props.mediaTailorConfig)
     }
-  }, [])
+  }, [props.mediaTailorConfig])
 
   return (
       <PlayerSurface

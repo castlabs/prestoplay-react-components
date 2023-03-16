@@ -19,6 +19,7 @@ export const MediaTailorPage = () => {
         adPollingFrequencySeconds: 5,
         adsParams: { device: "browser" }
       }}
+      autoplay
     />
   )
 }
