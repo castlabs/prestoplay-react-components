@@ -159,13 +159,39 @@ export const defaultTrackSorter: TrackSorter = (a: Track, b: Track) => {
  * Player states
  */
 export enum State {
+  /**
+   * 0 - when player has been created or released
+   */
   Idle = clpp.Player.State.IDLE,
+  /**
+   * 1 - when player receives the api command to load the movie until it starts
+   * requesting the first fragment
+   */
   Preparing = clpp.Player.State.PREPARING,
+  /**
+   * 2 - when player doesn't have enough data to play the content for any
+   * reasons
+   */
   Buffering = clpp.Player.State.BUFFERING,
+  /**
+   * 3 - when player starts playing content
+   */
   Playing = clpp.Player.State.PLAYING,
+  /**
+   * 4 - when player is stopped
+   */
   Paused = clpp.Player.State.PAUSED,
+  /**
+   * 5 - when video is ended
+   */
   Ended = clpp.Player.State.ENDED,
+  /**
+   * 6 - when player encounters an error
+   */
   Error = clpp.Player.State.ERROR,
+  /**
+   * 7 - Used exclusively to indicate previous state, when it has no state yet
+   */
   Unset = clpp.Player.State.UNSET
 }
 
