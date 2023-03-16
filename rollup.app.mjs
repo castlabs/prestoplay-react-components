@@ -2,7 +2,6 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import postcss from 'rollup-plugin-postcss';
-import excludeDependenciesFromBundle from "rollup-plugin-exclude-dependencies-from-bundle";
 
 import serve from "rollup-plugin-serve";
 import livereload from "rollup-plugin-livereload";
@@ -24,10 +23,6 @@ export default [
       sourcemap: true,
     },
     plugins: [
-      excludeDependenciesFromBundle({
-        peerDependencies: true,
-        dependencies: true,
-      }),
       image(),
       resolve({
         extensions: [".js"],
@@ -66,7 +61,7 @@ export default [
         verbose: true,
         contentBase: ["", "app", "app/src"],
         host: "0.0.0.0",
-        port: 3000,
+        port: "3000",
       }),
       livereload({
         watch: "app/dist",
