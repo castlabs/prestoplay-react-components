@@ -65,6 +65,10 @@ export interface DefaultTrackLabelerOptions extends TrackLabelerOptions {
    * The label that is used for unknown tracks, defaults to 'Unknown'
    */
   unknownTrackLabel?: string
+  /**
+   * If defined, the bitrate is shown for video tracks in the chosen units.
+   */
+  showVideoBitrate?: 'Mbps'
 }
 
 /**
@@ -109,7 +113,14 @@ export const defaultTrackLabel: TrackLabeler = (t: Track, player: Player, _optio
     if (!t.ppTrack.height) {
        return opts.unknownTrackLabel
     }
-    return t.ppTrack.height + "p"
+
+    let result = `${t.ppTrack.height}p`
+
+    if (opts.showVideoBitrate === 'Mbps' && t.ppTrack.bandwidth) {
+      result += ` (${(t.ppTrack.bandwidth / 1048576).toFixed(1)} Mbps)`
+    }
+
+    return result
   } else {
     if (t.label) {
       return t.label
