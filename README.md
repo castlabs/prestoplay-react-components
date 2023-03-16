@@ -8,7 +8,7 @@ and build video player user interfaces and controls.
 The library can be installed from NPM:
 
 ```
-npm install @castlabs/prestoplay-react-components
+npm install @castlabs/prestoplay-react-components@0.6.0-beta.2
 ```
 
 Install peer dependencies:

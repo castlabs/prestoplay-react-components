@@ -46,12 +46,14 @@ export default [
     input: entries,
     output: [{dir: "dist", format: 'esm'}],
     plugins: jsPlugins,
+    external: (id) => { return ['mux.js'].includes(id)}
   },
   // build the packaged single file module
   {
     input: ['src/index.ts'],
     output: [{file: "dist/prestoplay-react.js", format: 'esm'}],
     plugins: jsPlugins,
+    external: (id) => { return ['mux.js'].includes(id)}
   },
   // build the types for the single file module
   {
