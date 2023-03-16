@@ -93,15 +93,15 @@ export class PmiPlayer {
   }
 
   /**
-   * @param {string} uri media tailor asset URI
+   * @param {!MtAssetConfig} config MediaTailor asset config
    * @returns {Promise<void>} resolves when video playback starts
    */
-  async playMediaTailor(uri) {
-    // FUTURE allow load of paused video
+  async playMediaTailor(config) {
+    // FUTURE allow the load of paused video
     if (this.isStarted_) return
     this.isStarted_ = true
 
-    const mtSession = await Mt.initialize(new URL(uri), { supportedApiFrameworks: [API_FRAMEWORKS.INNOVID] })
+    const mtSession = await Mt.initialize(config, { supportedApiFrameworks: [API_FRAMEWORKS.INNOVID] })
     await this.startContentPlayback_(mtSession.getVideoUri())
 
     const timelineStart = await this.timelineStart_.promise

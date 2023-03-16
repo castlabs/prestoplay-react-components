@@ -17,7 +17,16 @@
  * 
  * @typedef {{
  *    supportedApiFrameworks: !Array<string>,
+ *    adPollingFrequencySeconds: (number|undefined),
  * }} MtSessionConfig
+ * 
+ * @param adPollingFrequencySeconds 
+ *  Program the player to poll the tracking URL periodically and manage ad avails accordingly.
+ *  Poll frequently enough to satisfy your reporting requirements. If you don't have set requirements,
+ *  poll at least once per manifest duration. For example, if the manifest is a 10-minute rolling window,
+ *  poll the tracking URL every 5 minutes. MediaTailor keeps mid-roll tracking data until all corresponding
+ *  segments are outside the manifest window.
+ *  @see {@link https://docs.aws.amazon.com/mediatailor/latest/ug/ad-reporting-client-side.html}
  */
 
 /**
@@ -98,4 +107,14 @@
  *   date: Date,
  *   startTimeSec: number
  * }} MtPlaybackTimelineStart
+ */
+
+/**
+ * Config for Media Tailor session initialization for playback of an asset.
+ * 
+ * @typedef {{
+ *    sessionUri: string,
+ *    adsParams: (Object|undefined),
+ *    adPollingFrequencySeconds: (number|undefined),
+ * }} MtAssetConfig
  */

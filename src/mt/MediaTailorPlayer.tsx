@@ -7,9 +7,17 @@ import { PmiPlayer } from "./services/pmi/pmiPlayer"
 import { configurePrestoComponents } from "./presto.js"
 
 type Props = {
-  config: { license?: string },
-  mediaTailorAsset: {
+  prestoConfig: { license?: string },
+  mediaTailorConfig: {
     sessionUri: string,
+    /**
+     * adsParams for sessionUri request.
+     */
+    adsParams?: Record<string, any>,
+    /**
+     * Default is 3 seconds.
+     */
+    adPollingFrequencySeconds?: number
   }
   poster?: string,
 }
@@ -44,7 +52,7 @@ export const MediaTailorPlayer = (props: Props) => {
   const startButtonConfig = useMemo(() => {
     return {
       onClick: async () => {
-        await pmiPlayer.current.playMediaTailor(props.mediaTailorAsset.sessionUri)
+        await pmiPlayer.current.playMediaTailor(props.mediaTailorConfig)
         // FUTURE improve the way of starting playback via clpp.Player instead
         // of via a prop. The mechanism is not fully ready yet, and that is why
         // here I have to cal setConfigLoaded_()
@@ -56,7 +64,7 @@ export const MediaTailorPlayer = (props: Props) => {
   return (
       <PlayerSurface
           player={uiPlayer.current}
-          baseConfig={props.config}
+          baseConfig={props.prestoConfig}
         >
         <BaseThemeOverlay
           player={uiPlayer.current}
@@ -70,5 +78,4 @@ export const MediaTailorPlayer = (props: Props) => {
   )
 }
 
-// FUTURE fix quality selection duplicates
 // FUTURE Transition to fullscreen has big graphic glitches.

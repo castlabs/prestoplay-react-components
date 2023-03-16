@@ -1,6 +1,6 @@
 {
   "name": "@castlabs/prestoplay-react-components",
-  "version": "0.6.0-beta.4",
+  "version": "0.6.0-beta.5",
   "description": "React components for PRESTOplay",
   "homepage": "https://github.com/castlabs/prestoplay-react-components",
   "main": "dist/prestoplay-react.js",

@@ -76,17 +76,16 @@ const resolveUri = (uri, path) => {
  * 
  * @see {@link https://docs.aws.amazon.com/mediatailor/latest/ug/ad-reporting-client-side.html | MediaTailor docs on client-side ad reporting}
  * 
- * @param {!URL} uri session initialization URI
+ * @param {!MtPlayConfig} assetConfig MediaTailor asset config
  * @param {!MtSessionConfig} config
  * @returns {!Session} MediaTailor session
  */
-export const initialize = async (uri, config) => {
+export const initialize = async (assetConfig, config) => {
+  const uri = new URL(assetConfig.sessionUri)
   const response = await fetch(uri, {
     method: "POST",
     body: JSON.stringify({
-      adsParams: {
-        /** Parameters for ad system */
-      }
+      adsParams: assetConfig.adsParams,
     })
   })
 
@@ -97,5 +96,5 @@ export const initialize = async (uri, config) => {
   - tracking URI: ${sessionInfo.trackingUri.toString()}
   - start date: ${sessionInfo.startDate.toISOString()}`)
 
-  return new Session(sessionInfo, config)
+  return new Session(sessionInfo, { ...config, adPollingFrequencySeconds: assetConfig.adPollingFrequencySeconds })
 }

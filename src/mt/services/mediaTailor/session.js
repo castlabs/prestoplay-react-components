@@ -2,17 +2,8 @@ import { API_FRAMEWORKS } from "../consts.js"
 import { logger } from "../log.js"
 import { Validator } from "../validate.js"
 
-/**
- * Program the player to poll the tracking URL periodically and manage ad avails accordingly.
- * Poll frequently enough to satisfy your reporting requirements. If you don't have set requirements,
- * poll at least once per manifest duration. For example, if the manifest is a 10-minute rolling window,
- * poll the tracking URL every 5 minutes. MediaTailor keeps mid-roll tracking data until all corresponding
- * segments are outside the manifest window.
- * @see {@link https://docs.aws.amazon.com/mediatailor/latest/ug/ad-reporting-client-side.html}
- * 
- * TODOMT so how often should this be done? Depends on MT team I think.
- */
-const ADS_POLL_INTERVAL_MS = 3_000
+
+const DEFAULT_AD_POLLING_FREQUENCY_SEC = 3
 
 /**
  * TODOMT get rid of all these workarounds
@@ -113,6 +104,11 @@ export class Session {
      * @type {!MtSessionConfig}
      */
     this.config_ = config
+    /**
+     * @type {number}
+     */
+    this.pollingFrequencySec_ = this.config_.adPollingFrequencySeconds ?? DEFAULT_AD_POLLING_FREQUENCY_SEC
+    console.log('this.pollingFrequencySec_: ', this.pollingFrequencySec_);
   }
 
   destroy() {
@@ -130,7 +126,7 @@ export class Session {
    */
   getNextAd() {
     return new Promise(async (resolve) => {
-      logger.info(`Started polling for MT ads, every ${Math.floor(ADS_POLL_INTERVAL_MS / 1000)} s.` +
+      logger.info(`Started polling for MT ads, every ${this.pollingFrequencySec_} s.` +
         ` (endpoint: ${this.info_.trackingUri})`)
       
       /**
@@ -283,7 +279,7 @@ export class Session {
       if (ads[0]) {
         callback(ads[0])
       }
-    }, ADS_POLL_INTERVAL_MS)
+    }, this.pollingFrequencySec_ * 1000)
   }
 
   _stopPollingForAds() {
