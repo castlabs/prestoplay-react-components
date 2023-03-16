@@ -3,32 +3,37 @@ import {BasePlayerComponentProps, classNames} from "../utils";
 import {TrackType} from "../Track";
 import TrackSelectionButton from "./TrackSelectionButton";
 import {usePrestoUiEvent} from "../react";
+import Player from "../Player";
 
 export interface TrackSelectionListProps extends BasePlayerComponentProps {
   type: TrackType
 }
 
-export const TrackSelectionList = (props: TrackSelectionListProps) => {
-  let [tracks, setTracks] = useState(props.player[`${props.type}Tracks`]);
+const useTracks = (player: Player, type: TrackType) => {
+  const [tracks, setTracks] = useState(player[`${type}Tracks`]);
 
-  usePrestoUiEvent(`${props.type}TracksAvailable`, props.player, (tracks) => {
+  usePrestoUiEvent(`${type}TracksAvailable`, player, (tracks) => {
     setTracks(tracks)
   })
 
-  usePrestoUiEvent(`${props.type}TrackChanged`, props.player, (track) => {
-    setTracks(props.player[`${props.type}Tracks`])
+  usePrestoUiEvent(`${type}TrackChanged`, player, () => {
+    setTracks(player[`${type}Tracks`])
   })
 
-  let renderSelectionButtons = () => tracks.map(t => {
-    return <TrackSelectionButton track={t} player={props.player} key={`${t.type}-${t.id}`}/>
-  })
+  return tracks
+}
+
+export const TrackSelectionList = (props: TrackSelectionListProps) => {
+  const tracks = useTracks(props.player, props.type)
 
   return (
     <div style={props.style} className={classNames({
       "pp-ui": true,
       "pp-ui-track-selection-list": true,
     }, props.className)}>
-      {renderSelectionButtons()}
+      {tracks.map(t => {
+        return <TrackSelectionButton key={`${t.type}-${t.id}`} track={t} player={props.player}/>
+      })}
     </div>
   )
 }
