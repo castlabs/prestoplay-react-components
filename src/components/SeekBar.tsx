@@ -3,6 +3,7 @@ import Slider from "./Slider";
 import {BasePlayerComponentProps, p} from "../utils";
 import Thumbnail from "./Thumbnail";
 import {usePrestoEnabledState, usePrestoUiEvent} from "../react";
+import Player from "../Player";
 
 export interface SeekBarProps extends BasePlayerComponentProps {
   adjustWhileDragging?: boolean
@@ -11,6 +12,12 @@ export interface SeekBarProps extends BasePlayerComponentProps {
   keyboardSeekForward?: number
   keyboardSeekBackward?: number
   notFocusable?: boolean
+  enabled?: boolean
+}
+
+const useEnabled = (player: Player, enabled: boolean) => {
+  const playerEnabled = usePrestoEnabledState(player)
+  return enabled && playerEnabled
 }
 
 export const SeekBar = forwardRef((props: SeekBarProps, ref: ForwardedRef<HTMLDivElement>) => {
@@ -18,7 +25,7 @@ export const SeekBar = forwardRef((props: SeekBarProps, ref: ForwardedRef<HTMLDi
   let [hoverPosition, setHoverPosition] = useState(-1)
   let [hoverValue, setHoverValue] = useState(0)
   let [thumbWidth, setThumbWidth] = useState(0)
-  let enabled = usePrestoEnabledState(props.player);
+  const enabled = useEnabled(props.player, props.enabled ?? true)
 
   function updateFromPlayer(position?: number): number {
     const player = props.player

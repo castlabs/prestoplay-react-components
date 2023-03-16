@@ -63,6 +63,10 @@ export interface BaseThemeOverlayProps extends BasePlayerComponentProps {
    * to -10. 0 will disable the seek back button.
    */
   seekBackward?: number
+  /**
+   * If false, the seekbar will be shown but disabled. Defaults to true.
+   */
+  seekbarEnabled?: boolean
 }
 
 export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
@@ -126,7 +130,8 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
             <SeekButton player={props.player} seconds={p(props.seekForward, 10)}/>
             <SeekBar player={props.player} adjustWhileDragging={true}
                      adjustWithKeyboard={true}
-                     enableThumbnailSlider={false}/>
+                     enableThumbnailSlider={false}
+                     enabled={props.seekbarEnabled}/>
 
             <CurrentTime player={props.player}/>
             <Label label={"/"}/>
