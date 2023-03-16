@@ -20,6 +20,7 @@ export const MediaTailorPage = () => {
         adsParams: { device: "browser" }
       }}
       autoplay
+      mute
     />
   )
 }

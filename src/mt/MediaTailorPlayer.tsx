@@ -21,6 +21,7 @@ type Props = {
   }
   poster?: string,
   autoplay?: boolean,
+  mute?: boolean,
 }
 
 /**
@@ -52,6 +53,11 @@ export const MediaTailorPlayer = (props: Props) => {
 
   const play = async (config: Props['mediaTailorConfig']) => {
     await pmiPlayer.current.playMediaTailor(config)
+
+    if (props.mute) {
+      uiPlayer.current.muted = true
+    }
+    
     // FUTURE improve the way of starting playback via clpp.Player instead
     // of via a prop. The mechanism is not fully ready yet, and that is why
     // here I have to cal setConfigLoaded_()
