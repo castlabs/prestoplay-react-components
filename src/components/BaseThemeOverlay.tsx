@@ -64,9 +64,10 @@ export interface BaseThemeOverlayProps extends BasePlayerComponentProps {
    */
   seekBackward?: number
   /**
-   * If false, the seekbar will be shown but disabled. Defaults to true.
+   * Seekbar configuration. Defaults to 'enabled'. 'disabled' displays a disabled
+   * seekbar, 'none' hides the seekbar.
    */
-  seekbarEnabled?: boolean
+  seekBar?: 'enabled' | 'disabled' | 'none'
 }
 
 export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
@@ -128,11 +129,13 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
             <PlayPauseButton player={props.player} resetRate={true}/>
             <SeekButton player={props.player} seconds={p(props.seekBackward, -10)}/>
             <SeekButton player={props.player} seconds={p(props.seekForward, 10)}/>
-            <SeekBar player={props.player} adjustWhileDragging={true}
-                     adjustWithKeyboard={true}
-                     enableThumbnailSlider={false}
-                     enabled={props.seekbarEnabled}/>
-
+            {props.seekBar === 'none' ? null : <SeekBar
+                player={props.player}
+                adjustWhileDragging={true}
+                adjustWithKeyboard={true}
+                enableThumbnailSlider={false}
+                enabled={(props.seekBar ?? 'enabled') === 'enabled'}
+              />}
             <CurrentTime player={props.player}/>
             <Label label={"/"}/>
             <Duration player={props.player}/>

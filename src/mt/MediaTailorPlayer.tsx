@@ -87,7 +87,7 @@ export const MediaTailorPlayer = (props: Props) => {
           posterUrl={props.poster}
           seekBackward={0}
           seekForward={0}
-          seekbarEnabled={false}
+          seekBar='none'
         />
       </PlayerSurface>
   )
