@@ -54,20 +54,34 @@
     --pp-ui-controls-animation-time: 250ms;
     --pp-ui-overlay-menu-animation-time: 250ms;
 
+    /* Margins padding */
+    --pp-ui-margin-sm: 0.5em;
+
     color: var(--pp-fg-color);
     font-family: sans-serif;
+}
+
+.pp-ui-margin-horizontal-sm {
+  margin-left: var(--pp-ui-margin-sm);
+  margin-right: var(--pp-ui-margin-sm);
+}
+
+.pp-ui-row {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  column-gap: var(--pp-ui-bar-gap);
+}
+
+.pp-ui-flex-space-between {
+  justify-content: space-between;
 }
 
 .pp-ui-horizontal-bar {
     background-color: var(--pp-horizontal-bar-bg-color);
     padding: 0;
-
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    column-gap: var(--pp-ui-bar-gap);
 }
 
 .pp-ui-vertical-bar {

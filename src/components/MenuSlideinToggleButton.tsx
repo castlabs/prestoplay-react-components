@@ -31,7 +31,7 @@ export const MenuSlideinToggleButton = (props: MenuSlideinToggleProps) => {
   // @ts-ignore
   return (
     <BaseButton onClick={toggle} disableIcon={false} disabled={!enabled} ref={ref}
-                className={`pp-ui-slideinmenu-toggle ${props.className || ''}`}>
+                className={`pp-ui-slideinmenu-toggle ${props.className ?? ''}`}>
       {props.children}
     </BaseButton>
   );

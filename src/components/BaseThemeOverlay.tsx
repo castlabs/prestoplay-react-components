@@ -75,8 +75,14 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
 
   const renderOptionsMenuButton = () => {
     if(!selectionOptions || selectionOptions.length == 0) return
-    return <MenuSlideinToggleButton player={props.player}/>
+    
+    return (
+      <div className="pp-ui-margin-horizontal-sm">
+        <MenuSlideinToggleButton player={props.player} />
+      </div>
+    )
   }
+
   const renderOptionsMenu = () => {
     if(!selectionOptions || selectionOptions.length == 0) return
     return <MenuSlidein player={props.player} selectionOptions={selectionOptions}/>
@@ -125,26 +131,31 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
                        moveRelativeToParent={true}/>
           </HorizontalBar>
 
-          <HorizontalBar>
-            <PlayPauseButton player={props.player} resetRate={true}/>
-            <SeekButton player={props.player} seconds={p(props.seekBackward, -10)}/>
-            <SeekButton player={props.player} seconds={p(props.seekForward, 10)}/>
-            {props.seekBar === 'none' ? null : <SeekBar
+          <HorizontalBar className="pp-ui-flex-space-between">
+            <div className="pp-ui-row pp-ui-margin-horizontal-sm">
+              <PlayPauseButton player={props.player} resetRate={true}/>
+              <SeekButton player={props.player} seconds={p(props.seekBackward, -10)}/>
+              <SeekButton player={props.player} seconds={p(props.seekForward, 10)}/>
+
+              {props.seekBar === 'none' ? null : <SeekBar
                 player={props.player}
                 adjustWhileDragging={true}
                 adjustWithKeyboard={true}
                 enableThumbnailSlider={false}
                 enabled={(props.seekBar ?? 'enabled') === 'enabled'}
               />}
-            <CurrentTime player={props.player}/>
-            <Label label={"/"}/>
-            <Duration player={props.player}/>
+            </div>
+            
+            <div className="pp-ui-row pp-ui-margin-horizontal-sm">
+              <CurrentTime player={props.player}/>
+              <Label label={"/"}/>
+              <Duration player={props.player}/>
 
-            <MuteButton player={props.player}/>
-            <VolumeBar player={props.player} adjustWhileDragging={true}/>
+              <MuteButton player={props.player}/>
+              <VolumeBar player={props.player} adjustWhileDragging={true}/>
 
-            {renderFullscreenButton()}
-
+              {renderFullscreenButton()}  
+            </div>
           </HorizontalBar>
 
         </VerticalBar>
