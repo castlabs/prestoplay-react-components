@@ -65,6 +65,10 @@ export class PmiPlayer {
   /**
    * @type {?function}
    */
+  onAdBlocked = null
+  /**
+   * @type {?function}
+   */
   onAdEnded = null
   /**
    * @type {!Array<function>}
@@ -161,6 +165,8 @@ export class PmiPlayer {
     this.ad_.setEventListener((event) => {
       if (event.type === 'ended') {
         this.onAdEnded?.()
+      } else if (event.type === 'ad-blocked') {
+        this.onAdBlocked?.()
       }
     })
     

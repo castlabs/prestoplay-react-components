@@ -114,6 +114,8 @@ export class InnovidAd extends AdInterface {
   constructor(ad, anchorElement, adParams) {
     super()
 
+    // TODO remove iframe after some when blocked by ad block
+
     /**
      * @type {!AdParams} ad parameters
      */
@@ -131,6 +133,10 @@ export class InnovidAd extends AdInterface {
      */
     this.iframe_ = null
     /**
+     * @type {boolean} whether ad/iframe is ready to receive messages.
+     */
+    this.adReady_ = false
+    /**
      * @type {!HTMLElement}
      */
     this.anchor_ = anchorElement
@@ -138,6 +144,10 @@ export class InnovidAd extends AdInterface {
      * @type {string} HTTP origin of this ad
      */
     this.adOrigin_ = new URL(this.ad_.iFrameResource).origin
+    /**
+     * @type {?AdEventListener} event listener
+     */
+    this.listener_ = null
   }
 
   /**
@@ -148,7 +158,7 @@ export class InnovidAd extends AdInterface {
    * @param {number} playback position in seconds (of content / content with SSAI)
    */
   notify(playbackState, playbackPositionSec) {
-    if (!this.iframe_) return
+    if (!this.adReady_) return
 
     const position = Math.max(0, playbackPositionSec - this.ad_.positionSec)
     // logger.info(`notify (state: ${playbackState}, position: ${playbackPositionSec} s)`)
@@ -169,6 +179,8 @@ export class InnovidAd extends AdInterface {
    * @param {!AdEventListener} listener 
    */
   setEventListener(listener) {
+    this.listener_ = listener
+
     this.onEvent_ = (innoEvent) => {
       const event = convertEvent(innoEvent)
       if (event) {
@@ -215,7 +227,9 @@ export class InnovidAd extends AdInterface {
       if (valid(data)) {
         // logger.info(`Innovid ad event: ${data.type}`, data.params)
 
-        if (data.type === 'iroll-ended') {
+        if (data.type === 'iroll-ready') {
+          this.adReady_ = true
+        } else if (data.type === 'iroll-ended') {
           this.destroy_()
         }
 
@@ -227,11 +241,31 @@ export class InnovidAd extends AdInterface {
 
     window.addEventListener("message", listener)
 
+    /**
+     * If the iframe is ad-blocked, there is not way to detect it.
+     * So I assume that if 3 seconds pass and the ad is still not ready, it has been ad-blocked
+     * and therefore I destroy the iframe and the ad itself.
+     */
+    let timeoutId = setTimeout(() => {
+      if (!this.adReady_) {
+        logger.warn('Innovid ad is not ready after 3s, it has likely been ad-blocked, destroying it.')
+        this.destroy_()
+        this.listener_?.({ type: 'ad-blocked' })
+      }
+
+      timeoutId = null
+    }, 3000)
+
     this.disposers_.push(() => {
       window.removeEventListener("message", listener)
       this.anchor_.removeChild(this.iframe_)
       this.iframe_.src = ''
       this.iframe_ = null
+
+      if (timeoutId != null) {
+        clearTimeout(timeoutId)
+        timeoutId = null
+      }
     })
   }
 

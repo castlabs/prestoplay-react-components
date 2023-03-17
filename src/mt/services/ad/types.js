@@ -7,7 +7,7 @@
  * }} AdEvent
  * 
  * @param {string} type := 'ready'|'progress'|'impression'|'started'|'first-quartile'|'midpoint'
- *    |'third-quartile'|'completed'|'ended'
+ *    |'third-quartile'|'completed'|'ended'|'ad-blocked'
  */
 
 /**
