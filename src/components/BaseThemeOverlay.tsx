@@ -122,15 +122,18 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
       <PlayerControls player={props.player}>
         <VerticalBar className={"pp-ui-spacer"}>
 
+          {/* Top bar */}
           {renderTopBar()}
 
           <Spacer/>
 
+          {/* Thumbnails */}
           <HorizontalBar className={"pp-ui-transparent"}>
             <Thumbnail player={props.player} listenToHover={true}
                        moveRelativeToParent={true}/>
           </HorizontalBar>
 
+          {/* Bottom bar */}
           <HorizontalBar className="pp-ui-flex-space-between">
             <div className="pp-ui-row pp-ui-margin-horizontal-sm">
               <PlayPauseButton player={props.player} resetRate={true}/>
