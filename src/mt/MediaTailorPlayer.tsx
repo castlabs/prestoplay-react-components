@@ -7,8 +7,23 @@ import { PmiPlayer } from "./services/pmi/pmiPlayer"
 import { configurePrestoComponents } from "./presto.js"
 
 type Props = {
-  prestoConfig: { license?: string },
+  /**
+   * PRESTOplay player configuration.
+   */
+  prestoConfig: {
+    /**
+     * License can be undefined for development purposes on localhost. Otherwise it is required.
+     * A license can be obtained from castLabs for a specific domain.
+     */
+    license?: string
+  },
+  /**
+   * MediaTailor session configuration.
+   */
   mediaTailorConfig: {
+    /**
+     * MediaTailor session URI.
+     */
     sessionUri: string,
     /**
      * adsParams for sessionUri request.
@@ -19,9 +34,22 @@ type Props = {
      */
     adPollingFrequencySeconds?: number
   }
+  /**
+   * Poster image to display before video playback is requested.
+   */
   poster?: string,
+  /**
+   * Autoplay the video immediately Note: that classic browser auto-play rules and limitations apply here.
+   */
   autoplay?: boolean,
+  /**
+   * Start the player with muted volume. By default not muted.
+   */
   mute?: boolean,
+  /**
+   * Enable video quality selection. By default disabled.
+   */
+  enableQualitySelection?: boolean,
 }
 
 /**
@@ -88,6 +116,7 @@ export const MediaTailorPlayer = (props: Props) => {
           seekBackward={0}
           seekForward={0}
           seekBar='none'
+          menuSelectionOptions={props.enableQualitySelection ? undefined : []}
         />
       </PlayerSurface>
   )

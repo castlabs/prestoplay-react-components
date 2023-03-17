@@ -11,16 +11,28 @@ import "@castlabs/prestoplay-react-components/dist/themes/pp-ui-base-theme-embed
 
 export const MediaTailorPage = () => {
   return (
-    <MediaTailorPlayer
-      poster={poster}
-      prestoConfig={{ license: undefined }}
-      mediaTailorConfig={{
-        sessionUri: "https://ea79f0b35bb24fc99b4961286dc218a0.mediatailor.us-west-2.amazonaws.com/v1/session/94063eadf7d8c56e9e2edd84fdf897826a70d0df/client-side-overlays-nab/hls.m3u8",
-        adPollingFrequencySeconds: 5,
-        adsParams: { device: "browser" }
-      }}
-      autoplay
-      mute
-    />
+    <div>
+        <MediaTailorPlayer
+          poster={poster}
+          prestoConfig={{ license: undefined }}
+          mediaTailorConfig={{
+            sessionUri: "https://ea79f0b35bb24fc99b4961286dc218a0.mediatailor.us-west-2.amazonaws.com/v1/session/94063eadf7d8c56e9e2edd84fdf897826a70d0df/client-side-overlays-nab/hls.m3u8",
+            adPollingFrequencySeconds: 5,
+            adsParams: { device: "browser" }
+          }}
+          mute
+        />
+        <MediaTailorPlayer
+          poster={poster}
+          prestoConfig={{ license: undefined }}
+          mediaTailorConfig={{
+            sessionUri: "https://ea79f0b35bb24fc99b4961286dc218a0.mediatailor.us-west-2.amazonaws.com/v1/session/94063eadf7d8c56e9e2edd84fdf897826a70d0df/client-side-overlays-nab/hls.m3u8",
+            adPollingFrequencySeconds: 5,
+            adsParams: { device: "browser" }
+          }}
+          mute
+          enableQualitySelection
+        />
+    </div>
   )
 }
