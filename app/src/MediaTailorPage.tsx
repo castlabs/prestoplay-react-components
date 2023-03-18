@@ -3,11 +3,9 @@ import { MediaTailorPlayer } from '../../src/mt/MediaTailorPlayer'
 // @ts-ignore
 import poster from '../assets/poster.png'
 
-// TODO into manual
 import "@castlabs/prestoplay/clpp.styles.css"
-// TODO into manual
 import "@castlabs/prestoplay-react-components/dist/themes/pp-ui-base-theme-embedded.css"
-
+import "./mt.css"
 
 export const MediaTailorPage = () => {
   return (

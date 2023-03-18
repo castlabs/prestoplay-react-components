@@ -4,6 +4,7 @@ import { InnovidAd } from "../ad/innovid/InnovidAd.js"
 import { Mt } from "../mediaTailor/index.js"
 import { API_FRAMEWORKS } from "../consts.js"
 import { SmartPromise } from "../promise.js"
+import {fleet} from '../fleet/PrestoFleet.js'
 
 /**
  * @fileoverview Integration of PRESTOPlay with MediaTailor.
@@ -94,6 +95,8 @@ export class PmiPlayer {
 
     this.anchor_ = this.adParams_.anchorElement
     this.anchor_.style.position = 'relative'
+
+    fleet.add(prestoPlayer)
   }
 
   /**
