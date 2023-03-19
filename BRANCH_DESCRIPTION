@@ -1,0 +1,14 @@
+This is a dedicated branch for the purposes of a demo with AWS MediaTailor for the NAB 2023 show.
+Ticket: https://castlabs.atlassian.net/browse/DE-6364. This is basically a draft of MediaTailor integration.
+
+If the demo goes well and we decide to integrate MediaTailor support into our player, code from this branch
+should be moved to @castlabs/prestoplay and integrated there as an options plugin.
+
+AWS team will receive from us @castlabs/prestoplay-react-components@0.6.0-beta.* NPM package with the `MediaTailorPlayer`
+component that they will use to build the demo.
+
+Instructions:
+- Do NOT merge this branch. (It is not intended to be merged.)
+- Do NOT delete this branch. (We may want to move it to @castlabs/prestoplay.)
+- Do NOT force push this branch. (It contains version tags of 0.6.0-beta.*, we do not want to lose those commits.)
+- Improvements that are not specific to the demo will be cherry-picked onto the `main` branch.
