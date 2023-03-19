@@ -19,6 +19,7 @@ export const MediaTailorPage = () => {
             adsParams: { device: "browser" }
           }}
           mute
+          enableFleet={false}
         />
         <MediaTailorPlayer
           poster={poster}
@@ -30,6 +31,7 @@ export const MediaTailorPage = () => {
           }}
           mute
           enableQualitySelection
+          enableFleet={false}
         />
     </div>
   )

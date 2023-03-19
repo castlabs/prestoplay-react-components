@@ -95,8 +95,10 @@ export class PmiPlayer {
 
     this.anchor_ = this.adParams_.anchorElement
     this.anchor_.style.position = 'relative'
+  }
 
-    fleet.add(prestoPlayer)
+  fleet() {
+    fleet.add(this.player_)
   }
 
   /**

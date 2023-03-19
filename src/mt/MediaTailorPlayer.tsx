@@ -5,6 +5,7 @@ import { BaseThemeOverlay } from '../components/BaseThemeOverlay'
 import { Player } from '../Player'
 import { PmiPlayer } from "./services/pmi/pmiPlayer"
 import { configurePrestoComponents } from "./presto.js"
+import { logger } from "./services/log"
 
 type Props = {
   /**
@@ -50,12 +51,20 @@ type Props = {
    * Enable video quality selection. By default disabled.
    */
   enableQualitySelection?: boolean,
+  /**
+   * When enabled, if multiple players are rendered, they will auto-sync to provide
+   * smooth side-by-side playback of the same frames (same playback position/time).
+   * By default enabled.
+   */
+  enableFleet?: boolean,
 }
 
 /**
  * Player that plays MediaTailor stream.
  */
 export const MediaTailorPlayer = (props: Props) => {
+  const isFleetEnabled = props.enableFleet !== false
+
   const pmiPlayer = useRef<any>(null)
   const uiPlayer = useRef(new Player(pp => {
     configurePrestoComponents(pp)
@@ -66,6 +75,10 @@ export const MediaTailorPlayer = (props: Props) => {
       // FUTURE improve this
       anchorElement: document.getElementsByTagName('video')[0].parentElement,
     })
+
+    if (isFleetEnabled) {
+      pmiPlayer.current.fleet()
+    }
   }))
 
   useEffect(() => {
@@ -76,6 +89,10 @@ export const MediaTailorPlayer = (props: Props) => {
       disabledTrackLabel: "Off",
       unknownTrackLabel: "Unknown",
       showVideoBitrate: 'Mbps',
+    }
+
+    if (isFleetEnabled) {
+      logger.info('Fleet enabled')
     }
   }, [])
 
