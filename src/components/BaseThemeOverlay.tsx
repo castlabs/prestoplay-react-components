@@ -136,7 +136,7 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
           {/* Bottom bar */}
           <HorizontalBar className="pp-ui-flex-space-between">
             <div className="pp-ui-row pp-ui-margin-horizontal-sm">
-              <PlayPauseButton player={props.player} resetRate={true}/>
+              <PlayPauseButton player={props.player}/>
               <SeekButton player={props.player} seconds={p(props.seekBackward, -10)}/>
               <SeekButton player={props.player} seconds={p(props.seekForward, 10)}/>
 

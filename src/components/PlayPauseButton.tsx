@@ -12,6 +12,9 @@ export interface PlayPauseButtonProps extends BasePlayerComponentButtonProps {
    * If set to true, the button will change to the non-playing state if the
    * playback rate is not 1 and will, when clicked, change the playback rate
    * back to 1.
+   * 
+   * TODO this seems wrong from when you are playing at a different rate (0.5, 2 etc.)
+   * what is the purpose of this?
    */
   resetRate?: boolean
 }
