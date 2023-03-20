@@ -7,7 +7,7 @@ export interface HorizontalBarProps extends BaseComponentProps{
 
 export const HorizontalBar = (props: HorizontalBarProps) => {
   return (
-    <div className={`pp-ui pp-ui-horizontal-bar ${props.className || ''}`} style={props.style}>
+    <div className={`pp-ui pp-ui-row pp-ui-horizontal-bar ${props.className || ''}`} style={props.style}>
       {props.children}
     </div>
   );
