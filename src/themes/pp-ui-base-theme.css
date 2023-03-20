@@ -281,9 +281,7 @@
 }
 
 .pp-ui-spinner-loading .pp-ui-icon {
-    -webkit-mask: var(--pp-ui-icon-spinner);
-    mask: var(--pp-ui-icon-spinner);
-    background-color: var(--pp-fg-color);
+    background: var(--pp-ui-icon-spinner);
     width: 100%;
     height: 100%;
     visibility: visible;
@@ -663,7 +661,6 @@
     right: 0;
     bottom: 0;
     margin: auto;
-    height: fit-content;
 }
 
 .pp-ui-enabled {
