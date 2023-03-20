@@ -40,6 +40,8 @@
 ## Improvements and fixes
 
 * Update `@castlabs/prestoplay` to v6.2.7.
+* Add `Player.trackLabelerOptions.showVideoBitrate` option to configure track selection UI. This is useful for videos
+  which have multiple qualities of same resolution but at different bitrates.
 * Fix an issue with `BufferingIndicator` where it was not visible.
 * Extend `BaseThemeOverlay.startButton` prop. Now it can be passed a config object `{ onClick?: () => Promise<void> }`
   which can override the default on-click behavior.
