@@ -16,7 +16,7 @@
   "module": "dist/index.js",
   "types": "dist/prestoplay-react.d.ts",
   "scripts": {
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm run build && npx es-check es5 ./dist/prestoplay-react.cjs.min.js",
     "build": "rollup -c rollup.config.lib.mjs",
     "start": "rollup -c rollup.config.app.mjs -w",
     "test": "jest",
