@@ -83,14 +83,14 @@ const options = [
   // build the types for the single file module
   {
     input: 'dist/index.d.ts',
-    output: [{file: 'dist/prestoplay-react.d.ts', format: "esm"}],
+    output: [{ file: 'dist/prestoplay-react.d.ts' }],
     external: [/\.css$/],
     plugins: [dts()],
   },
   // build the themes
   {
     input: 'src/themes/pp-ui-base-theme.css',
-    output: [{file: 'dist/themes/pp-ui-base-theme.css', format: 'es'}],
+    output: [{ file: 'dist/themes/pp-ui-base-theme.css' }],
     plugins: [
       postcss({
         modules: false,
@@ -105,7 +105,7 @@ const options = [
   },
   {
     input: 'src/themes/pp-ui-base-theme.css',
-    output: [{file: 'dist/themes/pp-ui-base-theme-embedded.css', format: 'es'}],
+    output: [{ file: 'dist/themes/pp-ui-base-theme-embedded.css' }],
     plugins: [postcss({
       plugins: [
         url({
