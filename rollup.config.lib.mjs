@@ -37,6 +37,16 @@ const BASE_CONFIG_JS = {
   ],
 }
 
+const assertNoJsFiles = () => {
+  const jsFiles = glob.sync("src/**/*.{js,jsx}")
+
+  if (jsFiles.length > 0) {
+    throw new Error(`Source code contains JS files. The build process does NOT support that. Files: ${jsFiles}`)
+  }
+}
+
+assertNoJsFiles()
+
 /**
  * @type {import('rollup').RollupOptions[]}
  */
