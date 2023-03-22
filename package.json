@@ -13,8 +13,6 @@
     "test:watch": "jest --watch"
   },
   "files": [
-    "RAEDME.md",
-    "LICENSE",
     "dist/**"
   ],
   "license": "Apache-2.0",
