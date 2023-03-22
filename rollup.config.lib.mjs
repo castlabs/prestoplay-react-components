@@ -25,7 +25,9 @@ function libsTypescript() {
     tsconfig: './tsconfig.json',
     include: [
       "./src/**/*.tsx",
-      "./src/**/*.ts"
+      "./src/**/*.ts",
+      "./src/**/*.jsx",
+      "./src/**/*.js",
     ]
   });
 }
