@@ -37,6 +37,26 @@ const BASE_CONFIG_JS = {
   ],
 }
 
+/**
+ * Common config for compilation of CSS files.
+ *
+ * @type {import('rollup').RollupOptions}
+ */
+const BASE_CONFIG_CSS = {
+  input: 'src/themes/pp-ui-base-theme.css',
+  onwarn(warning, warn) {
+    /**
+     * When building rollup-plugin-postcss Rollup emits a false file-overwrite warning.
+     * Ignore it.
+     */
+    if (warning.code === "FILE_NAME_CONFLICT") {
+      return
+    }
+
+    warn(warning);
+  }
+}
+
 const assertNoJsFiles = () => {
   const jsFiles = glob.sync("src/**/*.{js,jsx}")
 
@@ -87,35 +107,41 @@ const options = [
     external: [/\.css$/],
     plugins: [dts()],
   },
-  // build the themes
-  {
-    input: 'src/themes/pp-ui-base-theme.css',
+
+  // Build the CSS styles/themes.
+  merge(BASE_CONFIG_CSS, {
     output: [{ file: 'dist/themes/pp-ui-base-theme.css' }],
     plugins: [
       postcss({
-        modules: false,
-        extract: true
+        extract: true,
+        minimize: true,
       }),
+      // Copy icons over to dist.
       copy({
         targets: [
-          {src: 'src/themes/resources/**', dest: 'dist/themes/resources'},
+          {
+            src: 'src/themes/resources/**',
+            dest: 'dist/themes/resources',
+          },
         ]
       })
     ],
-  },
-  {
-    input: 'src/themes/pp-ui-base-theme.css',
+  }),
+  // Build CSS styles/theme with in-lined SVG icons.
+  merge(BASE_CONFIG_CSS, { 
     output: [{ file: 'dist/themes/pp-ui-base-theme-embedded.css' }],
-    plugins: [postcss({
-      plugins: [
-        url({
-          url: "inline"
-        })
-      ],
-      modules: false,
-      extract: true
-    })],
-  }
+    plugins: [
+      postcss({
+        plugins: [
+          url({
+            url: "inline"
+          })
+        ],
+        extract: true,
+        minimize: true,
+      }),
+    ],
+  }),
 ]
 
 export default options;
