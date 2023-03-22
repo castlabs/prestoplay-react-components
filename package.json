@@ -6,7 +6,7 @@
   "main": "dist/prestoplay-react.js",
   "types": "dist/prestoplay-react.d.ts",
   "scripts": {
-    "prepare": "rm -rf dist && npm run build",
+    "prepare": "npm run build",
     "build": "rollup -c rollup.config.lib.mjs",
     "start": "rollup -c rollup.config.app.mjs -w",
     "test": "jest",
@@ -41,6 +41,7 @@
     "rollup-jest": "^3.1.0",
     "rollup-merge-config": "^0.0.12",
     "rollup-plugin-copy": "^3.4.0",
+    "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^5.0.0",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-peer-deps-external": "^2.2.4",

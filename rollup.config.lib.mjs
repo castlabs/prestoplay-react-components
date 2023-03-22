@@ -1,13 +1,14 @@
-import resolve from '@rollup/plugin-node-resolve';
-import typescript from '@rollup/plugin-typescript';
-import external from 'rollup-plugin-peer-deps-external';
-import postcss from 'rollup-plugin-postcss';
-import glob from 'glob'
-import dts from 'rollup-plugin-dts';
-import url from "postcss-url";
 import copy from 'rollup-plugin-copy';
-import untypedMerge from 'rollup-merge-config';
+import deleteFiles from 'rollup-plugin-delete';
+import dts from 'rollup-plugin-dts';
+import external from 'rollup-plugin-peer-deps-external';
+import glob from 'glob'
+import postcss from 'rollup-plugin-postcss';
+import resolve from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
+import typescript from '@rollup/plugin-typescript';
+import untypedMerge from 'rollup-merge-config';
+import url from "postcss-url";
 
 
 /**
@@ -53,6 +54,9 @@ const options = [
   merge(BASE_CONFIG_JS, {
     input: entries,
     output: [{ dir: "dist", format: 'esm' }],
+    plugins: [
+      deleteFiles({ targets: 'dist/*' }),
+    ],
   }),
   // build the packaged single file module
   merge(BASE_CONFIG_JS,{
