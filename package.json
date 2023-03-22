@@ -4,6 +4,7 @@
   "description": "React components for PRESTOplay",
   "homepage": "https://github.com/castlabs/prestoplay-react-components",
   "main": "dist/prestoplay-react.cjs.min.js",
+  "module": "dist/index.js",
   "types": "dist/prestoplay-react.d.ts",
   "scripts": {
     "prepare": "npm run build",
