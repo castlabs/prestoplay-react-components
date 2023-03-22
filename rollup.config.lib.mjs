@@ -94,12 +94,17 @@ const options = [
   }),
 
   // Build a UMD bundle.
-  merge(BASE_CONFIG_JS,{
+  merge(BASE_CONFIG_JS, {
     input: ['src/index.ts'],
-    output: [{ file: "dist/prestoplay-react.js", format: 'esm' }],
-    plugins: [
-      terser(), // minify
-    ],
+    output: [{
+      file: "dist/prestoplay-react.cjs.min.js",
+      /**
+       * CJS is good enough, no need to use UMD, because React is in CJS
+       * format as well.
+       */
+      format: 'cjs',
+    }],
+    plugins: [terser()],
   }),
 
   // Build TS typings for the bundle.
