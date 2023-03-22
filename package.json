@@ -3,6 +3,15 @@
   "version": "0.5.0",
   "description": "React components for PRESTOplay",
   "homepage": "https://github.com/castlabs/prestoplay-react-components",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/castlabs/prestoplay-react-components"
+  },
+  "bugs": {
+    "url": "https://github.com/castlabs/prestoplay-react-components/issues"
+  },
+  "author": "castLabs GmbH",
+  "browser": "dist/prestoplay-react.cjs.min.js", 
   "main": "dist/prestoplay-react.cjs.min.js",
   "module": "dist/index.js",
   "types": "dist/prestoplay-react.d.ts",
