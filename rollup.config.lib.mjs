@@ -23,9 +23,6 @@ const entries = allInputFiles.reduce((p, f) => {
 function libsTypescript() {
   return typescript({
     tsconfig: './tsconfig.json',
-    compilerOptions: {
-      outDir: "./dist"
-    },
     include: [
       "./src/**/*.tsx",
       "./src/**/*.ts"
