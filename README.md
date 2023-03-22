@@ -1,18 +1,19 @@
 # PRESTOplay React Components
 
-This is a React Component library that provides components to interact with the PRESTOplay video player 
-and build video player user interfaces and controls.
+This is a React Component library that provides components to build user interfaces for PRESTOplay video player.
 
-The library can be installed as a dependency from npm:
+## Installation
 
+The library can be installed as a dependency from NPM:
+
+```sh
+npm i @castlabs/prestoplay-react-components
 ```
-npm install @castlabs/prestoplay-react-components
-```
 
-Please note that you should also install the peer dependencies, i.e. react, react-dom, and 
+Please note that you should also install the peer dependencies, i.e. `react`, `react-dom` and 
 `@castlabs/prestoplay`:
 
-```
+```sh
 npm i react@18 react-dom@18 @castlabs/prestoplay@6.2
 ```
 
