@@ -92,7 +92,8 @@ const options = [
       deleteFiles({ targets: 'dist/*' }),
     ],
   }),
-  // build the packaged single file module
+
+  // Build a UMD bundle.
   merge(BASE_CONFIG_JS,{
     input: ['src/index.ts'],
     output: [{ file: "dist/prestoplay-react.js", format: 'esm' }],
@@ -100,7 +101,8 @@ const options = [
       terser(), // minify
     ],
   }),
-  // build the types for the single file module
+
+  // Build TS typings for the bundle.
   {
     input: 'dist/index.d.ts',
     output: [{ file: 'dist/prestoplay-react.d.ts' }],
@@ -127,6 +129,7 @@ const options = [
       })
     ],
   }),
+  
   // Build CSS styles/theme with in-lined SVG icons.
   merge(BASE_CONFIG_CSS, { 
     output: [{ file: 'dist/themes/pp-ui-base-theme-embedded.css' }],
