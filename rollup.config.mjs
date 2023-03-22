@@ -5,7 +5,7 @@ import postcss from 'rollup-plugin-postcss';
 import glob from 'glob'
 import dts from 'rollup-plugin-dts';
 import url from "postcss-url";
-import copy from 'rollup-plugin-copy'
+import copy from 'rollup-plugin-copy';
 
 /**
  * @fileoverview Rollup configuration for building the library.
@@ -28,7 +28,9 @@ function libsTypescript() {
     },
     include: [
       "./src/**/*.tsx",
-      "./src/**/*.ts"
+      "./src/**/*.ts",
+      "./src/**/*.jsx",
+      "./src/**/*.js"
     ]
   });
 }
@@ -51,7 +53,7 @@ export default [
   // build the packaged single file module
   {
     input: ['src/index.ts'],
-    output: [{file: "dist/prestoplay-react.js", format: 'esm'}],
+    output: [{file: "dist/prestoplay-react.js", format: 'cjs'}],
     plugins: jsPlugins,
     external: (id) => { return ['mux.js'].includes(id)}
   },

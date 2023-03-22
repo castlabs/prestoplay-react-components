@@ -17,6 +17,11 @@ Install peer dependencies:
 npm i react@18 react-dom@18 @castlabs/prestoplay@6.2
 ```
 
+## Details
+Lib format: CJS
+
+Language version: ES5
+
 ## Media Tailor integration
 
 Use this example to render the player for the AWS Media Tailor demo:
