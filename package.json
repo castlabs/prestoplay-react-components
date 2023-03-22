@@ -45,7 +45,7 @@
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^5.0.0",
     "rollup-plugin-livereload": "^2.0.5",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-node-externals": "^5.1.2",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-serve": "^2.0.1",
     "ts-jest": "^29.0.3",
