@@ -7,8 +7,17 @@ import serve from "rollup-plugin-serve";
 import livereload from "rollup-plugin-livereload";
 import replace from '@rollup/plugin-replace';
 import url from 'postcss-url';
+import image from '@rollup/plugin-image';
 
-export default [
+/**
+ * @fileoverview Rollup configuration for local development & dev server.
+ * It builds ./app.
+ */
+
+/**
+ * @type {import('rollup').RollupOptions[]}
+ */
+const options = [
   {
     input: "app/src/index.tsx",
     output: {
@@ -17,6 +26,7 @@ export default [
       sourcemap: true,
     },
     plugins: [
+      image(),
       resolve({
         extensions: [".js"],
       }),
@@ -50,7 +60,7 @@ export default [
         verbose: true,
         contentBase: ["", "app", "app/src"],
         host: "0.0.0.0",
-        port: 3000,
+        port: "3000",
       }),
       livereload({
         watch: "app/dist",
@@ -61,3 +71,4 @@ export default [
   }
 ]
 
+export default options;
