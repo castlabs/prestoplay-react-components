@@ -6,11 +6,36 @@ import glob from 'glob'
 import dts from 'rollup-plugin-dts';
 import url from "postcss-url";
 import copy from 'rollup-plugin-copy';
+import untypedMerge from 'rollup-merge-config';
+
 
 /**
  * @fileoverview Rollup configuration for building the library.
  * It builds ./src and produces ./dist.
  */
+
+/**
+ * @param {...import('rollup').RollupOptions} args options
+ * @returns {import('rollup').RollupOptions} merged options
+ */
+const merge = (...args) => {
+  return untypedMerge(...args)
+}
+
+/**
+ * Common config for compilation of JS/TS files.
+ * 
+ *
+ * @type {import('rollup').RollupOptions}
+ */
+const BASE_CONFIG_JS = {
+  plugins: [
+    external(),
+    resolve(),
+    typescript({ tsconfig: './tsconfig.json' }),
+  ],
+}
+
 
 let allInputFiles = glob.sync("src/**/*.ts*");
 const entries = allInputFiles.reduce((p, f) => {
@@ -19,46 +44,20 @@ const entries = allInputFiles.reduce((p, f) => {
   return p
 }, {})
 
-
-function libsTypescript() {
-  return typescript({
-    tsconfig: './tsconfig.json',
-    include: [
-      "./src/**/*.tsx",
-      "./src/**/*.ts",
-      "./src/**/*.jsx",
-      "./src/**/*.js",
-    ]
-  });
-}
-
-
 /**
  * @type {import('rollup').RollupOptions[]}
  */
 const options = [
   // Build the individual module
-  {
+  merge(BASE_CONFIG_JS, {
     input: entries,
-    output: [{dir: "dist", format: 'esm'}],
-    plugins: [
-      external(),
-      resolve(),
-      libsTypescript(),
-      postcss()
-    ]
-  },
+    output: [{ dir: "dist", format: 'esm' }],
+  }),
   // build the packaged single file module
-  {
+  merge(BASE_CONFIG_JS,{
     input: ['src/index.ts'],
-    output: [{file: "dist/prestoplay-react.js", format: 'esm'}],
-    plugins: [
-      external(),
-      resolve(),
-      libsTypescript(),
-      postcss()
-    ]
-  },
+    output: [{ file: "dist/prestoplay-react.js", format: 'esm' }],
+  }),
   // build the types for the single file module
   {
     input: 'dist/index.d.ts',

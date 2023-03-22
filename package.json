@@ -38,6 +38,7 @@
     "react-test-renderer": "^18.2.0",
     "rollup": "^3.2.3",
     "rollup-jest": "^3.1.0",
+    "rollup-merge-config": "^0.0.12",
     "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-dts": "^5.0.0",
     "rollup-plugin-livereload": "^2.0.5",
