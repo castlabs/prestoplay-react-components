@@ -5,7 +5,12 @@ import postcss from 'rollup-plugin-postcss';
 import glob from 'glob'
 import dts from 'rollup-plugin-dts';
 import url from "postcss-url";
-import copy from 'rollup-plugin-copy'
+import copy from 'rollup-plugin-copy';
+
+/**
+ * @fileoverview Rollup configuration for building the library.
+ * It builds ./src and produces ./dist.
+ */
 
 let allInputFiles = glob.sync("src/**/*.ts*");
 const entries = allInputFiles.reduce((p, f) => {
