@@ -28,7 +28,11 @@ function libsTypescript() {
   });
 }
 
-export default [
+
+/**
+ * @type {import('rollup').RollupOptions[]}
+ */
+const options = [
   // Build the individual module
   {
     input: entries,
@@ -89,3 +93,4 @@ export default [
   }
 ]
 
+export default options;
