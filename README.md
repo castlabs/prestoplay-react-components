@@ -342,20 +342,4 @@ all the icons that are used by the theme inline, while the "non-embedded" versio
 relative.
 
 You can find the themes and resources in `@castlabs/prestoplay-react-components/dist/themes` in the 
-installed bundle. The sources can be found [here](./src/themes). 
-
-## Development
-
-The library is written in TypeScript and comes with a small react application that we use for development. 
-
-To compile the library run
-
-```
-npm run build
-```
-
-To start the dev app and watch for any file changes, run
-
-```
-npm run start
-```
+installed bundle. The sources can be found [here](./src/themes).
