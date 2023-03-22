@@ -26,7 +26,6 @@ const merge = (...args) => {
 
 /**
  * Common config for compilation of JS/TS files.
- * 
  *
  * @type {import('rollup').RollupOptions}
  */
@@ -38,22 +37,27 @@ const BASE_CONFIG_JS = {
   ],
 }
 
-
-let allInputFiles = glob.sync("src/**/*.ts*");
-const entries = allInputFiles.reduce((p, f) => {
-  let entryName = f.replace("src/", "").replace(/\.ts(x)?/, "")
-  p[entryName] = f
-  return p
-}, {})
-
 /**
  * @type {import('rollup').RollupOptions[]}
  */
 const options = [
-  // Build the individual module
+  // Clear the /dist folder and build ESM modules from TS and generate their typings.
   merge(BASE_CONFIG_JS, {
-    input: entries,
-    output: [{ dir: "dist", format: 'esm' }],
+    input: glob.sync("src/**/*.{ts,tsx}"),
+    output: [{
+      dir: "dist",
+      format: 'esm',
+      // Convert file names with .ts/.tsx extensions to .js.
+      entryFileNames: (chunkInfo) => {
+        if (chunkInfo.facadeModuleId == null) {
+          throw Error('Failed to generate an ESM module, chunkInfo.facadeModuleId is missing.')
+        }
+
+        return chunkInfo.facadeModuleId
+          .replace(/^.*\/src\//, '')
+          .replace(/\.tsx?$/, '.js')
+      },
+    }],
     plugins: [
       deleteFiles({ targets: 'dist/*' }),
     ],
