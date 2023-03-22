@@ -7,6 +7,7 @@ import dts from 'rollup-plugin-dts';
 import url from "postcss-url";
 import copy from 'rollup-plugin-copy';
 import untypedMerge from 'rollup-merge-config';
+import terser from '@rollup/plugin-terser';
 
 
 /**
@@ -57,6 +58,9 @@ const options = [
   merge(BASE_CONFIG_JS,{
     input: ['src/index.ts'],
     output: [{ file: "dist/prestoplay-react.js", format: 'esm' }],
+    plugins: [
+      terser(), // minify
+    ],
   }),
   // build the types for the single file module
   {
