@@ -6,11 +6,6 @@ import glob from 'glob'
 import dts from 'rollup-plugin-dts';
 import url from "postcss-url";
 import copy from 'rollup-plugin-copy'
-import replace from "@rollup/plugin-replace";
-import commonjs from "@rollup/plugin-commonjs";
-import serve from "rollup-plugin-serve";
-import livereload from "rollup-plugin-livereload";
-
 
 let allInputFiles = glob.sync("src/**/*.ts*");
 const entries = allInputFiles.reduce((p, f) => {
