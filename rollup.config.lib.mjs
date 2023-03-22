@@ -1,3 +1,4 @@
+import analyze from 'rollup-plugin-analyzer';
 import copy from 'rollup-plugin-copy';
 import deleteFiles from 'rollup-plugin-delete';
 import dts from 'rollup-plugin-dts';
@@ -104,7 +105,7 @@ const options = [
        */
       format: 'cjs',
     }],
-    plugins: [terser()],
+    plugins: [terser(), /* analyze() */],
   }),
 
   // Build TS typings for the bundle.
