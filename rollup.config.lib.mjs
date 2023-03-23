@@ -36,6 +36,14 @@ const BASE_CONFIG_JS = {
     resolve(),
     typescript({ tsconfig: './tsconfig.json' }),
   ],
+  onwarn(warning, warn) {
+    warn(warning)
+
+    // Stop the build if there are circular dependencies.
+    if (warning.code === 'CIRCULAR_DEPENDENCY') {
+      throw new Error('Build failed, circular dependencies are not allowed!')
+    }
+  },
 }
 
 /**
