@@ -16,9 +16,9 @@
   "module": "dist/index.js",
   "types": "dist/prestoplay-react.d.ts",
   "scripts": {
-    "prepublishOnly": "npm run build && npx es-check es5 ./dist/prestoplay-react.cjs.min.js",
-    "build": "rollup -c rollup.config.lib.mjs",
-    "start": "rollup -c rollup.config.app.mjs -w",
+    "prepublishOnly": "bash ./scripts/prepublish.sh",
+    "build": "bash ./scripts/build.sh",
+    "start": "bash ./scripts/start.sh",
     "test": "jest",
     "test:watch": "jest --watch"
   },
@@ -52,7 +52,6 @@
     "rollup-merge-config": "^0.0.12",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-copy": "^3.4.0",
-    "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^5.0.0",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-node-externals": "^5.1.2",

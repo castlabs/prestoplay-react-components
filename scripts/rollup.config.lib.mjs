@@ -1,6 +1,5 @@
 import analyze from 'rollup-plugin-analyzer';
 import copy from 'rollup-plugin-copy';
-import deleteFiles from 'rollup-plugin-delete';
 import dts from 'rollup-plugin-dts';
 import external from 'rollup-plugin-node-externals';
 import glob from 'glob'
@@ -97,9 +96,6 @@ const options = [
           .replace(/\.tsx?$/, '.js')
       },
     }],
-    plugins: [
-      deleteFiles({ targets: 'dist/*' }),
-    ],
   }),
 
   // Build a UMD bundle.
