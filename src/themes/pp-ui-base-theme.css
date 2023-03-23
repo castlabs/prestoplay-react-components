@@ -50,9 +50,9 @@
     /* Component-specific styles */
     --pp-ui-button-size: 2rem;
     --pp-ui-spinner-size: 4rem;
-    --pp-ui-lable-font-size: 1.25rem;
-    --pp-ui-lable-subtitle-font-size: 0.875rem;
-    --pp-ui-thumnail-height: 180px;
+    --pp-ui-label-font-size: 1.25rem;
+    --pp-ui-label-subtitle-font-size: 0.875rem;
+    --pp-ui-thumbnail-height: 180px;
     --pp-ui-bar-gap: 0px;
     --pp-ui-start-button-size: 6rem;
 
@@ -308,7 +308,7 @@
 }
 
 .pp-ui-label {
-    font-size: var(--pp-ui-lable-font-size);
+    font-size: var(--pp-ui-label-font-size);
     text-align: left;
     display: inline-block;
     margin-left: 4px;
@@ -321,7 +321,7 @@
 }
 
 .pp-ui-label-subtitle {
-    font-size: var(--pp-ui-lable-subtitle-font-size);
+    font-size: var(--pp-ui-label-subtitle-font-size);
     color: var(--pp-fg-dim-color);
 }
 
@@ -457,7 +457,7 @@
     display: none;
     position: absolute;
     top: -8px;
-    height: var(--pp-ui-thumnail-height);
+    height: var(--pp-ui-thumbnail-height);
     transform: translateY(-100%) translateX(-50%);
 }
 
@@ -472,7 +472,7 @@
 
 .pp-ui-thumbnail {
     position: relative;
-    height: var(--pp-ui-thumnail-height);
+    height: var(--pp-ui-thumbnail-height);
     overflow: hidden;
     box-sizing: border-box;
 }
@@ -695,9 +695,9 @@
 
     .pp-ui {
         --pp-ui-button-size: 2rem;
-        --pp-ui-lable-font-size: .875rem;
-        --pp-ui-lable-subtitle-font-size: .75rem;
-        --pp-ui-thumnail-height: 120px;
+        --pp-ui-label-font-size: .875rem;
+        --pp-ui-label-subtitle-font-size: .75rem;
+        --pp-ui-thumbnail-height: 120px;
         --pp-ui-start-button-size: 3rem;
     }
 
