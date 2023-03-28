@@ -1,5 +1,6 @@
-import React, {CSSProperties} from "react";
-import {BaseComponentProps} from "../utils";
+import React, { CSSProperties } from 'react'
+
+import { BaseComponentProps } from '../utils'
 
 export interface SpacerProps extends BaseComponentProps{
   style?: CSSProperties
@@ -10,7 +11,7 @@ export const Spacer = (props: SpacerProps) => {
     <div className={`pp-ui pp-ui-spacer ${props.className || ''}`} style={props.style}>
       {props.children}
     </div>
-  );
+  )
 }
 
 export default Spacer

@@ -2,52 +2,54 @@ import React, {
   createRef,
   useEffect,
   useRef,
-  useState
-} from "react";
+  useState,
+} from 'react'
+
+import { usePrestoUiEvent } from '../react'
 import {
   BasePlayerComponentProps, focusElement,
   focusNextElement,
-  getFocusableElements, isIpadOS
-} from "../utils";
-import {usePrestoUiEvent} from "../react";
+  getFocusableElements, isIpadOS,
+} from '../utils'
 
 const DEFAULT_HIDE_DELAY = 5
 
 export interface PlayerControlsProps extends BasePlayerComponentProps {
-  hideDelay?: number,
+  hideDelay?: number
   showWhenDisabled?: boolean
 }
 
 export const PlayerControls = (props: PlayerControlsProps) => {
-  let [controlsVisible, setControlsVisible_] = useState(props.player.controlsVisible || (props.showWhenDisabled && !props.player.enabled));
-  let [lastFocusIndex, setLastFocusIndex] = useState(-1);
+  const [controlsVisible, setControlsVisible_] = useState(
+    props.player.controlsVisible || (props.showWhenDisabled && !props.player.enabled))
+  const [lastFocusIndex, setLastFocusIndex] = useState(-1)
 
-  const timer = useRef<any>(null);
-  const ref = createRef<HTMLDivElement>();
+  const timer = useRef<any>(null)
+  const ref = createRef<HTMLDivElement>()
 
-  const setControlsVisible = (visible: boolean, fromUiEvent: boolean = false) => {
+  const setControlsVisible = (visible: boolean, fromUiEvent = false) => {
     if(!fromUiEvent) {
       props.player.controlsVisible = visible
     }
-    controlsVisible = visible
+    controlsVisible = visible // TODO what the hell?
     setControlsVisible_(visible)
   }
 
-  usePrestoUiEvent("controlsVisible", props.player, (visible) => {
+  usePrestoUiEvent('controlsVisible', props.player, (visible) => {
     setControlsVisible(visible, true)
     if (visible) {
       createTimer()
     }
   })
 
-  usePrestoUiEvent("slideInMenuVisible", props.player, (visible) => {
+  usePrestoUiEvent('slideInMenuVisible', props.player, (visible) => {
     setControlsVisible(!visible)
     if(!visible) {
       createTimer()
     }
   })
 
-  usePrestoUiEvent("surfaceInteraction", props.player, () => {
+  usePrestoUiEvent('surfaceInteraction', props.player, () => {
     if(!props.player.slideInMenuVisible) {
       setControlsVisible(true)
       createTimer()
@@ -64,7 +66,7 @@ export const PlayerControls = (props: PlayerControlsProps) => {
       timer.current = null
     }
     if(controlsVisible) {
-      timer.current = setTimeout(interactionTimerCallback, (props.hideDelay || DEFAULT_HIDE_DELAY) * 1000);
+      timer.current = setTimeout(interactionTimerCallback, (props.hideDelay || DEFAULT_HIDE_DELAY) * 1000)
     }
   }
 
@@ -79,10 +81,10 @@ export const PlayerControls = (props: PlayerControlsProps) => {
   })
 
   useEffect(() => {
-    let onFocusIn = () => {
+    const onFocusIn = () => {
       if(ref.current) {
-        let focusItems = getFocusableElements(ref.current);
-        let index = focusItems.indexOf(document.activeElement as HTMLElement)
+        const focusItems = getFocusableElements(ref.current)
+        const index = focusItems.indexOf(document.activeElement as HTMLElement)
         if(index >= 0) {
           setLastFocusIndex(index)
         }
@@ -90,13 +92,13 @@ export const PlayerControls = (props: PlayerControlsProps) => {
     }
 
     if(ref.current) {
-      ref.current.addEventListener("focusin", onFocusIn)
+      ref.current.addEventListener('focusin', onFocusIn)
     }
 
 
     if (controlsVisible && ref.current) {
-      let focusItems = getFocusableElements(ref.current);
-      let index = focusItems.indexOf(document.activeElement as HTMLElement)
+      const focusItems = getFocusableElements(ref.current)
+      const index = focusItems.indexOf(document.activeElement as HTMLElement)
       if (index < 0) {
         if (lastFocusIndex >= 0 && lastFocusIndex < focusItems.length) {
           focusElement(focusItems[lastFocusIndex])
@@ -107,7 +109,7 @@ export const PlayerControls = (props: PlayerControlsProps) => {
     }
     return () => {
       if(ref.current) {
-        ref.current.removeEventListener("focusin", onFocusIn)
+        ref.current.removeEventListener('focusin', onFocusIn)
       }
     }
   })
@@ -118,13 +120,13 @@ export const PlayerControls = (props: PlayerControlsProps) => {
 
   return (
     <div ref={ref}
-      className={`pp-ui-controls ${isIpadOS() ? 'pp-ui-ipad' : ''} ${controlsVisible ? "pp-ui-controls-visible" : ""}${props.className || ''}`}
-         style={props.style}
+      className={`pp-ui-controls ${isIpadOS() ? 'pp-ui-ipad' : ''} ${controlsVisible ? 'pp-ui-controls-visible' : ''}${props.className || ''}`}
+      style={props.style}
       onMouseMove={mouseMove}
     >
       {props.children}
     </div>
-  );
+  )
 }
 
 export default PlayerControls

@@ -1,8 +1,9 @@
-import React, {useState} from "react";
-import Slider from "./Slider";
-import {BasePlayerComponentProps, p} from "../utils";
-import {usePresto, usePrestoEnabledState, usePrestoUiEvent} from "../react";
+import React, { useState } from 'react'
 
+import { usePresto, usePrestoEnabledState, usePrestoUiEvent } from '../react'
+import { BasePlayerComponentProps } from '../utils'
+
+import Slider from './Slider'
 
 export interface VolumeBarProps extends BasePlayerComponentProps{
   adjustWhileDragging?: boolean
@@ -10,47 +11,44 @@ export interface VolumeBarProps extends BasePlayerComponentProps{
 }
 
 export const VolumeBar = (props: VolumeBarProps) => {
-  let [progress, setProgress] = useState(100)
-  let enabled = usePrestoEnabledState(props.player);
+  const [progress, setProgress] = useState(100)
+  const enabled = usePrestoEnabledState(props.player)
 
   function updateFromPlayer(): number {
-    const player = props.player;
+    const player = props.player
     const progress = player.muted ? 0 : (player.volume * 100)
     setProgress(progress)
     return progress
   }
 
-  usePrestoUiEvent("volumechange", props.player, () => {
+  usePrestoUiEvent('volumechange', props.player, () => {
     updateFromPlayer()
   })
 
   usePresto(props.player,  () => {
-     updateFromPlayer()
+    updateFromPlayer()
   })
 
-  usePrestoUiEvent("statechanged", props.player, () => {
+  usePrestoUiEvent('statechanged', props.player, () => {
     updateFromPlayer()
   })
 
   async function applyValue(progressValue:number) {
     setProgress(progressValue)
-    progress = progressValue
+    progress = progressValue // TODO what the hell?
     props.player.volume = progressValue / 100.0
   }
 
-  function currentValue() {
-    return updateFromPlayer()
-  }
 
   const onKeyDown = async (e: KeyboardEvent) => {
-    let presto = await props.player.presto()
-    let current = presto.isMuted() ? 0 : presto.getVolume();
+    const presto = await props.player.presto()
+    const current = presto.isMuted() ? 0 : presto.getVolume()
     let targetPosition = current
-    if (e.key == "ArrowLeft") {
-      targetPosition = Math.max(0, current + (-0.1));
+    if (e.key == 'ArrowLeft') {
+      targetPosition = Math.max(0, current + (-0.1))
       e.preventDefault()
-    }else if(e.key == "ArrowRight") {
-      targetPosition = Math.min(1, current + (0.1));
+    }else if(e.key == 'ArrowRight') {
+      targetPosition = Math.min(1, current + (0.1))
       e.preventDefault()
     }
     if(targetPosition != current) {
@@ -61,7 +59,6 @@ export const VolumeBar = (props: VolumeBarProps) => {
     }
 
   }
-
 
   return (
     <div className={`pp-ui-volumebar ${props.className || ''}`}>

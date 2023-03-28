@@ -1,14 +1,14 @@
 import React, {
-  createRef,
   ForwardedRef, forwardRef,
-  useEffect, useRef
-} from "react";
+  useEffect, useRef,
+} from 'react'
+
+import { usePrestoUiEvent } from '../react'
 import {
   BasePlayerComponentProps, focusElement,
   focusNextElement, focusPreviousElement,
-  getFocusableElements, isIpadOS
-} from "../utils";
-import {usePrestoUiEvent} from "../react";
+  getFocusableElements, isIpadOS,
+} from '../utils'
 
 /**
  * The properties of the player surface. This is the element that receives
@@ -18,11 +18,11 @@ export interface PlayerProps extends BasePlayerComponentProps {
   /**
    * The PRESTOplay player configuration to load and play a video
    */
-  config?: any,
+  config?: any
   /**
    * The PRESTOplay player configuration to initialize the player
    */
-  baseConfig?: any,
+  baseConfig?: any
 
   /**
    * Indicate that the configuration should be applied immediately. If this is
@@ -57,7 +57,7 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
   }, [])
 
   useEffect(() => {
-    if (!props.config) return
+    if (!props.config) {return}
 
     props.player.load(props.config, props.autoload)
   }, [props.config, props.player])
@@ -65,31 +65,31 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
 
   function maybeFocusSurface(forceSurfaceFocus?: boolean) {
     if (containerRef.current) {
-      let element: HTMLDivElement = containerRef.current
-      let items = getFocusableElements(element)
-      let index = items.indexOf(document.activeElement as HTMLElement);
-      const surfaceFocused = document.activeElement == element;
+      const element: HTMLDivElement = containerRef.current
+      const items = getFocusableElements(element)
+      const index = items.indexOf(document.activeElement as HTMLElement)
+      const surfaceFocused = document.activeElement == element
       if ((index == -1 && !surfaceFocused) || forceSurfaceFocus) {
         focusElement(element)
       }
     }
   }
 
-  usePrestoUiEvent("surfaceInteraction", props.player, () => {
-    maybeFocusSurface();
+  usePrestoUiEvent('surfaceInteraction', props.player, () => {
+    maybeFocusSurface()
   })
 
-  usePrestoUiEvent("controlsVisible", props.player, (visible) => {
+  usePrestoUiEvent('controlsVisible', props.player, (visible) => {
     if (!visible && !props.player.slideInMenuVisible) {
-      maybeFocusSurface(true);
+      maybeFocusSurface(true)
     }
   })
 
-  const mouseMove = (e:React.MouseEvent) => {
-    if (!props.player.controlsVisible && !props.player.slideInMenuVisible) {
-      props.player.surfaceInteraction()
-    }
-  }
+  // const mouseMove = () => {
+  //   if (!props.player.controlsVisible && !props.player.slideInMenuVisible) {
+  //     props.player.surfaceInteraction()
+  //   }
+  // }
 
   const mouseClick = (e:React.MouseEvent) => {
     if(!e.defaultPrevented) {
@@ -107,17 +107,17 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
   }
 
   const onKeyDown = async (e:React.KeyboardEvent) => {
-    if(e.defaultPrevented) return
+    if(e.defaultPrevented) {return}
 
     if(containerRef && containerRef.current) {
-      let element:HTMLDivElement = containerRef.current
-      let items = getFocusableElements(element)
+      const element:HTMLDivElement = containerRef.current
+      const items = getFocusableElements(element)
 
-      if(e.code == "ArrowDown") {
+      if(e.code == 'ArrowDown') {
         focusNextElement(items)
         e.preventDefault()
         props.player.surfaceInteraction()
-      } else if(e.code == "ArrowUp") {
+      } else if(e.code == 'ArrowUp') {
         focusPreviousElement(items)
         e.preventDefault()
         props.player.surfaceInteraction()
@@ -172,23 +172,23 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
       // @ts-ignore
       window.tizen.mediakey.setMediaKeyEventListener({
         onpressed: function(key:string) {
-          console.log("Pressed key: " + key);
-          if (key == "MEDIA_PLAY") {
+          console.log('Pressed key: ' + key)
+          if (key == 'MEDIA_PLAY') {
             props.player.playing = true
-          }else if (key == "MEDIA_PAUSE") {
+          }else if (key == 'MEDIA_PAUSE') {
             props.player.playing = false
           }
         },
         onreleased: function(key:string) {
-          console.log("Released key: " + key);
-        }
-      });
+          console.log('Released key: ' + key)
+        },
+      })
     }
     return () => {
       // @ts-ignore
       if(window.tizen){
         // @ts-ignore
-        window.tizen.mediakey.unsetMediaKeyEventListener();
+        window.tizen.mediakey.unsetMediaKeyEventListener()
       }
     }
   })
@@ -196,25 +196,25 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
   const handleContainerRef = (c:HTMLDivElement) => {
     containerRef.current = c
     if (typeof ref === 'function') {
-      ref(c);
+      ref(c)
     } else if (ref) {
-      ref.current = c;
+      ref.current = c
     }
   }
 
   return (
     <div ref={handleContainerRef}
-         className={`pp-ui pp-ui-surface ${isIpadOS() ? 'pp-ui-ipad' : ''} ${props.className || ''}`}
-         style={props.style}
-         onClick={mouseClick}
-         // onMouseMove={mouseMove}
-         onKeyDown={onKeyDown}
-         tabIndex={0}
+      className={`pp-ui pp-ui-surface ${isIpadOS() ? 'pp-ui-ipad' : ''} ${props.className || ''}`}
+      style={props.style}
+      onClick={mouseClick}
+      // onMouseMove={mouseMove}
+      onKeyDown={onKeyDown}
+      tabIndex={0}
     >
-      <video className={"pp-ui pp-ui-video"}
-             ref={createVideo}
-             tabIndex={-1}
-             playsInline={props.playsInline}>
+      <video className={'pp-ui pp-ui-video'}
+        ref={createVideo}
+        tabIndex={-1}
+        playsInline={props.playsInline}>
       </video>
       <div className={`pp-ui pp-ui-overlay ${isIpadOS() ? 'pp-ui-ipad' : ''}`}>
         {props.children}

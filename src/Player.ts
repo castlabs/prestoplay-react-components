@@ -1,5 +1,8 @@
 // @ts-ignore
-import {clpp} from '@castlabs/prestoplay'
+import { clpp } from '@castlabs/prestoplay'
+
+import { EventEmitter, EventListener, EventType } from './EventEmitter'
+import { LanguageCodes } from './LanguageCodes'
 import {
   fromPrestoTrack,
   getAbrTrack,
@@ -9,9 +12,7 @@ import {
   getUnavailableTrack,
   Track,
   TrackType,
-} from "./Track";
-import {LanguageCodes} from "./LanguageCodes";
-import {EventEmitter, EventListener, EventType} from "./EventEmitter";
+} from './Track'
 
 /**
  * The player initializer is a function that receives the presto play instance
@@ -75,7 +76,7 @@ export interface DefaultTrackLabelerOptions extends TrackLabelerOptions {
  * Internal helper to queue prestoplay function calls while the player is not
  * yet initialized
  */
-type Action = () => Promise<void>;
+type Action = () => Promise<void>
 
 /**
  * The default track labeler
@@ -90,11 +91,11 @@ export const defaultTrackLabel: TrackLabeler = (t: Track, player: Player, _optio
     useNativeLanguageNames: false,
   }
 
-  opts.abrLabel = opts.abrLabel || "Auto"
-  opts.disabledTrackLabel = opts.disabledTrackLabel || "Off"
-  opts.unknownTrackLabel = opts.unknownTrackLabel || "Unknown"
+  opts.abrLabel = opts.abrLabel || 'Auto'
+  opts.disabledTrackLabel = opts.disabledTrackLabel || 'Off'
+  opts.unknownTrackLabel = opts.unknownTrackLabel || 'Unknown'
 
-  if (t.id == "abr") {
+  if (t.id == 'abr') {
     if (!player.playingVideoTrack ||
       !player.playingVideoTrack.ppTrack ||
       !player.playingVideoTrack.ppTrack.height ||
@@ -109,9 +110,9 @@ export const defaultTrackLabel: TrackLabeler = (t: Track, player: Player, _optio
     return opts.disabledTrackLabel
   }
 
-  if (t.type == "video") {
+  if (t.type == 'video') {
     if (!t.ppTrack.height) {
-       return opts.unknownTrackLabel
+      return opts.unknownTrackLabel
     }
 
     let result = `${t.ppTrack.height}p`
@@ -127,7 +128,7 @@ export const defaultTrackLabel: TrackLabeler = (t: Track, player: Player, _optio
     }
     if (t.ppTrack.language) {
       // @ts-ignore
-      let lang = LanguageCodes[t.ppTrack.language]
+      const lang = LanguageCodes[t.ppTrack.language]
       if (lang) {
         if (opts.useNativeLanguageNames) {
           return lang.native
@@ -136,8 +137,8 @@ export const defaultTrackLabel: TrackLabeler = (t: Track, player: Player, _optio
       }
     }
 
-    let trackList = player[`${t.type}Tracks`];
-    let i = trackList.indexOf(t);
+    const trackList = player[`${t.type}Tracks`]
+    const i = trackList.indexOf(t)
     if (i >= 0 && trackList.length > 1) {
       return `${opts.unknownTrackLabel}`
     }
@@ -152,8 +153,8 @@ export const defaultTrackLabel: TrackLabeler = (t: Track, player: Player, _optio
  * @param b
  */
 export const defaultTrackSorter: TrackSorter = (a: Track, b: Track) => {
-  if (!a.ppTrack) return -1
-  if (!b.ppTrack) return 1
+  if (!a.ppTrack) {return -1}
+  if (!b.ppTrack) {return 1}
   if (a.ppTrack.height && b.ppTrack.height) {
     return b.ppTrack.height - a.ppTrack.height
   }
@@ -203,7 +204,7 @@ export enum State {
   /**
    * 7 - Used exclusively to indicate previous state, when it has no state yet
    */
-  Unset = clpp.Player.State.UNSET
+  Unset = clpp.Player.State.UNSET,
 }
 
 /**
@@ -211,7 +212,7 @@ export enum State {
  */
 export enum BufferingReason {
   Seeking = clpp.events.BufferingReasons.SEEKING,
-  NoData = clpp.events.BufferingReasons.NO_DATA
+  NoData = clpp.events.BufferingReasons.NO_DATA,
 }
 
 const toBufferingReason = (value?: number): BufferingReason | undefined => {
@@ -252,53 +253,53 @@ export interface UIEvents {
   /**
    * Triggered when the slide in menu state changes
    */
-  slideInMenuVisible: boolean,
+  slideInMenuVisible: boolean
   /**
    * Triggered when the `PlayerControls` visibility changes
    */
-  controlsVisible: boolean,
+  controlsVisible: boolean
   /**
    * Triggered when a track selection changes
    */
-  trackSelected: Track,
+  trackSelected: Track
   /**
    * Triggered when the selected video track changes
    */
-  videoTrackChanged: Track,
+  videoTrackChanged: Track
   /**
    * Triggered when the selected audio track changes
    */
-  audioTrackChanged: Track,
+  audioTrackChanged: Track
   /**
    * Triggered when the selected text track changes
    */
-  textTrackChanged: Track,
+  textTrackChanged: Track
   /**
    * Triggered when the available text track change
    */
-  textTracksAvailable: Track[],
+  textTracksAvailable: Track[]
   /**
    * Triggered when the available audio track change
    */
-  audioTracksAvailable: Track[],
+  audioTracksAvailable: Track[]
   /**
    * Triggered when the available video track change
    */
-  videoTracksAvailable: Track[],
+  videoTracksAvailable: Track[]
   /**
    * Triggered when the currently playing video rendition changes, i.e.
    * a quality change
    */
-  playingVideoTrackChanged: Track | undefined,
+  playingVideoTrackChanged: Track | undefined
   /**
    * Triggered on a user interaction (i.e. mouse hover) on top of the
    * player surface
    */
-  surfaceInteraction: undefined,
+  surfaceInteraction: undefined
   /**
    * Triggered when the hover position changes
    */
-  hoverPosition: { position: number, percent: number }
+  hoverPosition: { position: number; percent: number }
   /**
    * Position changes are posted using this event. The event posts the current
    * position. This event is emitted when the underlying video element emits a
@@ -313,16 +314,16 @@ export interface UIEvents {
    * Volume change event that is triggered when the volume or the muted
    * state is changed
    */
-  volumechange: { volume: number, muted: boolean }
+  volumechange: { volume: number; muted: boolean }
   /**
    * State change events are triggered when the player state changes
    */
   statechanged: {
-    currentState: State,
-    previousState: State,
-    timeSinceLastStateChangeMS: number,
+    currentState: State
+    previousState: State
+    timeSinceLastStateChangeMS: number
     reason?: BufferingReason
-  },
+  }
   /**
    * Event triggered when the playback rate changed
    */
@@ -354,7 +355,7 @@ export class Player {
    * The player instance
    * @private
    */
-  private pp_: any = null;
+  private pp_: clpp.Player | null = null
   /**
    * We maintain a queue of actions that will be posted towards the player
    * instance once it is initialized
@@ -395,25 +396,25 @@ export class Player {
    *
    * @private
    */
-  private _playingVideoTrack: Track | undefined;
+  private _playingVideoTrack: Track | undefined
 
   /**
    * The currently selected video track
    *
    * @private
    */
-  private _videoTrack: Track = getUnavailableTrack("video")
+  private _videoTrack: Track = getUnavailableTrack('video')
   /**
    * The currently selected audio track
    * @private
    */
-  private _audioTrack: Track = getUnavailableTrack("audio")
+  private _audioTrack: Track = getUnavailableTrack('audio')
   /**
    * The currently selected text track
    *
    * @private
    */
-  private _textTrack: Track = getUnavailableTrack("text")
+  private _textTrack: Track = getUnavailableTrack('text')
 
   /**
    * All available video tracks
@@ -483,23 +484,23 @@ export class Player {
    * Proxy the playback rate
    * @private
    */
-  private _rate = 1;
+  private _rate = 1
 
   /**
    * The current player configuration
    *
    * @private
    */
-  private _config: any;
+  private _config: any
 
   /**
    * Indicate that the config was loaded
    * @private
    */
-  private _configLoaded = false;
+  private _configLoaded = false
 
   constructor(initializer?: PlayerInitializer) {
-    this._initializer = initializer;
+    this._initializer = initializer
     this._actionQueuePromise = new Promise<void>((resolve) => {
       this._actionQueueResolved = resolve
     })
@@ -517,76 +518,76 @@ export class Player {
    * @param baseConfig PRESTOplay config to initialize the player with
    */
   async init(element: HTMLVideoElement | string, baseConfig: any) {
-    if (this.pp_) return;
+    if (this.pp_) {return}
 
     this.pp_ = new clpp.Player(element, baseConfig)
     const handlePlayerTracksChanged = (type?: TrackType) => {
       return () => {
-        if (!type || type == "video") {
-          this.videoTrack = getActiveTrack(this.pp_, "video")
-          this.videoTracks = getTracks(this.pp_, "video")
+        if (!type || type == 'video') {
+          this.videoTrack = getActiveTrack(this.pp_, 'video')
+          this.videoTracks = getTracks(this.pp_, 'video')
         }
-        if (!type || type == "audio") {
-          this.audioTrack = getActiveTrack(this.pp_, "audio")
-          this.audioTracks = getTracks(this.pp_, "audio")
+        if (!type || type == 'audio') {
+          this.audioTrack = getActiveTrack(this.pp_, 'audio')
+          this.audioTracks = getTracks(this.pp_, 'audio')
         }
-        if (!type || type == "text") {
-          this.textTrack = getActiveTrack(this.pp_, "text")
-          this.textTracks = getTracks(this.pp_, "text")
+        if (!type || type == 'text') {
+          this.textTrack = getActiveTrack(this.pp_, 'text')
+          this.textTracks = getTracks(this.pp_, 'text')
         }
       }
     }
 
     this.pp_.on(clpp.events.TRACKS_ADDED, handlePlayerTracksChanged())
-    this.pp_.on(clpp.events.AUDIO_TRACK_CHANGED, handlePlayerTracksChanged("audio"))
-    this.pp_.on(clpp.events.VIDEO_TRACK_CHANGED, handlePlayerTracksChanged("video"))
-    this.pp_.on(clpp.events.TEXT_TRACK_CHANGED, handlePlayerTracksChanged("text"))
+    this.pp_.on(clpp.events.AUDIO_TRACK_CHANGED, handlePlayerTracksChanged('audio'))
+    this.pp_.on(clpp.events.VIDEO_TRACK_CHANGED, handlePlayerTracksChanged('video'))
+    this.pp_.on(clpp.events.TEXT_TRACK_CHANGED, handlePlayerTracksChanged('text'))
 
     this.pp_.on(clpp.events.STATE_CHANGED, (e: any) => {
-      let currentState = toState(e.detail.currentState);
-      let previousState = toState(e.detail.previousState);
-      this.emitUIEvent("statechanged", {
+      const currentState = toState(e.detail.currentState)
+      const previousState = toState(e.detail.previousState)
+      this.emitUIEvent('statechanged', {
         currentState: currentState,
         previousState: previousState,
         reason: toBufferingReason(e.detail.reason),
-        timeSinceLastStateChangeMS: e.detail.timeSinceLastStateChangeMS
+        timeSinceLastStateChangeMS: e.detail.timeSinceLastStateChangeMS,
       })
 
       if (isEnabledState(currentState) != isEnabledState(previousState)) {
-        this.emitUIEvent("enabled", isEnabledState(currentState))
+        this.emitUIEvent('enabled', isEnabledState(currentState))
       }
     })
 
-    this.pp_.on("timeupdate", () => {
-      this.emitUIEvent("position", this.pp_.getPosition())
+    this.pp_.on('timeupdate', () => {
+      this.emitUIEvent('position', this.pp_.getPosition())
     })
 
-    this.pp_.on("ratechange", () => {
-      let ppRate = this.pp_.getPlaybackRate();
+    this.pp_.on('ratechange', () => {
+      const ppRate = this.pp_.getPlaybackRate()
       if (this.state != State.Buffering) {
         this._rate = ppRate
-        this.emitUIEvent("ratechange", this.rate)
+        this.emitUIEvent('ratechange', this.rate)
       }
     })
 
-    this.pp_.on("durationchange", () => {
-      this.emitUIEvent("durationchange", this.pp_.getDuration())
+    this.pp_.on('durationchange', () => {
+      this.emitUIEvent('durationchange', this.pp_.getDuration())
     })
 
-    this.pp_.on("volumechange", () => {
-      this.emitUIEvent("volumechange", {
+    this.pp_.on('volumechange', () => {
+      this.emitUIEvent('volumechange', {
         volume: this.volume,
-        muted: this.muted
+        muted: this.muted,
       })
     })
 
     this.pp_.on(clpp.events.BITRATE_CHANGED, (e: any) => {
       if (e && e.detail) {
-        this.playingVideoTrack = fromPrestoTrack(this.pp_, e.detail.rendition, 'video');
+        this.playingVideoTrack = fromPrestoTrack(this.pp_, e.detail.rendition, 'video')
       } else {
         this.playingVideoTrack = undefined
       }
-      handlePlayerTracksChanged("video")
+      handlePlayerTracksChanged('video')
     })
 
     this._rate = this.pp_.getPlaybackRate()
@@ -610,35 +611,35 @@ export class Player {
    * @param position The target position in seconds
    */
   set position(position: number) {
-    if (!this.pp_) return
+    if (!this.pp_) {return}
 
     if (!this._isUserSeeking) {
       // issue a user seek to the target position and
       // listen for the completion.
       const handleSeekCompleted = () => {
-        this._isUserSeeking = false;
+        this._isUserSeeking = false
         if (this._userSeekingTarget != position) {
           // we received another seek in between and have to execute that now
           this.position = this._userSeekingTarget
         } else {
           this._userSeekingTarget = -1
-          this.emitUIEvent("position", this.pp_.getPosition())
+          this.emitUIEvent('position', this.pp_.getPosition())
         }
       }
       this._isUserSeeking = true
       this._userSeekingTarget = position
       this.pp_.seek(position).finally(handleSeekCompleted)
-      this.emitUIEvent("position", position)
+      this.emitUIEvent('position', position)
     } else {
       // we are already seeking. Update the target. When the current
       // seek operation is completed, we will seek again to the final target
       this._userSeekingTarget = position
-      this.emitUIEvent("position", position)
+      this.emitUIEvent('position', position)
     }
   }
 
   get position() {
-    if (!this.pp_) return 0
+    if (!this.pp_) {return 0}
     if (this._isUserSeeking) {
       return this._userSeekingTarget
     }
@@ -653,8 +654,8 @@ export class Player {
     return this.pp_ ? this.pp_.isLive() : false
   }
 
-  get seekRange(): { start: number, end: number } {
-    return this.pp_ ? this.pp_.getSeekRange() : {start: 0, end: 0}
+  get seekRange(): { start: number; end: number } {
+    return this.pp_ ? this.pp_.getSeekRange() : { start: 0, end: 0 }
   }
 
   get volume(): number {
@@ -685,7 +686,7 @@ export class Player {
   }
 
   get rate() {
-    if (!this.pp_) return 1
+    if (!this.pp_) {return 1}
     return this._rate
   }
 
@@ -694,14 +695,14 @@ export class Player {
       this._rate = value
       this.pp_.setPlaybackRate(value)
       if (this.state == State.Buffering) {
-        this.emitUIEvent("ratechange", value)
+        this.emitUIEvent('ratechange', value)
       }
     }
   }
 
   get playing() {
-    if(!this.pp_) return false
-    if (this.state == State.Idle) return false
+    if(!this.pp_) {return false}
+    if (this.state == State.Idle) {return false}
     return !this.pp_.isPaused()
   }
 
@@ -719,7 +720,7 @@ export class Player {
     }
   }
 
-  load(config?: any, autoload: boolean = false) {
+  load(config?: any, autoload = false) {
     if (!config) {
       return this.action(async () => {
         await this.pp_.release()
@@ -755,43 +756,43 @@ export class Player {
       await this.pp_.release()
     }
     this._configLoaded = false
-    this.emitUIEvent("position", 0)
-    this.emitUIEvent("durationchange", 0)
+    this.emitUIEvent('position', 0)
+    this.emitUIEvent('durationchange', 0)
     this.videoTracks = []
     this.audioTracks = []
     this.textTracks = []
-    this.videoTrack = getDisabledTrack("video", true)
-    this.audioTrack = getDisabledTrack("audio", true)
-    this.textTrack = getDisabledTrack("text", true)
+    this.videoTrack = getDisabledTrack('video', true)
+    this.audioTrack = getDisabledTrack('audio', true)
+    this.textTrack = getDisabledTrack('text', true)
   }
 
   setHoverPosition(position: number, percent: number) {
-    this.emitUIEvent("hoverPosition", {
-      position, percent
+    this.emitUIEvent('hoverPosition', {
+      position, percent,
     })
   }
 
 
   get controlsVisible(): boolean {
-    return this._controlsVisible;
+    return this._controlsVisible
   }
 
   set controlsVisible(value: boolean) {
     if (value != this._controlsVisible) {
-      this._controlsVisible = value;
-      this.emitUIEvent("controlsVisible", value)
+      this._controlsVisible = value
+      this.emitUIEvent('controlsVisible', value)
     }
   }
 
 
   get slideInMenuVisible(): boolean {
-    return this._slideInMenuVisible;
+    return this._slideInMenuVisible
   }
 
   set slideInMenuVisible(value: boolean) {
     if (value != this._slideInMenuVisible) {
-      this._slideInMenuVisible = value;
-      this.emitUIEvent("slideInMenuVisible", value)
+      this._slideInMenuVisible = value
+      this.emitUIEvent('slideInMenuVisible', value)
     }
   }
 
@@ -802,21 +803,21 @@ export class Player {
    * if no interaction was registered.
    */
   surfaceInteraction() {
-    this.emitUIEvent("surfaceInteraction", undefined)
+    this.emitUIEvent('surfaceInteraction', undefined)
   }
 
 
   get playingVideoTrack(): Track | undefined {
-    return this._playingVideoTrack;
+    return this._playingVideoTrack
   }
 
   set playingVideoTrack(value: Track | undefined) {
-    if (isSameTrack(value, this._playingVideoTrack)) return
-    this._playingVideoTrack = value;
-    this.emitUIEvent("playingVideoTrackChanged", value)
+    if (isSameTrack(value, this._playingVideoTrack)) {return}
+    this._playingVideoTrack = value
+    this.emitUIEvent('playingVideoTrackChanged', value)
   }
 
-  async presto() {
+  async presto(): Promise<clpp.Player> {
     await this._actionQueuePromise
     return this.pp_
   }
@@ -836,65 +837,65 @@ export class Player {
   }
 
   get videoTrack(): Track {
-    return this._videoTrack;
+    return this._videoTrack
   }
 
   private set videoTrack(track: Track) {
-    if (isSameTrack(this._videoTrack, track)) return
-    this._videoTrack = track;
+    if (isSameTrack(this._videoTrack, track)) {return}
+    this._videoTrack = track
     // this._videoTracks.forEach(t => t.selected = t.id == track.id)
-    this.emitUIEvent("videoTrackChanged", track)
+    this.emitUIEvent('videoTrackChanged', track)
   }
 
   get audioTrack(): Track {
-    return this._audioTrack;
+    return this._audioTrack
   }
 
   private set audioTrack(track: Track) {
-    if (isSameTrack(this._audioTrack, track)) return
-    this._audioTrack = track;
-    this.emitUIEvent("audioTrackChanged", track)
+    if (isSameTrack(this._audioTrack, track)) {return}
+    this._audioTrack = track
+    this.emitUIEvent('audioTrackChanged', track)
   }
 
   get textTrack(): Track {
-    return this._textTrack;
+    return this._textTrack
   }
 
   private set textTrack(track: Track) {
-    if (isSameTrack(this._textTrack, track)) return
-    this._textTrack = track;
-    this.emitUIEvent("textTrackChanged", track)
+    if (isSameTrack(this._textTrack, track)) {return}
+    this._textTrack = track
+    this.emitUIEvent('textTrackChanged', track)
   }
 
   get textTracks(): Track[] {
-    return this._textTracks;
+    return this._textTracks
   }
 
   set textTracks(value: Track[]) {
     if (value.length > 0 && !value.find(t => t.id == 'abr')) {
       // since we have text tracks available, we add the off track
-      let hasSelected = value.find(t => t.selected)
-      let offTrack = getDisabledTrack("text", !hasSelected);
+      const hasSelected = value.find(t => t.selected)
+      const offTrack = getDisabledTrack('text', !hasSelected)
       value.push(offTrack)
     }
 
-    if (isSameTrackList(this.textTracks, value)) return
-    this._textTracks = value.sort(this._trackSorter);
-    this.emitUIEvent("textTracksAvailable", value)
+    if (isSameTrackList(this.textTracks, value)) {return}
+    this._textTracks = value.sort(this._trackSorter)
+    this.emitUIEvent('textTracksAvailable', value)
   }
 
   get audioTracks(): Track[] {
-    return this._audioTracks;
+    return this._audioTracks
   }
 
   set audioTracks(value: Track[]) {
-    if (isSameTrackList(this.audioTracks, value)) return
-    this._audioTracks = value.sort(this._trackSorter);
-    this.emitUIEvent("audioTracksAvailable", value)
+    if (isSameTrackList(this.audioTracks, value)) {return}
+    this._audioTracks = value.sort(this._trackSorter)
+    this.emitUIEvent('audioTracksAvailable', value)
   }
 
   get videoTracks(): Track[] {
-    return this._videoTracks;
+    return this._videoTracks
   }
 
   set videoTracks(value: Track[]) {
@@ -903,25 +904,25 @@ export class Player {
     })
     if (value.length > 0 && !value.find(t => t.id == 'abr')) {
       // since we have video tracks available, we add the ABR track
-      let hasSelected = value.find(t => t.selected)
-      let abrTrack = getAbrTrack();
+      const hasSelected = value.find(t => t.selected)
+      const abrTrack = getAbrTrack()
       abrTrack.selected = !hasSelected
       value.push(abrTrack)
     }
     if (isSameTrackList(this._videoTracks, value)) {
       return
     }
-    this._videoTracks = value.sort(this._trackSorter);
-    this.emitUIEvent("videoTracksAvailable", value)
+    this._videoTracks = value.sort(this._trackSorter)
+    this.emitUIEvent('videoTracksAvailable', value)
   }
 
   activeTrack(type: TrackType): Track {
     switch (type) {
-      case "video":
+      case 'video':
         return this.videoTrack
-      case "text":
+      case 'text':
         return this.textTrack
-      case "audio":
+      case 'audio':
         return this.audioTrack
     }
   }
@@ -932,30 +933,30 @@ export class Player {
     }
     try {
       const presto = this.pp_
-      const tm = presto.getTrackManager();
+      const tm = presto.getTrackManager()
       if (track.id == 'abr') {
         tm.setVideoTrack(null)
-        this.videoTrack = getActiveTrack(this.pp_, "video")
-        this.videoTracks = getTracks(this.pp_, "video")
+        this.videoTrack = getActiveTrack(this.pp_, 'video')
+        this.videoTracks = getTracks(this.pp_, 'video')
       } else {
         track.selected = true
-        if (track.type == "audio") {
+        if (track.type == 'audio') {
           tm.setAudioTrack(track.ppTrack)
-          this.audioTrack = getActiveTrack(this.pp_, "audio")
-          this.audioTracks = getTracks(this.pp_, "audio")
-        } else if (track.type == "text") {
+          this.audioTrack = getActiveTrack(this.pp_, 'audio')
+          this.audioTracks = getTracks(this.pp_, 'audio')
+        } else if (track.type == 'text') {
           tm.setTextTrack(track.ppTrack)
-          this.textTrack = getActiveTrack(this.pp_, "text")
-          this.textTracks = getTracks(this.pp_, "text")
-        } else if (track.type == "video") {
+          this.textTrack = getActiveTrack(this.pp_, 'text')
+          this.textTracks = getTracks(this.pp_, 'text')
+        } else if (track.type == 'video') {
           tm.setVideoRendition(track.ppTrack, true)
-          this.videoTrack = getActiveTrack(this.pp_, "video")
-          this.videoTracks = getTracks(this.pp_, "video")
+          this.videoTrack = getActiveTrack(this.pp_, 'video')
+          this.videoTracks = getTracks(this.pp_, 'video')
         }
       }
-      this.emitUIEvent("trackSelected", track)
-    } catch (e) {
-      console.log(`unable to select track: ${e}`, track)
+      this.emitUIEvent('trackSelected', track)
+    } catch (error) {
+      console.warn('unable to select track', error, track)
     }
   }
 
@@ -970,11 +971,11 @@ export class Player {
   }
 
   set trackLabeler(value: TrackLabeler) {
-    this._trackLabeler = value;
+    this._trackLabeler = value
   }
 
   set trackLabelerOptions(value: TrackLabelerOptions) {
-    this._trackLabelerOptions = value;
+    this._trackLabelerOptions = value
   }
 
   private emitUIEvent<K extends EventType<UIEvents>>(type: K, data: UIEvents[K]): void {
@@ -991,14 +992,14 @@ export class Player {
 }
 
 const isSameTrack = (a: Track | undefined, b: Track | undefined): boolean => {
-  if (!a && !b) return true
-  if (!a && b) return false
-  if (a && !b) return false
+  if (!a && !b) {return true}
+  if (!a && b) {return false}
+  if (a && !b) {return false}
 
-  return a!.type == b!.type &&
-    a!.ppTrack == b!.ppTrack &&
-    a!.selected == b!.selected &&
-    a!.id == b!.id
+  return a.type == b.type &&
+    a.ppTrack == b.ppTrack &&
+    a.selected == b.selected &&
+    a.id == b.id
 }
 
 const isSameTrackList = (a: Track[], b: Track[]): boolean => {

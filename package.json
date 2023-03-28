@@ -20,7 +20,8 @@
     "build": "bash ./scripts/build.sh",
     "start": "bash ./scripts/start.sh",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "lint": "npx eslint ."
   },
   "files": [
     "dist/**"
@@ -28,6 +29,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@castlabs/prestoplay": "^6.2.7",
+    "@finga/eslint-config": "^1.2.1",
     "@rollup/plugin-commonjs": "^23.0.2",
     "@rollup/plugin-image": "^3.0.2",
     "@rollup/plugin-node-resolve": "^15.0.1",
@@ -40,6 +42,11 @@
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "@types/react-test-renderer": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.56.0",
+    "@typescript-eslint/parser": "^5.56.0",
+    "eslint": "^8.36.0",
+    "eslint-plugin-import": "github:fingerartur/eslint-plugin-import",
+    "eslint-plugin-react": "^7.32.2",
     "jest": "^29.2.2",
     "jest-environment-jsdom": "^29.2.2",
     "postcss": "^8.4.18",

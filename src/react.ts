@@ -1,6 +1,8 @@
-import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
-import {EventListener, EventType} from "./EventEmitter";
-import {Player, UIEvents} from "./Player";
+import { clpp } from '@castlabs/prestoplay'
+import React, { useEffect, useState } from 'react'
+
+import { EventListener, EventType } from './EventEmitter'
+import { Player, UIEvents } from './Player'
 
 export type ClppEventHandler = (e: any, presto: any) => void
 
@@ -21,7 +23,7 @@ export type ClppEventHandler = (e: any, presto: any) => void
  */
 export function usePrestoCoreEvent(eventName: string, player: Player, handler: ClppEventHandler, dependencies?: any[]) {
   async function handleEvent(e: any) {
-    let presto = await player.presto()
+    const presto = await player.presto()
     handler(e, presto)
   }
 
@@ -34,18 +36,19 @@ export function usePrestoCoreEvent(eventName: string, player: Player, handler: C
   let active = true
   // The presto instance. Once we have it, we assume the listener was
   // added and needs to be removed again
-  let presto:any
+  let presto: clpp.Player | null = null
+
   useEffect(() => {
     player.presto().then(pp => {
       if (active) {
         presto = pp
-        pp.on(eventName, handleEvent);
+        pp.on(eventName, handleEvent)
       }
     })
     return () => {
       active = false
       if (presto) {
-        presto.off(eventName, handleEvent);
+        presto.off(eventName, handleEvent)
       }
     }
   }, [player, ...dependencies])
@@ -62,9 +65,9 @@ export function usePrestoCoreEvent(eventName: string, player: Player, handler: C
 export function usePrestoUiEvent<E extends EventType<UIEvents>>(eventName: E, player: Player, handler: EventListener<UIEvents[E]>, dependencies?: any[]) {
   dependencies = dependencies || []
   useEffect(() => {
-    player.onUIEvent(eventName, handler);
+    player.onUIEvent(eventName, handler)
     return () => {
-      player.offUIEvent(eventName, handler);
+      player.offUIEvent(eventName, handler)
     }
   }, [player, ...dependencies])
 }
@@ -101,14 +104,14 @@ export function usePresto(player: Player, receiver: (presto: any) => void) {
  */
 export function useGlobalHide(ref: React.RefObject<Element>, hide: () => any) {
   useEffect(() => {
-    let handleClick = async (event: MouseEvent) => {
+    const handleClick = async (event: MouseEvent) => {
       if (ref.current && !ref.current.contains((event.target as Node))) {
         await hide()
       }
     }
-    document.addEventListener("click", handleClick)
+    document.addEventListener('click', handleClick)
     return () => {
-      document.removeEventListener("click", handleClick)
+      document.removeEventListener('click', handleClick)
     }
   })
 }
@@ -120,8 +123,8 @@ export function useGlobalHide(ref: React.RefObject<Element>, hide: () => any) {
  * @param player
  */
 export function usePrestoEnabledState(player: Player): boolean {
-  let [enabled, setEnabled] = useState(player.enabled)
-  usePrestoUiEvent("enabled", player, (e) => {
+  const [enabled, setEnabled] = useState(player.enabled)
+  usePrestoUiEvent('enabled', player, (e) => {
     setEnabled(e)
   })
   return enabled
@@ -134,9 +137,9 @@ export function usePrestoEnabledState(player: Player): boolean {
  * @param player
  */
 export function usePrestoEnabledStateClass(player: Player): string {
-  let [enabled, setEnabled] = useState(player.enabled)
-  usePrestoUiEvent("enabled", player, (e) => {
+  const [enabled, setEnabled] = useState(player.enabled)
+  usePrestoUiEvent('enabled', player, (e) => {
     setEnabled(e)
   })
-  return enabled ? "pp-ui-enabled" : "pp-ui-disabled"
+  return enabled ? 'pp-ui-enabled' : 'pp-ui-disabled'
 }

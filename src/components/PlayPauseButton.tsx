@@ -1,8 +1,11 @@
-import React, {useDebugValue, useState} from "react";
-import Player, {BufferingReason, State} from "../Player";
-import BaseButton from "./BaseButton";
-import {BasePlayerComponentButtonProps} from "../utils";
-import {usePrestoUiEvent} from "../react";
+import React, { useDebugValue, useState } from 'react'
+
+import Player, { BufferingReason, State } from '../Player'
+import { usePrestoUiEvent } from '../react'
+import { BasePlayerComponentButtonProps } from '../utils'
+
+import BaseButton from './BaseButton'
+
 
 /**
  * Props for the play/pause toggle button
@@ -24,7 +27,7 @@ type Config = {
 }
 
 function isPlayingState(config: Config): boolean {
-  const { player, state, resetRate, reason} = config
+  const { player, state, resetRate, reason } = config
 
   if(state == State.Buffering && reason == BufferingReason.Seeking) {
     return player.playing
@@ -48,7 +51,7 @@ const useIsPlaying = (player: Player, resetRate: boolean): boolean => {
     setIsPlaying(isPlayingState({ state: player.state, player, resetRate }))
   })
 
-  usePrestoUiEvent("statechanged", player, ({currentState, reason}) => {
+  usePrestoUiEvent('statechanged', player, ({ currentState, reason }) => {
     setIsPlaying(isPlayingState({ state: currentState, player, resetRate, reason }))
   })
 
@@ -77,7 +80,7 @@ export const PlayPauseButton = (props: PlayPauseButtonProps) => {
     player.playing = !player.playing
   }
 
-  const className = `pp-ui-playpause-toggle pp-ui-playpause-toggle-${isPlaying ? "pause" : "play"}`
+  const className = `pp-ui-playpause-toggle pp-ui-playpause-toggle-${isPlaying ? 'pause' : 'play'}`
     +` ${props.className || ''}`
 
   return (

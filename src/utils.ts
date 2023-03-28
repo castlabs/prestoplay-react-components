@@ -1,5 +1,6 @@
-import {Player} from "./Player";
-import React, {CSSProperties} from "react";
+import React, { CSSProperties } from 'react'
+
+import { Player } from './Player'
 
 /**
  * Base properties for components created by this library
@@ -52,8 +53,8 @@ export interface BasePlayerComponentButtonProps extends BasePlayerComponentProps
  *   provided
  */
 export function classNames(classes: Record<string, boolean>, classNames?: string): string {
-  let selected: string[] = []
-  for (let k in classes) {
+  const selected: string[] = []
+  for (const k in classes) {
     if (classes[k]) {
       selected.push(k)
     }
@@ -85,19 +86,19 @@ export function classNames(classes: Record<string, boolean>, classNames?: string
  */
 export function timeToString(timeInSeconds: number, opt_format = '%hh:%mm:%ss') {
   if (timeInSeconds === null || timeInSeconds === undefined) {
-    timeInSeconds = 0;
+    timeInSeconds = 0
   }
   if (opt_format === null || opt_format === undefined) {
-    opt_format = '%h:%mm:%ss';
+    opt_format = '%h:%mm:%ss'
   }
-  let hours = Math.floor(timeInSeconds / 3600);
-  let minutes = Math.floor((timeInSeconds - (hours * 3600)) / 60);
-  let seconds = Math.floor(timeInSeconds - (hours * 3600) - (minutes * 60));
+  const hours = Math.floor(timeInSeconds / 3600)
+  const minutes = Math.floor((timeInSeconds - (hours * 3600)) / 60)
+  const seconds = Math.floor(timeInSeconds - (hours * 3600) - (minutes * 60))
 
   return opt_format
     .replace(/(%h+)/, padReplace(String(hours)))
     .replace(/(%m+)/, padReplace(String(minutes)))
-    .replace(/(%s+)/, padReplace(String(seconds)));
+    .replace(/(%s+)/, padReplace(String(seconds)))
 }
 
 /**
@@ -106,25 +107,13 @@ export function timeToString(timeInSeconds: number, opt_format = '%hh:%mm:%ss') 
  */
 export function getMinimalFormat(time: number): string {
   if (time >= 0 && time < 3600) {
-    return "%mm:%ss"
+    return '%mm:%ss'
   }
-  return "%hh:%mm:%ss"
-}
-
-/**
- * Returns the value if it is defined, otherwise returns the specified
- * default value.
- *
- * @param value The value
- * @param defaultValue The default value if value is undefined
- */
-export function p(value: any, defaultValue: any) {
-  if (value === undefined) return defaultValue
-  return value
+  return '%hh:%mm:%ss'
 }
 
 function pad(str: string, max: number): string {
-  return str.length < max ? pad('0' + str, max) : str;
+  return str.length < max ? pad('0' + str, max) : str
 }
 
 function padReplace(value: string) {
@@ -132,18 +121,22 @@ function padReplace(value: string) {
 }
 
 export function getFocusableElements(parent: HTMLElement): HTMLElement[] {
-  const focusQuery = 'a:not([disabled]):not([style*="display:none"]), button:not([disabled]):not([style*="display:none"]), input[type=text]:not([disabled]):not([style*="display:none"]), [tabindex]:not([disabled]):not([tabindex="-1"]):not([style*="display:none"])';
-  let items = parent.querySelectorAll(focusQuery);
+  const focusQuery = 'a:not([disabled]):not([style*="display:none"]), '
+    + 'button:not([disabled]):not([style*="display:none"]), '
+    + 'input[type=text]:not([disabled]):not([style*="display:none"]), '
+    + '[tabindex]:not([disabled]):not([tabindex="-1"]):not([style*="display:none"])'
+    
+  const items = parent.querySelectorAll(focusQuery)
   return Array.prototype.filter.call(
     items,
-    (element: HTMLElement) => element.offsetWidth > 0 || element.offsetHeight > 0 || element === document.activeElement
+    (element: HTMLElement) => element.offsetWidth > 0 || element.offsetHeight > 0 || element === document.activeElement,
   ).filter(e => {
-    return e.offsetParent !== null && getComputedStyle(e).display != 'none' && !e.classList.contains("pp-ui-disabled")
+    return e.offsetParent !== null && getComputedStyle(e).display != 'none' && !e.classList.contains('pp-ui-disabled')
   })
 }
 
 export function focusNextElement(items: HTMLElement[]) {
-  let index: number = -1;
+  let index = -1
   if (document.activeElement) {
     index = items.indexOf(document.activeElement as HTMLElement)
   }
@@ -155,7 +148,7 @@ export function focusNextElement(items: HTMLElement[]) {
 }
 
 export function focusPreviousElement(items: HTMLElement[]) {
-  let index: number = -1;
+  let index = -1
   if (document.activeElement) {
     index = items.indexOf(document.activeElement as HTMLElement)
   }
@@ -167,7 +160,7 @@ export function focusPreviousElement(items: HTMLElement[]) {
   focusElement(items[index])
 }
 
-let focusElementTimerId_: any;
+let focusElementTimerId_: any
 
 export function focusElement(item: HTMLElement) {
   if (focusElementTimerId_) {
@@ -188,24 +181,24 @@ export function focusElement(item: HTMLElement) {
 // noinspection JSUnusedGlobalSymbols
 export function isTouchDevice() {
   // @ts-ignore
-  let msTouchValue = navigator.msMaxTouchPoints;
+  const msTouchValue = navigator.msMaxTouchPoints
   return (('ontouchstart' in window) ||
     (navigator.maxTouchPoints > 0) ||
-    (msTouchValue > 0));
+    (msTouchValue > 0))
 }
 
 export function isIOS() {
   if (/iPhone|iPod/.test(navigator.platform)) {
-    return true;
+    return true
   } else {
     return !isIpadOS() && navigator.maxTouchPoints &&
       navigator.maxTouchPoints > 2 &&
-      /MacIntel/.test(navigator.platform);
+      /MacIntel/.test(navigator.platform)
   }
 }
 
 export function isIpadOS() {
   return navigator.maxTouchPoints &&
     navigator.maxTouchPoints > 2 &&
-    /MacIntel/.test(navigator.platform);
+    /MacIntel/.test(navigator.platform)
 }

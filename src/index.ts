@@ -37,7 +37,7 @@ export * from './components/TrackSelectionList'
 export * from './components/VerticalBar'
 export * from './components/VolumeBar'
 
-export {useGlobalHide} from "./react";
-export {usePresto} from "./react";
-export {usePrestoUiEvent} from "./react";
-export {usePrestoCoreEvent} from "./react";
+export { useGlobalHide } from './react'
+export { usePresto } from './react'
+export { usePrestoUiEvent } from './react'
+export { usePrestoCoreEvent } from './react'

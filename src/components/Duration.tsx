@@ -1,23 +1,23 @@
-import React, {useState} from "react";
+import React, { useState } from 'react'
+
+import { usePrestoEnabledStateClass, usePrestoUiEvent } from '../react'
 import {
   BasePlayerComponentProps,
   getMinimalFormat,
-  timeToString
-} from "../utils";
-import Label from "./Label";
-import {usePrestoEnabledStateClass, usePrestoUiEvent} from "../react";
+  timeToString,
+} from '../utils'
 
-export interface DurationProps extends BasePlayerComponentProps{
-}
+import Label from './Label'
+
+export type DurationProps = BasePlayerComponentProps
 
 export const Duration = (props: DurationProps) => {
-  let [duration, setDuration] = useState("")
-  let enabledClass = usePrestoEnabledStateClass(props.player);
+  const [duration, setDuration] = useState('')
+  const enabledClass = usePrestoEnabledStateClass(props.player)
 
-
-  usePrestoUiEvent("durationchange", props.player, (duration) => {
+  usePrestoUiEvent('durationchange', props.player, (duration) => {
     if(duration == Infinity) {
-      setDuration("Live")
+      setDuration('Live')
     } else {
       setDuration(timeToString(duration, getMinimalFormat(duration)))
     }

@@ -1,23 +1,22 @@
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
+import { clpp } from '@castlabs/prestoplay'
 
 /**
  * Track types that are exposed to the UI
  */
-export type TrackType = "video" | "audio" | "text"
+export type TrackType = 'video' | 'audio' | 'text'
 
 /**
  * The available track ids. This is a string that are receive from presto, but
  * we have some dedicated ID to identify specific tracks
  */
 export type TrackId =
-  "abr" |
-  "video-unavailable" |
-  "audio-unavailable" |
-  "text-unavailable" |
-  "video-off" |
-  "audio-off" |
-  "text-off" |
+  'abr' |
+  'video-unavailable' |
+  'audio-unavailable' |
+  'text-unavailable' |
+  'video-off' |
+  'audio-off' |
+  'text-off' |
   string
 
 /**
@@ -30,8 +29,12 @@ export type TrackId =
 export interface Track {
   /**
    * The underlying prestoplay track or null
+   * @see {@link https://demo.castlabs.com/#/docs?q=clpp.Track}
+   * 
+   * TODO This was described as PRESTOplay Track (with type any) but it is being accessed, at least
+   * in some places, as clpp.Rendition. So which type should really be here??
    */
-  ppTrack: any
+  ppTrack: clpp.Track | null
   /**
    * The track type
    */
@@ -60,13 +63,14 @@ export function getActivePrestoTrackForType(trackManager: any, type: string): an
       return trackManager.getAudioTrack()
     case clpp.Track.Type.TEXT:
       return trackManager.getTextTrack()
-    case clpp.Track.Type.VIDEO:
-      let videoTrack = trackManager.getVideoTrack();
-      if (!videoTrack) return null
+    case clpp.Track.Type.VIDEO: {
+      const videoTrack = trackManager.getVideoTrack()
+      if (!videoTrack) {return null}
       if (trackManager.isAbrEnabled()) {
-        return getAbrTrack(trackManager);
+        return getAbrTrack(trackManager)
       }
       return trackManager.getVideoRendition()
+    }
   }
 }
 
@@ -76,60 +80,61 @@ export function getPrestoTracksForType(trackManager: any, type: string): any {
       return trackManager.getAudioTracks()
     case clpp.Track.Type.TEXT:
       return trackManager.getTextTracks()
-    case clpp.Track.Type.VIDEO:
-      let videoTrack = trackManager.getVideoTrack();
-      if (!videoTrack) return []
+    case clpp.Track.Type.VIDEO: {
+      const videoTrack = trackManager.getVideoTrack()
+      if (!videoTrack) {return []}
       return videoTrack.renditions
+    }
   }
 }
 
 export function getAbrTrack(trackManager?: any): Track {
   return {
-    type: "video",
-    label: "Auto",
+    type: 'video',
+    label: 'Auto',
     selected: trackManager ? trackManager.isAbrEnabled() : true,
     id: 'abr',
-    ppTrack: null
+    ppTrack: null,
   }
 }
 
 export function getDisabledTrack(type: TrackType, selected: boolean): Track {
   return {
     type: type,
-    label: "Off",
+    label: 'Off',
     selected: selected,
     id: `${type}-off`,
-    ppTrack: null
+    ppTrack: null,
   }
 }
 
 export function getUnavailableTrack(type: TrackType): Track {
   return {
     type: type,
-    label: "Unavailable",
+    label: 'Unavailable',
     selected: true,
     id: `${type}-unavailable`,
-    ppTrack: null
+    ppTrack: null,
   }
 }
 
 export function fromPrestoTrack(presto: any, ppTrack: any, type: TrackType, active?:Track): Track {
-  if (!ppTrack) return getDisabledTrack(type, ppTrack === null)
-  let tm = presto.getTrackManager()
+  if (!ppTrack) {return getDisabledTrack(type, ppTrack === null)}
+  const tm = presto.getTrackManager()
   active = active || getActivePrestoTrackForType(tm, type)
   return {
     ppTrack,
     selected: !!(active && active == ppTrack),
     label: ppTrack.label,
     type: ppTrack.type || type,
-    id: ppTrack.id
+    id: ppTrack.id,
   }
 }
 
 export function getTracks(presto: any, type: TrackType): Track[] {
-  let tm = presto.getTrackManager()
-  let active = getActivePrestoTrackForType(tm, type)
-  let tracksForType = getPrestoTracksForType(tm, type);
+  const tm = presto.getTrackManager()
+  const active = getActivePrestoTrackForType(tm, type)
+  const tracksForType = getPrestoTracksForType(tm, type)
   return tracksForType
     .map((t: any) => fromPrestoTrack(presto, t, type, active))
 }
