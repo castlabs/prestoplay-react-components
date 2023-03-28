@@ -1,40 +1,39 @@
-import React, {createRef, useState} from "react";
-import {BasePlayerComponentButtonProps} from "../utils";
-import BaseButton from "./BaseButton";
+import React, { createRef, useState } from 'react'
+
 import {
   usePrestoEnabledState,
-  usePrestoEnabledStateClass,
-  usePrestoUiEvent
-} from "../react";
+  usePrestoUiEvent,
+} from '../react'
+import { BasePlayerComponentButtonProps } from '../utils'
 
-export interface MenuSlideinToggleProps extends BasePlayerComponentButtonProps{
-}
+import BaseButton from './BaseButton'
+
+export type MenuSlideinToggleProps = BasePlayerComponentButtonProps
 
 export const MenuSlideinToggleButton = (props: MenuSlideinToggleProps) => {
-  let [isVisible, setVisible] = useState(false);
-  let enabled = usePrestoEnabledState(props.player);
-  let ref = createRef<HTMLButtonElement>();
+  const [isVisible, setVisible] = useState(false)
+  const enabled = usePrestoEnabledState(props.player)
+  const ref = createRef<HTMLButtonElement>()
 
-  async function toggle(event:React.MouseEvent) {
+  async function toggle(event: React.MouseEvent) {
     setVisible(!isVisible)
-    props.player.slideInMenuVisible = !isVisible;
-    event.stopPropagation();
+    props.player.slideInMenuVisible = !isVisible
+    event.stopPropagation()
     if (ref.current && !isVisible) {
       ref.current.blur()
     }
   }
 
-  usePrestoUiEvent("slideInMenuVisible", props.player, (visible) => {
+  usePrestoUiEvent('slideInMenuVisible', props.player, (visible) => {
     setVisible(visible)
   })
 
-  // @ts-ignore
   return (
     <BaseButton onClick={toggle} disableIcon={false} disabled={!enabled} ref={ref}
-                className={`pp-ui-slideinmenu-toggle ${props.className || ''}`}>
+      className={`pp-ui-slideinmenu-toggle ${props.className || ''}`}>
       {props.children}
     </BaseButton>
-  );
+  )
 }
 
 export default MenuSlideinToggleButton

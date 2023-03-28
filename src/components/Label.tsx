@@ -1,5 +1,6 @@
-import React from "react";
-import {BaseComponentProps,} from "../utils";
+import React from 'react'
+
+import { BaseComponentProps } from '../utils'
 
 export interface LabelProps extends BaseComponentProps{
   label?: string

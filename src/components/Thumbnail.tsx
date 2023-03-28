@@ -1,53 +1,52 @@
+import { clpp } from '@castlabs/prestoplay'
+import '@castlabs/prestoplay/cl.thumbnails'
 import React, {
   createRef, CSSProperties,
   useLayoutEffect,
-  useState
-} from "react";
+  useState,
+} from 'react'
+
+import { usePresto, usePrestoUiEvent } from '../react'
 import {
   BasePlayerComponentProps,
-} from "../utils";
-
-// @ts-ignore
-import {clpp} from '@castlabs/prestoplay'
-import "@castlabs/prestoplay/cl.thumbnails"
-import {usePresto, usePrestoUiEvent} from "../react";
+} from '../utils'
 
 
-Document.prototype.replaceChildren ||= replaceChildren;
-DocumentFragment.prototype.replaceChildren ||= replaceChildren;
-Element.prototype.replaceChildren ||= replaceChildren;
+Document.prototype.replaceChildren ||= replaceChildren
+DocumentFragment.prototype.replaceChildren ||= replaceChildren
+Element.prototype.replaceChildren ||= replaceChildren
 
-function replaceChildren(...new_children:any) {
+function replaceChildren(...new_children: any) {
   // @ts-ignore
-  const { childNodes } = this;
+  const { childNodes } = this
   while (childNodes.length) {
-    childNodes[0].remove();
+    childNodes[0].remove()
   }
   // @ts-ignore
-  this.append(...new_children);
+  this.append(...new_children)
 }
 
 export interface ThumbnailProps extends BasePlayerComponentProps {
-  position?: number,
-  listenToHover?: boolean,
-  moveRelativeToParent?: boolean,
-  style?: CSSProperties,
-  onThumbSize?: (width:number, height:number) => void
+  position?: number
+  listenToHover?: boolean
+  moveRelativeToParent?: boolean
+  style?: CSSProperties
+  onThumbSize?: (width: number, height: number) => void
 }
 
 export const Thumbnail = (props: ThumbnailProps) => {
-  let [thumbsPlugin, setThumbsPlugin] = useState<any>()
-  let [hasThumb, setHasThumb] = useState<boolean>(false)
-  let [thumbWidth, setThumbWidth] = useState<number>(0)
-  let containerRef = createRef<HTMLDivElement>()
-  let [hoverPosition, setHoverPosition] = useState<number>(-1)
-  let [hoverValue, setHoverValue] = useState<number>(0)
+  const [thumbsPlugin, setThumbsPlugin] = useState<any>()
+  const [hasThumb, setHasThumb] = useState<boolean>(false)
+  const [thumbWidth, setThumbWidth] = useState<number>(0)
+  const containerRef = createRef<HTMLDivElement>()
+  const [hoverPosition, setHoverPosition] = useState<number>(-1)
+  const [hoverValue, setHoverValue] = useState<number>(0)
 
   const loadThumbnail = () => {
     if (!thumbsPlugin) {
       return
     }
-    let container = containerRef.current;
+    const container = containerRef.current
     if (!container) {
       return
     }
@@ -60,49 +59,50 @@ export const Thumbnail = (props: ThumbnailProps) => {
       return
     }
 
-    let finalPosition = hasHoverPosition ? hoverPosition : props.position
+    const finalPosition = hasHoverPosition ? hoverPosition : props.position
     thumbsPlugin.get(finalPosition)
       .then((t: any) => t.load())
       .then((t: any) => t.element())
       .then((child: HTMLElement) => {
-        if(!container) return;
+        if (!container) {return}
 
 
-        let imageWidth = Number(child.style.width.replace('px', ''));
-        let imageHeight = Number(child.style.height.replace('px', ''));
-        let containerWidth = container.clientWidth;
-        let containerHeight = container.clientHeight;
-        let scale = containerHeight / imageHeight
-        container.style.width = (imageWidth * scale) + "px"
+        const imageWidth = Number(child.style.width.replace('px', ''))
+        const imageHeight = Number(child.style.height.replace('px', ''))
+        // const containerWidth = container.clientWidth
+        const containerHeight = container.clientHeight
+        const scale = containerHeight / imageHeight
+        container.style.width = `${(imageWidth * scale)}px`
 
         // let scale = Math.min(
         //   containerWidth / imageWidth,
         //   containerHeight / imageHeight
         // );
-        child.style.transformOrigin = "top left";
-        child.style.transform = "scale(" + scale +") translateY(-50%)";
-        child.style.backgroundColor = 'transparent';
-        child.style.position = 'absolute';
-        child.style.top = '50%';
+        child.style.transformOrigin = 'top left'
+        child.style.transform = `scale(${scale}) translateY(-50%)`
+        child.style.backgroundColor = 'transparent'
+        child.style.position = 'absolute'
+        child.style.top = '50%'
 
-        if(props.onThumbSize) {
+        if (props.onThumbSize) {
           props.onThumbSize((imageWidth * scale), containerHeight)
         }
         setThumbWidth((imageWidth * scale))
         setHasThumb(true)
         container.replaceChildren(child)
       })
-      .catch((e: any) => {
+      .catch(() => {
+        // nothing
       })
   }
 
   usePresto(props.player, (presto) => {
 
-    setThumbsPlugin(presto.getPlugin(clpp.thumbnails.ThumbnailsPlugin.Id));
+    setThumbsPlugin(presto.getPlugin(clpp.thumbnails.ThumbnailsPlugin.Id))
   })
 
-  usePrestoUiEvent("hoverPosition", props.player, (data) => {
-    if (!props.listenToHover) return
+  usePrestoUiEvent('hoverPosition', props.player, (data) => {
+    if (!props.listenToHover) {return}
     setHoverPosition(data.position)
     setHoverValue(data.percent)
   })
@@ -111,23 +111,23 @@ export const Thumbnail = (props: ThumbnailProps) => {
     loadThumbnail()
   }, [thumbsPlugin, containerRef, hoverPosition])
 
-  let trackParentStyle = ():CSSProperties => {
-    if(!props.moveRelativeToParent) return {}
+  const trackParentStyle = (): CSSProperties => {
+    if (!props.moveRelativeToParent) {return {}}
     return {
-      position: "absolute",
-      margin: "auto",
+      position: 'absolute',
+      margin: 'auto',
       left: `calc((100% - ${thumbWidth}px) * ${hoverValue}/100) `,
-      transform: "translateY(-50%)"
+      transform: 'translateY(-50%)',
     }
   }
 
   return (
     <div ref={containerRef}
-         style={{
-           ...trackParentStyle(),
-           ...props.style || {}
-         }}
-         className={`pp-ui pp-ui-thumbnail ${hasThumb ? 'pp-ui-thumbnail-with-thumb': ''} ${props.className || ''}`}>
+      style={{
+        ...trackParentStyle(),
+        ...props.style || {},
+      }}
+      className={`pp-ui pp-ui-thumbnail ${hasThumb ? 'pp-ui-thumbnail-with-thumb': ''} ${props.className || ''}`}>
     </div>
   )
 }
