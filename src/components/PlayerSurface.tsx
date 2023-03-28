@@ -12,13 +12,17 @@ import {usePrestoUiEvent} from "../react";
 
 /**
  * The properties of the player surface. This is the element that receives
- * the prestoplay configuration.
+ * the PRESTOplay configuration.
  */
 export interface PlayerProps extends BasePlayerComponentProps {
   /**
-   * The PRESTOplay player configuration
+   * The PRESTOplay player configuration to load and play a video
    */
   config?: any,
+  /**
+   * The PRESTOplay player configuration to initialize the player
+   */
+  baseConfig?: any,
 
   /**
    * Indicate that the configuration should be applied immediately. If this is
@@ -29,7 +33,7 @@ export interface PlayerProps extends BasePlayerComponentProps {
   /**
    * Pass the plays inline flag to the video element. This is relevant for mobile
    * and iPad devices to decide if the playback can start embedded in the page or the
-   * player will go to full-screen mode and no overlay will be possible
+   * player will go to full-screen mode and no overlay will be possible.
    */
   playsInline?: boolean
 }
@@ -37,22 +41,24 @@ export interface PlayerProps extends BasePlayerComponentProps {
 /**
  * The Player Surface receives they player instance and a configuration
  * and renders the related video element. The component can be referenced, and
- * that ref can be use for instance to initiate full screen playback
+ * that ref can be use for instance to initiate full screen playback.
  */
 export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: PlayerProps, ref: ForwardedRef<HTMLDivElement>) => {
-  const video = createRef<HTMLVideoElement>();
   const containerRef = useRef<HTMLDivElement>()
 
+  const createVideo = (video: HTMLVideoElement) => {
+    props.player.init(video, props.baseConfig)
+  }
+
   useEffect(() => {
-    if (video.current) {
-      props.player.init(video.current)
-    }
     return () => {
       props.player.release()
     }
-  }, [props.player, video.current])
+  }, [])
 
   useEffect(() => {
+    if (!props.config) return
+
     props.player.load(props.config, props.autoload)
   }, [props.config, props.player])
 
@@ -206,7 +212,7 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
          tabIndex={0}
     >
       <video className={"pp-ui pp-ui-video"}
-             ref={video}
+             ref={createVideo}
              tabIndex={-1}
              playsInline={props.playsInline}>
       </video>

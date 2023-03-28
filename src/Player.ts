@@ -65,6 +65,10 @@ export interface DefaultTrackLabelerOptions extends TrackLabelerOptions {
    * The label that is used for unknown tracks, defaults to 'Unknown'
    */
   unknownTrackLabel?: string
+  /**
+   * If defined, the bitrate is shown for video tracks in the chosen units.
+   */
+  showVideoBitrate?: 'Mbps'
 }
 
 /**
@@ -109,7 +113,14 @@ export const defaultTrackLabel: TrackLabeler = (t: Track, player: Player, _optio
     if (!t.ppTrack.height) {
        return opts.unknownTrackLabel
     }
-    return t.ppTrack.height + "p"
+
+    let result = `${t.ppTrack.height}p`
+
+    if (opts.showVideoBitrate === 'Mbps' && t.ppTrack.bandwidth) {
+      result += ` (${(t.ppTrack.bandwidth / 1048576).toFixed(1)} Mbps)`
+    }
+
+    return result
   } else {
     if (t.label) {
       return t.label
@@ -159,13 +170,39 @@ export const defaultTrackSorter: TrackSorter = (a: Track, b: Track) => {
  * Player states
  */
 export enum State {
+  /**
+   * 0 - when player has been created or released
+   */
   Idle = clpp.Player.State.IDLE,
+  /**
+   * 1 - when player receives the api command to load the movie until it starts
+   * requesting the first fragment
+   */
   Preparing = clpp.Player.State.PREPARING,
+  /**
+   * 2 - when player doesn't have enough data to play the content for any
+   * reasons
+   */
   Buffering = clpp.Player.State.BUFFERING,
+  /**
+   * 3 - when player starts playing content
+   */
   Playing = clpp.Player.State.PLAYING,
+  /**
+   * 4 - when player is stopped
+   */
   Paused = clpp.Player.State.PAUSED,
+  /**
+   * 5 - when video is ended
+   */
   Ended = clpp.Player.State.ENDED,
+  /**
+   * 6 - when player encounters an error
+   */
   Error = clpp.Player.State.ERROR,
+  /**
+   * 7 - Used exclusively to indicate previous state, when it has no state yet
+   */
   Unset = clpp.Player.State.UNSET
 }
 
@@ -477,13 +514,12 @@ export class Player {
    * If the player is already initialized, this function does not do anything.
    *
    * @param element The video element or the ID of the video element
+   * @param baseConfig PRESTOplay config to initialize the player with
    */
-  async init(element: HTMLVideoElement | string) {
+  async init(element: HTMLVideoElement | string, baseConfig: any) {
     if (this.pp_) return;
 
-    this.pp_ = new clpp.Player(element)
-    // @ts-ignore
-    window.pp = this.pp_
+    this.pp_ = new clpp.Player(element, baseConfig)
     const handlePlayerTracksChanged = (type?: TrackType) => {
       return () => {
         if (!type || type == "video") {

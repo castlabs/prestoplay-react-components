@@ -41,13 +41,18 @@ const FULLSCREEN_CHANGE = [
 
 export interface FullscreenButtonProps extends BasePlayerComponentButtonProps {
   /**
-   * Reference to the container that will be put to fullscreen mode
+   * Reference to the container that will be displayed in fullscreen mode.
+   * 
+   * (Not all platforms support this, e.g. on iOS only the video element
+   * can be displayed in fullscreen mode, so this props will be ignored there).
    */
   fullscreenContainer: React.MutableRefObject<HTMLElement | null>;
   /**
-   * Configure if the video element should be used for fullscreen mode instead
-   * if the passed container. The default is to use the passed container unless
-   * on iOS or iPadOS
+   * Configure whether the video element or the `fullscreenContainer` should
+   * be displayed in fullscreen mode.
+   * 
+   * By default on iOS the video element will be displayed in fullscreen mode
+   * and everywhere else the `fullscreenContainer` will be displayed in fullscreen mode.
    */
   useVideoElementForFullscreen?: UseVideoElement[]
 }
@@ -76,8 +81,8 @@ export enum UseVideoElement {
   "iPadOS"="iPadOS"
 }
 
-const isFullscreenEnabled = () => {
-  return !!FULLSCREEN_ELEMENT.find(name => {
+const isInFullScreen = () => {
+  return FULLSCREEN_ELEMENT.some(name => {
     // @ts-ignore
     return document[name] != undefined
   });
@@ -163,7 +168,7 @@ export const FullscreenButton = (props: FullscreenButtonProps) => {
   }
 
   const onFullscreenChangeListener = () => {
-    setFullscreen(isFullscreenEnabled())
+    setFullscreen(isInFullScreen())
   };
 
   useEffect(() => {
@@ -175,7 +180,7 @@ export const FullscreenButton = (props: FullscreenButtonProps) => {
         document.removeEventListener(name, onFullscreenChangeListener)
       })
     }
-  })
+  }, [])
 
   useEffect(() => {
     // we _might_ need to use the video element to go fullscreen

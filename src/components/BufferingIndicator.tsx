@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useDebugValue, useState} from "react";
 import {Player, State} from "../Player";
 import {BasePlayerComponentProps} from "../utils";
 import {usePrestoUiEvent} from "../react";
@@ -10,15 +10,27 @@ export interface BufferingIndicatorProps extends BasePlayerComponentProps{
 const isBufferingState = (state: State): boolean => {
   return state == State.Preparing || state == State.Buffering
 }
-export const BufferingIndicator = (props: BufferingIndicatorProps) => {
-  let [buffering, setBuffering] = useState(isBufferingState(props.player.state));
 
-  usePrestoUiEvent("statechanged", props.player, (data) => {
+const useIsBuffering = (player: Player): boolean => {
+  const [buffering, setBuffering] = useState(isBufferingState(player.state));
+
+  usePrestoUiEvent("statechanged", player, (data) => {
     setBuffering(isBufferingState(data.currentState))
   })
 
+  useDebugValue(buffering ? 'buffering' : 'not buffering')
+
+  return buffering
+}
+
+export const BufferingIndicator = (props: BufferingIndicatorProps) => {
+  const buffering = useIsBuffering(props.player)
+
   return (
-    <div className={`pp-ui pp-ui-spinner ${buffering ? 'pp-ui-spinner-loading': ''} ${props.className || ''}`} style={props.style}>
+    <div
+      className={`pp-ui pp-ui-spinner ${buffering ? 'pp-ui-spinner-loading': ''} ${props.className || ''}`}
+      style={props.style}
+    >
       <i className={`pp-ui pp-ui-icon`}/>
       {props.children || ''}
     </div>

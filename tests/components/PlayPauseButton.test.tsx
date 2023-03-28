@@ -6,8 +6,9 @@ import {classNames, emitPlayerEvent} from "../test_utils";
 
 const SHOWS_PLAY_BUTTON = `
 <button
-  className="pp-ui pp-ui-button  pp-ui-playpause-toggle pp-ui-playpause-toggle-play "
+  className="pp-ui pp-ui-button  pp-ui-enabled pp-ui-playpause-toggle pp-ui-playpause-toggle-play "
   onClick={[Function]}
+  tabIndex={0}
   type="button"
 >
   <i
@@ -18,8 +19,9 @@ const SHOWS_PLAY_BUTTON = `
 
 const SHOWS_PAUSE_BUTTON = `
 <button
-  className="pp-ui pp-ui-button  pp-ui-playpause-toggle pp-ui-playpause-toggle-pause "
+  className="pp-ui pp-ui-button  pp-ui-enabled pp-ui-playpause-toggle pp-ui-playpause-toggle-play "
   onClick={[Function]}
+  tabIndex={0}
   type="button"
 >
   <i
@@ -27,6 +29,10 @@ const SHOWS_PAUSE_BUTTON = `
   />
 </button>
 `
+
+const MOCK = {
+  EVENT: { preventDefault: () => {} },
+}
 
 describe("<PlayPauseButton />", () => {
 
@@ -39,7 +45,18 @@ describe("<PlayPauseButton />", () => {
     const player = new Player()
     let component = renderer.create(<PlayPauseButton player={player}/>);
     let tree = component.toJSON()
-    expect(tree).toMatchInlineSnapshot(SHOWS_PLAY_BUTTON)
+    expect(tree).toMatchInlineSnapshot(`
+<button
+  className="pp-ui pp-ui-button  pp-ui-enabled pp-ui-playpause-toggle pp-ui-playpause-toggle-play "
+  onClick={[Function]}
+  tabIndex={0}
+  type="button"
+>
+  <i
+    className="pp-ui pp-ui-icon"
+  />
+</button>
+`)
   });
 
   test("should react to state changes", async () => {
@@ -85,11 +102,11 @@ describe("<PlayPauseButton />", () => {
 
     expect(component.toJSON()).toMatchInlineSnapshot(SHOWS_PLAY_BUTTON)
     // @ts-ignore
-    component.toJSON()!.props.onClick()
+    component.toJSON()!.props.onClick(MOCK.EVENT)
 
     expect(rateSetter).toHaveBeenCalledTimes(1)
     expect(rateSetter).toHaveBeenCalledWith(1)
-    expect(component.toJSON()).toMatchInlineSnapshot(SHOWS_PLAY_BUTTON)
+    expect(component.toJSON()).toMatchInlineSnapshot(SHOWS_PAUSE_BUTTON)
   });
 
 });

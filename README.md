@@ -1,19 +1,20 @@
 # PRESTOplay React Components
 
-This is a React Component library that provides components to interact with the PRESTOplay video player 
-and build video player user interfaces and controls.
+This is a React Component library that provides components to build user interfaces for PRESTOplay video player.
 
-The library can be installed as a dependency from npm:
+## Installation
 
+The library can be installed as a dependency from NPM:
+
+```sh
+npm i @castlabs/prestoplay-react-components
 ```
-npm install @castlabs/prestoplay-react-components
-```
 
-Please note that you should also install the peer dependencies, i.e. react, react-dom, and 
+Please note that you should also install the peer dependencies, i.e. `react`, `react-dom` and 
 `@castlabs/prestoplay`:
 
-```
-npm install react react-dom @castlabs/prestoplay
+```sh
+npm i react@18 react-dom@18 @castlabs/prestoplay@6.2
 ```
 
 ## Getting started
@@ -342,20 +343,4 @@ all the icons that are used by the theme inline, while the "non-embedded" versio
 relative.
 
 You can find the themes and resources in `@castlabs/prestoplay-react-components/dist/themes` in the 
-installed bundle. The sources can be found [here](./src/themes). 
-
-## Development
-
-The library is written in TypeScript and comes with a small react application that we use for development. 
-
-To compile the library run
-
-```
-npm run build
-```
-
-To start the dev app and watch for any file changes, run
-
-```
-npm run start
-```
+installed bundle. The sources can be found [here](./src/themes).

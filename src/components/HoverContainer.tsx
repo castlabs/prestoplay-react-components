@@ -5,8 +5,6 @@ import {
   BasePlayerComponentProps,
 } from "../utils";
 
-// @ts-ignore
-import {clpp} from '@castlabs/prestoplay'
 import "@castlabs/prestoplay/cl.thumbnails"
 import {usePrestoUiEvent} from "../react";
 

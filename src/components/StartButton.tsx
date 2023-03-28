@@ -1,19 +1,32 @@
-import React, {createRef, useEffect, useRef, useState} from "react";
+import React, {createRef, useDebugValue, useEffect, useState} from "react";
 import {BasePlayerComponentButtonProps, focusElement} from "../utils";
 import BaseButton from "./BaseButton";
-import {State} from "../Player";
+import {State, Player } from "../Player";
 import {usePrestoUiEvent} from "../react";
 
 export interface StartButtonProps extends BasePlayerComponentButtonProps {
+  onClick?: () => Promise<void>
+}
+
+const isVisibleState = (state: State) => {
+  return state == State.Idle || state == State.Unset
+}
+
+const useVisibility = (player: Player) => {
+  const [visible, setVisible] = useState<boolean>(isVisibleState(player.state))
+
+  usePrestoUiEvent("statechanged", player, () => {
+    setVisible(isVisibleState(player.state))
+  })
+
+  useDebugValue(visible ? "visible" : "hidden")
+
+  return { visible, setVisible }
 }
 
 export const StartButton = (props: StartButtonProps) => {
-  let [visible, setVisible] = useState(props.player.state == State.Idle || props.player.state == State.Unset);
-  let ref = createRef<HTMLButtonElement>();
-
-  usePrestoUiEvent("statechanged", props.player, ({currentState}) => {
-    setVisible(props.player.state == State.Idle || props.player.state == State.Unset)
-  })
+  const { visible, setVisible } = useVisibility(props.player)
+  const ref = createRef<HTMLButtonElement>()
 
   useEffect(() =>{
     if(ref.current && visible) {
@@ -22,17 +35,27 @@ export const StartButton = (props: StartButtonProps) => {
   }, [ref])
 
   const start = async () => {
-    await props.player.load()
-    props.player.playing = true
+    if (props.onClick) {
+      await props.onClick()
+    } else {
+      await props.player.load()
+      props.player.playing = true
+    }
     setVisible(false)
     props.player.surfaceInteraction()
   }
 
+  if (!visible) {
+    return null
+  }
+
   return (
-    <BaseButton onClick={start} ref={ref}
+    <div className="pp-ui-start-button-container">
+        <BaseButton onClick={start} ref={ref}
                 disableIcon={false}
                 style={props.style}
-                className={`pp-ui pp-ui-start-button ${visible ? '' : 'pp-ui-start-button-hidden'} ${props.className}`}/>
+                className={`pp-ui pp-ui-start-button ${props.className}`}/>
+    </div>
   )
 }
 
