@@ -1,4 +1,4 @@
-# 0.6.0
+# 0.6.0 (Beta)
 
 ## Breaking changes
 
@@ -100,7 +100,7 @@
 * Add platform specific `pp-ui-ipad` CSS class to the player controls, overlay and player surface
   on iPadOS platform.
 
-# 0.5.0
+# 0.5.0 (Beta)
 
 The first public release.
 

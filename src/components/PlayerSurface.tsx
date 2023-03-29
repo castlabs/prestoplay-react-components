@@ -1,5 +1,4 @@
 import React, {
-  createRef,
   ForwardedRef, forwardRef,
   useEffect, useRef
 } from "react";
@@ -23,7 +22,6 @@ export interface PlayerProps extends BasePlayerComponentProps {
    * The PRESTOplay player configuration to initialize the player
    */
   baseConfig?: any,
-
   /**
    * Indicate that the configuration should be applied immediately. If this is
    * set to false, the config will be passed to the player, but not applied
@@ -46,6 +44,7 @@ export interface PlayerProps extends BasePlayerComponentProps {
 export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: PlayerProps, ref: ForwardedRef<HTMLDivElement>) => {
   const containerRef = useRef<HTMLDivElement>()
 
+  // TODO this gets called repeatedly and should not!
   const createVideo = (video: HTMLVideoElement) => {
     props.player.init(video, props.baseConfig)
   }
