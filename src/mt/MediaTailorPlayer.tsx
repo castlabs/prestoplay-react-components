@@ -34,6 +34,10 @@ type Props = {
      * Default is 3 seconds.
      */
     adPollingFrequencySeconds?: number
+    /**
+     * Ad duration (assuming all ads have the same duration).
+     */
+    adDurationSeconds?: number,
   }
   /**
    * Poster image to display before video playback is requested.

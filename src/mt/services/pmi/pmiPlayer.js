@@ -110,7 +110,11 @@ export class PmiPlayer {
     if (this.isStarted_) return
     this.isStarted_ = true
 
-    const mtSession = await Mt.initialize(config, { supportedApiFrameworks: [API_FRAMEWORKS.INNOVID] })
+    const mtSession = await Mt.initialize(config, {
+      ...config,
+      supportedApiFrameworks: [API_FRAMEWORKS.INNOVID]
+    })
+    
     await this.startContentPlayback_(mtSession.getVideoUri())
 
     const timelineStart = await this.timelineStart_.promise

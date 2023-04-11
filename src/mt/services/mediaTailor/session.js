@@ -12,7 +12,7 @@ const WORKAROUND = {
   /**
    * Because currently it is 0
    */
-  getDuration: () => 10,
+  getDuration: (duration) => duration ?? 10,
   /**
    * Because currently it is undefined
    */
@@ -214,8 +214,7 @@ export class Session {
           apiFramework: WORKAROUND.getApiFramework(),
           id: ad.adId,
           iFrameResource: WORKAROUND.getIFrameResource(ad),
-          durationSec: WORKAROUND.getDuration(),
-          // TODOMT timesync result is not aligned with MT ad space. Ask MT team.
+          durationSec: WORKAROUND.getDuration(this.config_.adDurationSeconds),
           positionSec: this._calculateAdStart(avail.startTimeInSeconds),
         })
       })

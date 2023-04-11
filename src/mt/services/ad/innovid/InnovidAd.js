@@ -114,8 +114,6 @@ export class InnovidAd extends AdInterface {
   constructor(ad, anchorElement, adParams) {
     super()
 
-    // TODO remove iframe after some when blocked by ad block
-
     /**
      * @type {!AdParams} ad parameters
      */
@@ -195,10 +193,11 @@ export class InnovidAd extends AdInterface {
    * @return {boolean} true if ad should start at this time.
    */
   shouldStart(timeSec) {
-    // FUTURE this logic is not good for seeking, how to handle seeking?
-    // return !irollAdInfo.viewed && position >= irollAdInfo.startTime && position < (irollAdInfo.startTime + irollAdInfo.duration);
-    // This is generic logic (should be in Ad, not Innovid)
-    return this.displayed_ === false && this.ad_.positionSec <= timeSec
+    // This is generic logic (should be in Ad, not InnovidAd)
+    // Also test that it works when seeking
+    return this.displayed_ === false
+      && this.ad_.positionSec <= timeSec
+      && timeSec < (this.ad_.durationSec + this.ad_.positionSec)
   }
 
   /**

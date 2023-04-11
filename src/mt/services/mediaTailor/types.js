@@ -18,6 +18,7 @@
  * @typedef {{
  *    supportedApiFrameworks: !Array<string>,
  *    adPollingFrequencySeconds: (number|undefined),
+ *    adDurationSeconds: (number|undefined),
  * }} MtSessionConfig
  * 
  * @param adPollingFrequencySeconds 
@@ -116,5 +117,6 @@
  *    sessionUri: string,
  *    adsParams: (Object|undefined),
  *    adPollingFrequencySeconds: (number|undefined),
+ *    adDurationSeconds: (number|undefined),
  * }} MtAssetConfig
  */

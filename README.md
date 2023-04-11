@@ -76,7 +76,11 @@ type Props = {
     /**
      * Default is 3 seconds.
      */
-    adPollingFrequencySeconds?: number
+    adPollingFrequencySeconds?: number,
+    /**
+     * Ad duration (assuming all ads have the same duration).
+     */
+    adDurationSeconds?: number,
   }
   /**
    * Poster image to display before video playback is requested.
@@ -102,3 +106,13 @@ type Props = {
   enableFleet?: boolean,
 }
 ```
+
+## Changelog
+
+### 0.6.0-beta.10
+
+Add `mediaTailorConfig.adDurationSeconds` prop to `MediaTailorPlayer` component.
+
+### 0.6.0-beta.9
+
+Add `MediaTailorPlayer` component.

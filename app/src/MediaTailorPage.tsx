@@ -16,6 +16,7 @@ export const MediaTailorPage = () => {
           mediaTailorConfig={{
             sessionUri: "https://ea79f0b35bb24fc99b4961286dc218a0.mediatailor.us-west-2.amazonaws.com/v1/session/94063eadf7d8c56e9e2edd84fdf897826a70d0df/client-side-overlays-nab/hls.m3u8",
             adPollingFrequencySeconds: 5,
+            adDurationSeconds: 5,
             adsParams: { device: "browser" }
           }}
           mute
@@ -27,6 +28,7 @@ export const MediaTailorPage = () => {
           mediaTailorConfig={{
             sessionUri: "https://ea79f0b35bb24fc99b4961286dc218a0.mediatailor.us-west-2.amazonaws.com/v1/session/94063eadf7d8c56e9e2edd84fdf897826a70d0df/client-side-overlays-nab/hls.m3u8",
             adPollingFrequencySeconds: 5,
+            adDurationSeconds: 5,
             adsParams: { device: "browser" }
           }}
           mute
