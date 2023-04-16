@@ -28,7 +28,7 @@ const WORKAROUND = {
 }
 
 /**
- * @param {?} data 
+ * @param {?} data
  * @returns {!MtAdResponse}
  */
 const validateTrackingResponse = (data) => {
@@ -49,7 +49,7 @@ const validateTrackingResponse = (data) => {
     if (avail.nonLinearAdsList) {
       const prefix3 = `${prefix2}.nonLinearAdList`
       validator.validateAttr(prefix3, avail.nonLinearAdsList, 'array')
-      
+
       avail.nonLinearAdsList.forEach((list, index2) => {
         const prefix4 = `${prefix3}[${index2}].nonLinearAdList`
 
@@ -74,7 +74,7 @@ const validateTrackingResponse = (data) => {
 
 /**
  * MediaTailor session.
- * 
+ *
  * @see {@link https://docs.aws.amazon.com/mediatailor/latest/ug/ad-reporting-client-side.html}
  */
 export class Session {
@@ -118,19 +118,19 @@ export class Session {
   getVideoUri() {
     return this.info_.manifestUri.toString()
   }
-  
+
   /**
    * Get next ad.
-   * 
+   *
    * @return {!Promise<!MtAd>}
    */
   getNextAd() {
     return new Promise(async (resolve) => {
       logger.info(`Started polling for MT ads, every ${this.pollingFrequencySec_} s.` +
         ` (endpoint: ${this.info_.trackingUri})`)
-      
+
       /**
-       * @param {!MtAd} ad 
+       * @param {!MtAd} ad
        */
       const resolve_ = (ad) => {
         this.lastAvailId_ = ad.availId
@@ -153,7 +153,7 @@ export class Session {
   }
 
   /**
-   * @param {MtPlaybackTimelineStart} start 
+   * @param {MtPlaybackTimelineStart} start
    */
   setPlaybackStart(start) {
     this.playbackStart_ = start
@@ -191,44 +191,46 @@ export class Session {
       return []
     }
 
-    // FUTURE work with multiple avails
-    /**
-     * @type {!MtAdAvail}
-     */
-    const avail = data.avails[0]
-
-    if (avail.availId === this.lastAvailId_) {
-      logger.info(`Ad already loaded, ignoring. (availId: ${avail.availId})`)
-      return []
-    }
-    
     /**
      * @type {!Array<!MtAd>}
      */
     const result = []
 
-    avail.nonLinearAdsList?.forEach((list) => {
-      list.nonLinearAdList?.forEach(ad => {
-        result.push({
-          availId: avail.availId,
-          apiFramework: WORKAROUND.getApiFramework(),
-          id: ad.adId,
-          iFrameResource: WORKAROUND.getIFrameResource(ad),
-          durationSec: WORKAROUND.getDuration(this.config_.adDurationSeconds),
-          positionSec: this._calculateAdStart(avail.startTimeInSeconds),
+    for (let availIndex = 0; availIndex < data.avails.length; availIndex++) {
+      /**
+       * @type {!MtAdAvail}
+       */
+      const avail = data.avails[availIndex]
+      logger.info(`Parsing avail ${availIndex}`, avail)
+
+      if (avail.availId === this.lastAvailId_) {
+        logger.info(`Ad already loaded, ignoring. (availId: ${avail.availId})`)
+        continue
+      }
+
+      avail.nonLinearAdsList?.forEach((list) => {
+        list.nonLinearAdList?.forEach(ad => {
+          result.push({
+            availId: avail.availId,
+            apiFramework: WORKAROUND.getApiFramework(),
+            id: ad.adId,
+            iFrameResource: WORKAROUND.getIFrameResource(ad),
+            durationSec: WORKAROUND.getDuration(this.config_.adDurationSeconds),
+            positionSec: this._calculateAdStart(avail.startTimeInSeconds),
+          })
         })
       })
-    })
+    }
 
     logger.warn('Note that a workaround is used to transform MediaTailor ad response. Response', result)
 
     return result
-  } 
+  }
 
   /**
    * @param {number} mtAdPositionSec ad position since the start of MediaTailor session in seconds
    * @returns {number} ad position on our playback timeline in seconds
-   * 
+   *
    * @see {@link docs/time_sync.drawio}
    */
   _calculateAdStart(mtAdPositionSec) {
@@ -268,7 +270,7 @@ export class Session {
   }
 
   /**
-   * @param {!MtAdDataCallback} callback 
+   * @param {!MtAdDataCallback} callback
    */
   _startPollingForAds(callback) {
     this.intervalId_ = setInterval(async () => {
