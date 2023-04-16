@@ -14,10 +14,10 @@ export const MediaTailorPage = () => {
           poster={poster}
           prestoConfig={{ license: undefined }}
           mediaTailorConfig={{
-            sessionUri: "https://ea79f0b35bb24fc99b4961286dc218a0.mediatailor.us-west-2.amazonaws.com/v1/session/94063eadf7d8c56e9e2edd84fdf897826a70d0df/client-side-overlays-nab/hls.m3u8",
+            sessionUri: "https://d285l0o0snebba.cloudfront.net/v1/session/0d316d81ecd380e53d05ae3167f300cd2aebaf09/CaDemoCdkBackendPlaybackConfigVWhxF/v1/channel/Rv3n27/index.m3u8",
             adPollingFrequencySeconds: 5,
             adDurationSeconds: 5,
-            adsParams: { device: "browser" }
+            adsParams: { device: "head_of_house_hold" }
           }}
           mute
           enableFleet={false}
@@ -26,10 +26,10 @@ export const MediaTailorPage = () => {
           poster={poster}
           prestoConfig={{ license: undefined }}
           mediaTailorConfig={{
-            sessionUri: "https://ea79f0b35bb24fc99b4961286dc218a0.mediatailor.us-west-2.amazonaws.com/v1/session/94063eadf7d8c56e9e2edd84fdf897826a70d0df/client-side-overlays-nab/hls.m3u8",
+            sessionUri: "https://d285l0o0snebba.cloudfront.net/v1/session/0d316d81ecd380e53d05ae3167f300cd2aebaf09/CaDemoCdkBackendPlaybackConfigVWhxF/v1/channel/Rv3n27/index.m3u8",
             adPollingFrequencySeconds: 5,
             adDurationSeconds: 5,
-            adsParams: { device: "browser" }
+            adsParams: { device: "head_of_house_hold" }
           }}
           mute
           enableQualitySelection
