@@ -8,13 +8,13 @@ import {fleet} from '../fleet/PrestoFleet.js'
 
 /**
  * @fileoverview Integration of PRESTOPlay with MediaTailor.
- * 
+ *
  * FUTURE replay / play multiple videos / detect that it is a MediaTailor URI
  */
 
 /**
  * Convert PRESTOPlay state to normalized playback state.
- * 
+ *
  * @param {number} state PRESTOPlay state
  * @returns {PlaybackState} Playback state
  */
@@ -41,7 +41,7 @@ const convertState = (state) => {
 
 /**
  * Create an ad according to apiFramework.
- * 
+ *
  * @param {!MtAd} ad MediaTailor ad
  * @param {!AdParameters} adParams ad parameters
  * @return {!AdInterface} ad
@@ -114,7 +114,7 @@ export class PmiPlayer {
       ...config,
       supportedApiFrameworks: [API_FRAMEWORKS.INNOVID]
     })
-    
+
     await this.startContentPlayback_(mtSession.getVideoUri())
 
     const timelineStart = await this.timelineStart_.promise
@@ -128,7 +128,7 @@ export class PmiPlayer {
   }
 
   /**
-   * @param {!Session} mtSession 
+   * @param {!Session} mtSession
    */
   async loadAndScheduleAd_(mtSession) {
     const ad = await mtSession.getNextAd()
@@ -138,7 +138,7 @@ export class PmiPlayer {
     } catch (error) {
       logger.error(error)
       this.loadAndScheduleAd_(mtSession)
-    }   
+    }
   }
 
   /**
@@ -151,7 +151,7 @@ export class PmiPlayer {
       this.player_.pause()
     }
   }
-  
+
   // FUTURE call this when MediaTailor playback ends
   destroy() {
     this.disposers_.forEach((disposer) => disposer())
@@ -160,7 +160,7 @@ export class PmiPlayer {
 
   /**
    * Schedule MediaTailor ad to be inserted at a given time.
-   * 
+   *
    * @param {!MtAd} ad MediaTailor ad
    * @throws {Error} if failed to schedule the ad because it is invalid.
    */
@@ -178,16 +178,23 @@ export class PmiPlayer {
         this.onAdBlocked?.()
       }
     })
-    
-    logger.info(`Scheduled ad to be displayed ${Math.floor(ad.positionSec - this.player_.getPosition())} s `
+
+    let adStartDelta = Math.floor(ad.positionSec - this.player_.getPosition())
+    if (adStartDelta < 0) {
+      logger.warn('Ad start in the past detected, moving Ad start to now')
+      ad.positionSec = this.player_.getPosition() + 0.5
+      adStartDelta = Math.floor(ad.positionSec - this.player_.getPosition())
+    }
+
+    logger.info(`Scheduled ad to be displayed ${adStartDelta} s `
       +`from now. (At position ${Math.floor(ad.positionSec)} s)`)
   }
 
   /**
    * Start playback of content video.
-   * 
-   * @param {string} uri content video URI 
-   * @returns 
+   *
+   * @param {string} uri content video URI
+   * @returns
    */
   async startContentPlayback_(uri) {
     logger.info(`Starting content playback. (URI: ${uri})`)
