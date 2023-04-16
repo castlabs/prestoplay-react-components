@@ -109,7 +109,7 @@ type Props = {
 
 ## Changelog
 
-### 0.6.0-beta.11
+### 0.6.0-beta.12
 
 * Added fix if the date header of the session request can not be accessed
 * Added better support for multiple avails
