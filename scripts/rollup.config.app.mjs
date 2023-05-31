@@ -37,16 +37,6 @@ const options = [
       commonjs(),
       typescript({
         tsconfig: './app/tsconfig.json',
-        compilerOptions: {
-          outDir: './app/dist'
-        },
-        include: [
-          "./app/src/**/*.tsx",
-          "./app/src/**/*.ts",
-          "./src/**/*.tsx",
-          "./src/**/*.ts"
-        ],
-        exclude: ["dist/**/*.d.ts"]
       }),
       postcss({
         plugins: [

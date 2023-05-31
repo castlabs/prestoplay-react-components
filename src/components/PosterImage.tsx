@@ -1,7 +1,8 @@
-import React, {useState} from "react";
-import {BasePlayerComponentProps} from "../utils";
-import {usePrestoUiEvent} from "../react";
-import {State} from "../Player";
+import React, { useState } from 'react'
+
+import { State } from '../Player'
+import { usePrestoUiEvent } from '../react'
+import { BasePlayerComponentProps } from '../utils'
 
 export interface PosterImageProps extends BasePlayerComponentProps {
   src: string
@@ -9,16 +10,15 @@ export interface PosterImageProps extends BasePlayerComponentProps {
 }
 
 export const PosterImage = (props: PosterImageProps) => {
-  let [visible, setVisible] = useState(!!props.src);
-  let [wasHidden, setWasHidden] = useState(false);
+  const [visible, setVisible] = useState(!!props.src)
+  const [wasHidden, setWasHidden] = useState(false)
 
-  let hasSource = () => !!props.src
+  const hasSource = () => !!props.src
 
-  usePrestoUiEvent("statechanged", props.player, async ({currentState}) => {
+  usePrestoUiEvent('statechanged', props.player, ({ currentState }) => {
     switch (currentState) {
       case State.Idle:
         setWasHidden(false)
-        wasHidden = false
         setVisible(hasSource() && !wasHidden)
         break
       case State.Preparing:

@@ -1,5 +1,6 @@
-import React from "react";
-import {BaseComponentProps, classNames} from "../utils";
+import React from 'react'
+
+import { BaseComponentProps, classNames } from '../utils'
 
 export interface TrackLabelProps extends BaseComponentProps {
   label: string

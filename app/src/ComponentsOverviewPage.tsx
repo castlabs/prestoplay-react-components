@@ -1,37 +1,31 @@
-import {Asset} from "./Asset";
-import PlayerSurface from "../../src/components/PlayerSurface";
-import React, {createRef, useState} from "react";
-import {Player} from "../../src";
+import { clpp } from '@castlabs/prestoplay'
+import React, { createRef, useState } from 'react'
 
-import PlayerControls from "../../src/components/PlayerControls";
-import VerticalBar from "../../src/components/VerticalBar";
-import HorizontalBar from "../../src/components/HorizontalBar";
-import Label from "../../src/components/Label";
-import Spacer from "../../src/components/Spacer";
-import Thumbnail from "../../src/components/Thumbnail";
-import PlayPauseButton from "../../src/components/PlayPauseButton";
-import CurrentTime from "../../src/components/CurrentTime";
-import SeekBar from "../../src/components/SeekBar";
-import TimeLeft from "../../src/components/TimeLeft";
-import FullscreenButton from "../../src/components/FullscreenButton";
+import { Player } from '../../src'
+import '@castlabs/prestoplay/cl.mse'
+import '@castlabs/prestoplay/cl.dash'
+import '@castlabs/prestoplay/cl.hls'
+import '@castlabs/prestoplay/cl.htmlcue'
+import '@castlabs/prestoplay/cl.ttml'
+import '@castlabs/prestoplay/cl.vtt'
+import { BufferingIndicator } from '../../src/components/BufferingIndicator'
+import { CurrentTime } from '../../src/components/CurrentTime'
+import { Duration } from '../../src/components/Duration'
+import { HorizontalBar } from '../../src/components/HorizontalBar'
+import { MuteButton } from '../../src/components/MuteButton'
+import { PlayerSurface } from '../../src/components/PlayerSurface'
+import { PlayPauseButton } from '../../src/components/PlayPauseButton'
+import { RateButton } from '../../src/components/RateButton'
+import { RateText } from '../../src/components/RateText'
+import { SeekBar } from '../../src/components/SeekBar'
+import { SeekButton } from '../../src/components/SeekButton'
+import { Thumbnail } from '../../src/components/Thumbnail'
+import { TimeLeft } from '../../src/components/TimeLeft'
+import { TrackGroupButton } from '../../src/components/TrackGroupButton'
+import { TrackSelectionList } from '../../src/components/TrackSelectionList'
+import { VolumeBar } from '../../src/components/VolumeBar'
 
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
-import "@castlabs/prestoplay/cl.mse"
-import "@castlabs/prestoplay/cl.dash"
-import "@castlabs/prestoplay/cl.hls"
-import "@castlabs/prestoplay/cl.htmlcue"
-import "@castlabs/prestoplay/cl.ttml"
-import "@castlabs/prestoplay/cl.vtt"
-import SeekButton from "../../src/components/SeekButton";
-import BufferingIndicator from "../../src/components/BufferingIndicator";
-import RateButton from "../../src/components/RateButton";
-import MuteButton from "../../src/components/MuteButton";
-import VolumeBar from "../../src/components/VolumeBar";
-import Duration from "../../src/components/Duration";
-import RateText from "../../src/components/RateText";
-import TrackGroupButton from "../../src/components/TrackGroupButton";
-import TrackSelectionList from "../../src/components/TrackSelectionList";
+import { Asset } from './Asset'
 
 
 export const ComponentsOverviewPage = (props: {
@@ -39,21 +33,20 @@ export const ComponentsOverviewPage = (props: {
   autoload?: boolean
 }) => {
   // We track the thumb position to showcase how we can manually load thumbs
-  let [thumbPosition, setThumbPosition] = useState<number | undefined>();
+  const [thumbPosition, setThumbPosition] = useState<number | undefined>()
 
   // Create the player as state of this component
-  let [player, _] = useState(new Player((pp:any) => {
-    pp.use(clpp.dash.DashComponent);
-    pp.use(clpp.hls.HlsComponent);
+  const [player] = useState(new Player((pp: clpp.Player) => {
+    pp.use(clpp.dash.DashComponent)
+    pp.use(clpp.hls.HlsComponent)
     pp.use(clpp.htmlcue.HtmlCueComponent)
     pp.use(clpp.ttml.TtmlComponent)
     pp.use(clpp.vtt.VttComponent)
-  }));
+  }))
 
   // Create a ref to the player surface component. We use this here to pass it
   // to the fullscreen button to make put the player surface to fullscreen
-  let playerSurfaceRef = createRef<HTMLDivElement>();
-
+  const playerSurfaceRef = createRef<HTMLDivElement>()
 
   function manuallyLoadThumb() {
     setThumbPosition(player.position)
@@ -66,11 +59,11 @@ export const ComponentsOverviewPage = (props: {
     <div>
 
       <PlayerSurface ref={playerSurfaceRef}
-                     player={player}
-                     config={playerConfig}
-                     autoload={props.autoload}
-                     playsInline={true}
-                     style={{height: "320px"}}>
+        player={player}
+        config={playerConfig}
+        autoload={props.autoload}
+        playsInline={true}
+        style={{ height: '320px' }}>
       </PlayerSurface>
 
       <div>
@@ -78,7 +71,7 @@ export const ComponentsOverviewPage = (props: {
 
         <HorizontalBar>
           <PlayPauseButton player={player} resetRate={true}
-                           disableIcon={false}/>
+            disableIcon={false}/>
         </HorizontalBar>
 
         <HorizontalBar>
@@ -112,37 +105,35 @@ export const ComponentsOverviewPage = (props: {
         </HorizontalBar>
 
         <HorizontalBar>
-          <button type={"button"} onClick={manuallyLoadThumb}>Load Thumb
+          <button type={'button'} onClick={manuallyLoadThumb}>Load Thumb
           </button>
-          <button type={"button"} onClick={() => {
+          <button type={'button'} onClick={() => {
             setThumbPosition(-1)
           }}>Reset Thumb
           </button>
           <Thumbnail player={player} position={thumbPosition}
-                     listenToHover={false}/>
+            listenToHover={false}/>
         </HorizontalBar>
 
         <HorizontalBar>
           <SeekBar player={player} adjustWhileDragging={true}
-                   enableThumbnailSlider={true}/>
+            enableThumbnailSlider={true}/>
         </HorizontalBar>
 
         <HorizontalBar>
-          <TrackGroupButton type={"video"} label={"Video"} player={player}/>
-          <TrackGroupButton type={"audio"} label={"Audio"} player={player}/>
-          <TrackGroupButton type={"text"} label={"Text"} player={player}
-                            hideWhenUnavailable={true}/>
+          <TrackGroupButton type={'video'} label={'Video'} player={player}/>
+          <TrackGroupButton type={'audio'} label={'Audio'} player={player}/>
+          <TrackGroupButton type={'text'} label={'Text'} player={player}
+            hideWhenUnavailable={true}/>
         </HorizontalBar>
 
         <HorizontalBar>
-          <TrackSelectionList player={player} type={"video"}/>
-          <TrackSelectionList player={player} type={"audio"}/>
-          <TrackSelectionList player={player} type={"text"}/>
+          <TrackSelectionList player={player} type={'video'}/>
+          <TrackSelectionList player={player} type={'audio'}/>
+          <TrackSelectionList player={player} type={'text'}/>
         </HorizontalBar>
-
 
       </div>
-
     </div>
   )
 }

@@ -1,135 +1,129 @@
+import { clpp } from '@castlabs/prestoplay'
+import '@castlabs/prestoplay/cl.thumbnails'
 import React, {
-  createRef, CSSProperties,
+  CSSProperties,
+  useCallback,
   useLayoutEffect,
-  useState
-} from "react";
+  useState,
+  useRef,
+} from 'react'
+
+import { usePresto, usePrestoUiEvent } from '../react'
 import {
   BasePlayerComponentProps,
-} from "../utils";
-
-// @ts-ignore
-import {clpp} from '@castlabs/prestoplay'
-import "@castlabs/prestoplay/cl.thumbnails"
-import {usePresto, usePrestoUiEvent} from "../react";
-
-
-Document.prototype.replaceChildren ||= replaceChildren;
-DocumentFragment.prototype.replaceChildren ||= replaceChildren;
-Element.prototype.replaceChildren ||= replaceChildren;
-
-function replaceChildren(...new_children:any) {
-  // @ts-ignore
-  const { childNodes } = this;
-  while (childNodes.length) {
-    childNodes[0].remove();
-  }
-  // @ts-ignore
-  this.append(...new_children);
-}
+} from '../utils'
 
 export interface ThumbnailProps extends BasePlayerComponentProps {
-  position?: number,
-  listenToHover?: boolean,
-  moveRelativeToParent?: boolean,
-  style?: CSSProperties,
-  onThumbSize?: (width:number, height:number) => void
+  position?: number
+  listenToHover?: boolean
+  moveRelativeToParent?: boolean
+  style?: CSSProperties
+  onThumbSize?: (width: number, height: number) => void
 }
 
 export const Thumbnail = (props: ThumbnailProps) => {
-  let [thumbsPlugin, setThumbsPlugin] = useState<any>()
-  let [hasThumb, setHasThumb] = useState<boolean>(false)
-  let [thumbWidth, setThumbWidth] = useState<number>(0)
-  let containerRef = createRef<HTMLDivElement>()
-  let [hoverPosition, setHoverPosition] = useState<number>(-1)
-  let [hoverValue, setHoverValue] = useState<number>(0)
+  const pluginRef = useRef<clpp.ThumbnailsPlugin|null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [hoverPosition, setHoverPosition] = useState<number|null>(null)
+  const [hoverValue, setHoverValue] = useState<number>(0)
+  const [thumbnailElement, setThumbnailElement] = useState<HTMLElement|null>(null)
 
-  const loadThumbnail = () => {
-    if (!thumbsPlugin) {
+  const clearThumbnail = useCallback(() => {
+    setThumbnailElement(null)
+  }, [])
+
+  const loadThumbnail =  useCallback(async (position: number) => {
+    if (!pluginRef.current) {
       return
     }
-    let container = containerRef.current;
-    if (!container) {
-      return
+  
+    const thumb = await pluginRef.current.get(position)
+    if (!thumb) {return}
+
+    await thumb.load()
+
+    const element = thumb.element()
+    const size = getThumbSize(element)
+    if (!size) {return}
+
+    // Style the thumbnail
+    // let scale = Math.min(
+    //   containerWidth / imageWidth,
+    //   containerHeight / imageHeight
+    // );
+    element.style.transformOrigin = 'top left'
+    element.style.transform = `scale(${size.scale}) translateY(-50%)`
+    element.style.backgroundColor = 'transparent'
+    element.style.position = 'absolute'
+    element.style.top = '50%'
+
+    props.onThumbSize?.(size.width, size.containerHeight)
+    setThumbnailElement(element)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.onThumbSize])
+
+  const getThumbSize = (el: HTMLElement | null) => {
+    if (!el) {return null}
+    const containerHeight = containerRef.current?.clientHeight
+    if (!containerHeight) {return null}
+
+    const imageWidth = Number(el.style.width.replace('px', ''))
+    const imageHeight = Number(el.style.height.replace('px', ''))
+    if (!imageHeight || !imageHeight) { return null}
+
+    const scale = containerHeight / imageHeight
+
+    return {
+      width: imageWidth * scale,
+      height: imageHeight * scale,
+      scale,
+      containerHeight,
     }
-    const hasHoverPosition = props.listenToHover && hoverPosition >= 0
-    const hasPosition = props.position != null && props.position >= 0
-
-    if (!hasPosition  && !hasHoverPosition) {
-      setHasThumb(false)
-      container.replaceChildren()
-      return
-    }
-
-    let finalPosition = hasHoverPosition ? hoverPosition : props.position
-    thumbsPlugin.get(finalPosition)
-      .then((t: any) => t.load())
-      .then((t: any) => t.element())
-      .then((child: HTMLElement) => {
-        if(!container) return;
-
-
-        let imageWidth = Number(child.style.width.replace('px', ''));
-        let imageHeight = Number(child.style.height.replace('px', ''));
-        let containerWidth = container.clientWidth;
-        let containerHeight = container.clientHeight;
-        let scale = containerHeight / imageHeight
-        container.style.width = (imageWidth * scale) + "px"
-
-        // let scale = Math.min(
-        //   containerWidth / imageWidth,
-        //   containerHeight / imageHeight
-        // );
-        child.style.transformOrigin = "top left";
-        child.style.transform = "scale(" + scale +") translateY(-50%)";
-        child.style.backgroundColor = 'transparent';
-        child.style.position = 'absolute';
-        child.style.top = '50%';
-
-        if(props.onThumbSize) {
-          props.onThumbSize((imageWidth * scale), containerHeight)
-        }
-        setThumbWidth((imageWidth * scale))
-        setHasThumb(true)
-        container.replaceChildren(child)
-      })
-      .catch((e: any) => {
-      })
   }
 
   usePresto(props.player, (presto) => {
-
-    setThumbsPlugin(presto.getPlugin(clpp.thumbnails.ThumbnailsPlugin.Id));
+    pluginRef.current = presto.getPlugin(clpp.thumbnails.ThumbnailsPlugin.Id) as clpp.ThumbnailsPlugin | null
   })
 
-  usePrestoUiEvent("hoverPosition", props.player, (data) => {
-    if (!props.listenToHover) return
+  usePrestoUiEvent('hoverPosition', props.player, (data) => {
+    if (!props.listenToHover) {return}
     setHoverPosition(data.position)
     setHoverValue(data.percent)
   })
 
   useLayoutEffect(() => {
-    loadThumbnail()
-  }, [thumbsPlugin, containerRef, hoverPosition])
+    const position = hoverPosition ?? props.position
 
-  let trackParentStyle = ():CSSProperties => {
-    if(!props.moveRelativeToParent) return {}
+    if (position == null || position < 0) {
+      clearThumbnail()
+    } else {
+      loadThumbnail(position).catch(() => {})
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hoverPosition, props.position])
+
+  const size = getThumbSize(thumbnailElement)
+  const trackParentStyle = (): CSSProperties => {
+    if (!props.moveRelativeToParent) {return {}}
+
     return {
-      position: "absolute",
-      margin: "auto",
-      left: `calc((100% - ${thumbWidth}px) * ${hoverValue}/100) `,
-      transform: "translateY(-50%)"
+      position: 'absolute',
+      margin: 'auto',
+      left: `calc((100% - ${size?.width ?? 0}px) * ${hoverValue}/100) `,
+      transform: 'translateY(-50%)',
     }
   }
 
   return (
     <div ref={containerRef}
-         style={{
-           ...trackParentStyle(),
-           ...props.style || {}
-         }}
-         className={`pp-ui pp-ui-thumbnail ${hasThumb ? 'pp-ui-thumbnail-with-thumb': ''} ${props.className || ''}`}>
-    </div>
+      style={{
+        ...trackParentStyle(),
+        ...props.style ?? {},
+        ...size ? { width: size.width } : {},
+      }}
+      className={`pp-ui pp-ui-thumbnail ${thumbnailElement ? 'pp-ui-thumbnail-with-thumb': ''} ${props.className || ''}`}
+      dangerouslySetInnerHTML={{ __html: thumbnailElement?.outerHTML ?? '' }} 
+    ></div>
   )
 }
-
-export default Thumbnail
