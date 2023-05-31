@@ -1,5 +1,6 @@
-import React, {CSSProperties} from "react";
-import {BaseComponentProps} from "../utils";
+import React, { CSSProperties } from 'react'
+
+import { BaseComponentProps } from '../utils'
 
 export interface VerticalBarProps extends BaseComponentProps{
   style?: CSSProperties
@@ -10,7 +11,7 @@ export const VerticalBar = (props: VerticalBarProps) => {
     <div className={`pp-ui pp-ui-vertical-bar ${props.className || ''}`} style={props.style}>
       {props.children}
     </div>
-  );
+  )
 }
 
 export default VerticalBar

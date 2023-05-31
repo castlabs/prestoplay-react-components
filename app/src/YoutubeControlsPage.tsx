@@ -1,99 +1,88 @@
-import {Asset} from "./Asset";
-import PlayerSurface from "../../src/components/PlayerSurface";
-import React, {createRef, useEffect, useRef, useState} from "react";
-import {Player, usePrestoEnabledState} from "../../src";
+import { clpp } from '@castlabs/prestoplay'
+import '@castlabs/prestoplay/cl.mse'
+import '@castlabs/prestoplay/cl.dash'
+import '@castlabs/prestoplay/cl.hls'
+import '@castlabs/prestoplay/cl.htmlcue'
+import '@castlabs/prestoplay/cl.ttml'
+import '@castlabs/prestoplay/cl.vtt'
+import React, { useRef, useState } from 'react'
+import { Helmet } from 'react-helmet'
 
-import PlayerControls from "../../src/components/PlayerControls";
-import VerticalBar from "../../src/components/VerticalBar";
-import HorizontalBar from "../../src/components/HorizontalBar";
-import Label from "../../src/components/Label";
-import Spacer from "../../src/components/Spacer";
-import Thumbnail from "../../src/components/Thumbnail";
-import PlayPauseButton from "../../src/components/PlayPauseButton";
-import CurrentTime from "../../src/components/CurrentTime";
-import SeekBar from "../../src/components/SeekBar";
-import TimeLeft from "../../src/components/TimeLeft";
-import FullscreenButton from "../../src/components/FullscreenButton";
+import { Player, usePrestoEnabledState } from '../../src'
+import { CurrentTime } from '../../src/components/CurrentTime'
+import { Duration } from '../../src/components/Duration'
+import { FullscreenButton } from '../../src/components/FullscreenButton'
+import { HorizontalBar } from '../../src/components/HorizontalBar'
+import { HoverContainer } from '../../src/components/HoverContainer'
+import { Label } from '../../src/components/Label'
+import { MuteButton } from '../../src/components/MuteButton'
+import { PlayerControls } from '../../src/components/PlayerControls'
+import { PlayerSurface } from '../../src/components/PlayerSurface'
+import { PlayPauseButton } from '../../src/components/PlayPauseButton'
+import { SeekBar } from '../../src/components/SeekBar'
+import { Spacer } from '../../src/components/Spacer'
+import { Thumbnail } from '../../src/components/Thumbnail'
+import { VerticalBar } from '../../src/components/VerticalBar'
+import { VolumeBar } from '../../src/components/VolumeBar'
 
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
-import "@castlabs/prestoplay/cl.mse"
-import "@castlabs/prestoplay/cl.dash"
-import "@castlabs/prestoplay/cl.hls"
-import "@castlabs/prestoplay/cl.htmlcue"
-import "@castlabs/prestoplay/cl.ttml"
-import "@castlabs/prestoplay/cl.vtt"
-import Duration from "../../src/components/Duration";
-import MuteButton from "../../src/components/MuteButton";
-import HoverContainer from "../../src/components/HoverContainer";
-import VolumeBar from "../../src/components/VolumeBar";
-import SettingsButton from "../../src/components/SettingsButton";
-
+import { Asset } from './Asset'
 
 export const YoutubeControlsPage = (props: {
-  asset?: Asset,
+  asset?: Asset
   autoload?: boolean
 }) => {
 
   // Create the player as state of this component
-  let [player, _] = useState(new Player((pp:any) => {
-    pp.use(clpp.dash.DashComponent);
-    pp.use(clpp.hls.HlsComponent);
+  const [player] = useState(new Player((pp: clpp.Player) => {
+    pp.use(clpp.dash.DashComponent)
+    pp.use(clpp.hls.HlsComponent)
     pp.use(clpp.htmlcue.HtmlCueComponent)
     pp.use(clpp.ttml.TtmlComponent)
     pp.use(clpp.vtt.VttComponent)
-  }));
+  }))
 
-  let playerEnabled = usePrestoEnabledState(player);
+  const playerEnabled = usePrestoEnabledState(player)
 
   // Create a ref to the player surface component. We use this here to pass it
   // to the fullscreen button to make put the player surface to fullscreen
-  let playerSurfaceRef = useRef<HTMLDivElement>(null);
-  let settingsRef = useRef<HTMLButtonElement>(null);
+  const playerSurfaceRef = useRef<HTMLDivElement>(null)
 
   const asset = props.asset
   const playerConfig = asset?.config
 
-  useEffect(() => {
-    const style = document.createElement("link");
-    style.rel = "stylesheet"
-    style.href = "youtube.css"
-    document.head.appendChild(style);
-    return () => {
-      document.head.removeChild(style);
-    }
-  })
-
   return (
     <div>
+      <Helmet>
+        <link rel="stylesheet" href="youtube.css"/>
+      </Helmet>
       <PlayerSurface ref={playerSurfaceRef}
-                     player={player}
-                     config={playerConfig}
-                     playsInline={true}
-                     autoload={props.autoload}
-                     style={{height: "320px"}}>
+        player={player}
+        config={playerConfig}
+        playsInline={true}
+        autoload={props.autoload}
+        style={{ height: '320px' }}>
         <PlayerControls player={player} showWhenDisabled={true}>
 
           <div className="pp-yt-gradient-bottom"></div>
 
           {/* We are creating a vertical bar to build our controls top to bottom */}
-          <VerticalBar className={"pp-ui-spacer"} style={{gap: "0", position: "absolute"}}>
+          <VerticalBar className={'pp-ui-spacer'} style={{ gap: '0', position: 'absolute' }}>
             {/* The first horizontal row shows some custom title for the content */}
             <HorizontalBar>
-              <div style={{flexGrow: 1}}>
+              <div style={{ flexGrow: 1 }}>
                 <div>
-                  <Label label={asset?.title} className={"pp-ui-label-title"}/>
+                  <Label label={asset?.title} className={'pp-ui-label-title'}/>
                 </div>
                 <div>
-                  <Label label={asset?.subtitle} className={"pp-ui-label-subtitle"}/>
+                  <Label label={asset?.subtitle} className={'pp-ui-label-subtitle'}/>
                 </div>
               </div>
             </HorizontalBar>
 
             {/* We add a spacer to push the rest of the content to the bottom */}
-            <div style={{flex: 1, display: "flex", alignItems: "stretch", justifyContent: "stretch"}}>
-              <PlayPauseButton player={player} className={"pp-yt-center-toggle"} style={{width: "100%", display:playerEnabled ? "block" : "none"}}>
-                <div className={"pp-yt-center-background"}></div>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'stretch', justifyContent: 'stretch' }}>
+              <PlayPauseButton player={player} className={'pp-yt-center-toggle'} style={{ width: '100%', display:playerEnabled ? 'block' : 'none' }}>
+                <div className={'pp-yt-center-background'}></div>
               </PlayPauseButton>
             </div>
 
@@ -107,17 +96,17 @@ export const YoutubeControlsPage = (props: {
 
 
             <VerticalBar>
-              <HorizontalBar style={{alignItems: "flex-end", marginBottom: "-8px"}}>
+              <HorizontalBar style={{ alignItems: 'flex-end', marginBottom: '-8px' }}>
                 <SeekBar player={player} adjustWhileDragging={true} enableThumbnailSlider={false} notFocusable={true}/>
               </HorizontalBar>
 
-              <HorizontalBar className={"pp-yt-bottom-bar"}>
+              <HorizontalBar className={'pp-yt-bottom-bar'}>
                 <PlayPauseButton player={player} resetRate={true}/>
                 <MuteButton player={player}>
                   <VolumeBar player={player} notFocusable={true} adjustWhileDragging={true}/>
                 </MuteButton>
 
-                <HorizontalBar className={"pp-ui-yt-timebar"}>
+                <HorizontalBar className={'pp-ui-yt-timebar'}>
                   <CurrentTime player={player} disableHoveringDisplay={true}>
                     &nbsp;/&nbsp;
                   </CurrentTime>

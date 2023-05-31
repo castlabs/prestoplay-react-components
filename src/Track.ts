@@ -1,23 +1,22 @@
-// @ts-ignore
-import {clpp} from "@castlabs/prestoplay"
+import { clpp } from '@castlabs/prestoplay'
 
 /**
  * Track types that are exposed to the UI
  */
-export type TrackType = "video" | "audio" | "text"
+export type TrackType = 'video' | 'audio' | 'text'
 
 /**
  * The available track ids. This is a string that are receive from presto, but
  * we have some dedicated ID to identify specific tracks
  */
 export type TrackId =
-  "abr" |
-  "video-unavailable" |
-  "audio-unavailable" |
-  "text-unavailable" |
-  "video-off" |
-  "audio-off" |
-  "text-off" |
+  'abr' |
+  'video-unavailable' |
+  'audio-unavailable' |
+  'text-unavailable' |
+  'video-off' |
+  'audio-off' |
+  'text-off' |
   string
 
 /**
@@ -27,9 +26,17 @@ export type TrackId =
  * We are also not using "null" tracks in the interface but rater dedicated
  * tracks for ABR selections or disabled tracks.
  */
-export interface Track {
+export type Track = {
   /**
    * The underlying prestoplay track or null
+   * 
+   * This is currently set to any because there is a great type
+   * conflict caused by ppTrack being either clpp.Track or clpp.Rendition.
+   * I am pretty sure a lot of the code will therefore also not work as
+   * expected since it is working with different, incompatible data structures.
+   * This should be revisited.
+   * 
+   * The actual current type is something like clpp.Track | clpp.Rendition | null
    */
   ppTrack: any
   /**
@@ -50,86 +57,102 @@ export interface Track {
   id: TrackId
 }
 
-export function getActiveTrack(presto: any, type: TrackType): Track {
-  return fromPrestoTrack(presto, getActivePrestoTrackForType(presto.getTrackManager(), type), type)
+export function getActiveTrack(tm: clpp.TrackManager, type: TrackType): Track {
+  // @ts-ignore here is a big type conflict, this should be looked at.
+  return fromPrestoTrack(tm, getActivePrestoTrackForType(tm, type), type)
 }
 
-export function getActivePrestoTrackForType(trackManager: any, type: string): any {
+export function getActivePrestoTrackForType(tm: clpp.TrackManager, type: string) {
   switch (type) {
     case clpp.Track.Type.AUDIO:
-      return trackManager.getAudioTrack()
+      return tm.getAudioTrack()
     case clpp.Track.Type.TEXT:
-      return trackManager.getTextTrack()
-    case clpp.Track.Type.VIDEO:
-      let videoTrack = trackManager.getVideoTrack();
-      if (!videoTrack) return null
-      if (trackManager.isAbrEnabled()) {
-        return getAbrTrack(trackManager);
+      return tm.getTextTrack()
+    case clpp.Track.Type.VIDEO: {
+      const videoTrack = tm.getVideoTrack()
+      if (!videoTrack) {return null}
+      if (tm.isAbrEnabled()) {
+        return getAbrTrack(tm)
       }
-      return trackManager.getVideoRendition()
+      return tm.getVideoRendition()
+    }
   }
+  return null
 }
 
-export function getPrestoTracksForType(trackManager: any, type: string): any {
+export function getPrestoTracksForType(tm: clpp.TrackManager, type: string): clpp.Track[] | clpp.Rendition[] {
   switch (type) {
     case clpp.Track.Type.AUDIO:
-      return trackManager.getAudioTracks()
+      return tm.getAudioTracks()
     case clpp.Track.Type.TEXT:
-      return trackManager.getTextTracks()
-    case clpp.Track.Type.VIDEO:
-      let videoTrack = trackManager.getVideoTrack();
-      if (!videoTrack) return []
+      return tm.getTextTracks()
+    case clpp.Track.Type.VIDEO: {
+      const videoTrack = tm.getVideoTrack()
+      if (!videoTrack) {return []}
       return videoTrack.renditions
+    }
   }
+  return []
 }
 
-export function getAbrTrack(trackManager?: any): Track {
+export function getAbrTrack(tm?: clpp.TrackManager): Track {
   return {
-    type: "video",
-    label: "Auto",
-    selected: trackManager ? trackManager.isAbrEnabled() : true,
+    type: 'video',
+    label: 'Auto',
+    selected: tm?.isAbrEnabled() ?? true,
     id: 'abr',
-    ppTrack: null
+    ppTrack: null,
   }
 }
 
 export function getDisabledTrack(type: TrackType, selected: boolean): Track {
   return {
     type: type,
-    label: "Off",
+    label: 'Off',
     selected: selected,
     id: `${type}-off`,
-    ppTrack: null
+    ppTrack: null,
   }
 }
 
 export function getUnavailableTrack(type: TrackType): Track {
   return {
     type: type,
-    label: "Unavailable",
+    label: 'Unavailable',
     selected: true,
     id: `${type}-unavailable`,
-    ppTrack: null
+    ppTrack: null,
   }
 }
 
-export function fromPrestoTrack(presto: any, ppTrack: any, type: TrackType, active?:Track): Track {
-  if (!ppTrack) return getDisabledTrack(type, ppTrack === null)
-  let tm = presto.getTrackManager()
-  active = active || getActivePrestoTrackForType(tm, type)
+export function fromPrestoTrack(
+  tm: clpp.TrackManager,
+  ppTrack: clpp.Track | clpp.Rendition,
+  type: TrackType,
+  active?: clpp.Track | clpp.Rendition | Track | null,
+): Track {
+  if (!ppTrack) {return getDisabledTrack(type, ppTrack === null)}
+  const activeTrack =  active ?? getActivePrestoTrackForType(tm, type)
+
   return {
     ppTrack,
-    selected: !!(active && active == ppTrack),
-    label: ppTrack.label,
-    type: ppTrack.type || type,
-    id: ppTrack.id
+    selected: !!(activeTrack && activeTrack === ppTrack),
+    // @ts-ignore ppTrack could either be a track or a rendition
+    // and that causes a type conflict. Not sure how it was intended
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    label: ppTrack.label ?? '',
+    // @ts-ignore ppTrack could either be a track or a rendition
+    // and that causes a type conflict. Not sure how it was intended
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    type: ppTrack.type ?? type,
+    id: ppTrack.id,
   }
 }
 
-export function getTracks(presto: any, type: TrackType): Track[] {
-  let tm = presto.getTrackManager()
-  let active = getActivePrestoTrackForType(tm, type)
-  let tracksForType = getPrestoTracksForType(tm, type);
-  return tracksForType
-    .map((t: any) => fromPrestoTrack(presto, t, type, active))
+export function getTracks(tm: clpp.TrackManager, type: TrackType): Track[] {
+  const active = getActivePrestoTrackForType(tm, type)
+  const tracksForType = getPrestoTracksForType(tm, type)
+  // here eslint wrongly reports an error
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  return tracksForType.map(track => fromPrestoTrack(tm, track, type, active))
 }

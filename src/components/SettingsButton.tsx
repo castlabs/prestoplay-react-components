@@ -1,49 +1,49 @@
 import React, {
-  ForwardedRef,
   forwardRef,
-  useImperativeHandle, useRef,
-  useState
-} from "react";
-import {BasePlayerComponentButtonProps} from "../utils";
-import BaseButton from "./BaseButton";
+  useRef,
+  useState,
+} from 'react'
+
 import {
   usePrestoEnabledState,
-  usePrestoUiEvent
-} from "../react";
+  usePrestoUiEvent,
+} from '../react'
+import { BasePlayerComponentButtonProps } from '../utils'
 
-export interface SettingsButtonProps extends BasePlayerComponentButtonProps{
-}
+import { BaseButton } from './BaseButton'
 
-export const SettingsButton = forwardRef((props: SettingsButtonProps, forwardRef: ForwardedRef<HTMLButtonElement>) => {
-  let [isVisible, setVisible] = useState(false);
-  let enabled = usePrestoEnabledState(props.player);
-  let ref = useRef<HTMLButtonElement>(null);
+export type SettingsButtonProps = BasePlayerComponentButtonProps
 
-  async function toggle(event:React.MouseEvent) {
+/**
+ * @deprecated This is not used, neither exported
+ */
+export const SettingsButton = forwardRef((props: SettingsButtonProps) => {
+  const [isVisible, setVisible] = useState(false)
+  const enabled = usePrestoEnabledState(props.player)
+  const ref = useRef<HTMLButtonElement>(null)
+
+  function toggle(event: React.MouseEvent) {
     setVisible(!isVisible)
-    props.player.slideInMenuVisible = !isVisible;
-    event.stopPropagation();
+    props.player.slideInMenuVisible = !isVisible
+
+    event.stopPropagation()
     event.preventDefault()
+
     if (ref.current && !isVisible) {
       ref.current.blur()
     }
   }
 
-  usePrestoUiEvent("slideInMenuVisible", props.player, (visible) => {
+  usePrestoUiEvent('slideInMenuVisible', props.player, (visible) => {
     setVisible(visible)
   })
 
-  useImperativeHandle(forwardRef, () => {
-    return ref.current!
-  }, [ref])
-
-  // @ts-ignore
   return (
     <BaseButton onClick={toggle} disableIcon={false} disabled={!enabled} ref={ref}
-                className={`pp-ui-settings-button ${props.className || ''}`}>
+      className={`pp-ui-settings-button ${props.className || ''}`}>
       {props.children}
     </BaseButton>
-  );
+  )
 })
 
-export default SettingsButton
+SettingsButton.displayName = 'SettingsButton'

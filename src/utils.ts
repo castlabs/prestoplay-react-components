@@ -1,5 +1,6 @@
-import {Player} from "./Player";
-import React, {CSSProperties} from "react";
+import { CSSProperties } from 'react'
+
+import { Player } from './Player'
 
 /**
  * Base properties for components created by this library
@@ -52,8 +53,8 @@ export interface BasePlayerComponentButtonProps extends BasePlayerComponentProps
  *   provided
  */
 export function classNames(classes: Record<string, boolean>, classNames?: string): string {
-  let selected: string[] = []
-  for (let k in classes) {
+  const selected: string[] = []
+  for (const k in classes) {
     if (classes[k]) {
       selected.push(k)
     }
@@ -85,19 +86,19 @@ export function classNames(classes: Record<string, boolean>, classNames?: string
  */
 export function timeToString(timeInSeconds: number, opt_format = '%hh:%mm:%ss') {
   if (timeInSeconds === null || timeInSeconds === undefined) {
-    timeInSeconds = 0;
+    timeInSeconds = 0
   }
   if (opt_format === null || opt_format === undefined) {
-    opt_format = '%h:%mm:%ss';
+    opt_format = '%h:%mm:%ss'
   }
-  let hours = Math.floor(timeInSeconds / 3600);
-  let minutes = Math.floor((timeInSeconds - (hours * 3600)) / 60);
-  let seconds = Math.floor(timeInSeconds - (hours * 3600) - (minutes * 60));
+  const hours = Math.floor(timeInSeconds / 3600)
+  const minutes = Math.floor((timeInSeconds - (hours * 3600)) / 60)
+  const seconds = Math.floor(timeInSeconds - (hours * 3600) - (minutes * 60))
 
   return opt_format
     .replace(/(%h+)/, padReplace(String(hours)))
     .replace(/(%m+)/, padReplace(String(minutes)))
-    .replace(/(%s+)/, padReplace(String(seconds)));
+    .replace(/(%s+)/, padReplace(String(seconds)))
 }
 
 /**
@@ -106,48 +107,39 @@ export function timeToString(timeInSeconds: number, opt_format = '%hh:%mm:%ss') 
  */
 export function getMinimalFormat(time: number): string {
   if (time >= 0 && time < 3600) {
-    return "%mm:%ss"
+    return '%mm:%ss'
   }
-  return "%hh:%mm:%ss"
-}
-
-/**
- * Returns the value if it is defined, otherwise returns the specified
- * default value.
- *
- * @param value The value
- * @param defaultValue The default value if value is undefined
- */
-export function p(value: any, defaultValue: any) {
-  if (value === undefined) return defaultValue
-  return value
+  return '%hh:%mm:%ss'
 }
 
 function pad(str: string, max: number): string {
-  return str.length < max ? pad('0' + str, max) : str;
+  return str.length < max ? pad('0' + str, max) : str
 }
 
 function padReplace(value: string) {
-  return (_: any, group: string) => pad(value, group.length - 1)
+  return (_: string, group: string) => pad(value, group.length - 1)
 }
 
 export function getFocusableElements(parent: HTMLElement): HTMLElement[] {
-  const focusQuery = 'a:not([disabled]):not([style*="display:none"]), button:not([disabled]):not([style*="display:none"]), input[type=text]:not([disabled]):not([style*="display:none"]), [tabindex]:not([disabled]):not([tabindex="-1"]):not([style*="display:none"])';
-  let items = parent.querySelectorAll(focusQuery);
-  return Array.prototype.filter.call(
-    items,
-    (element: HTMLElement) => element.offsetWidth > 0 || element.offsetHeight > 0 || element === document.activeElement
-  ).filter(e => {
-    return e.offsetParent !== null && getComputedStyle(e).display != 'none' && !e.classList.contains("pp-ui-disabled")
-  })
+  const focusQuery = 'a:not([disabled]):not([style*="display:none"]), '
+    + 'button:not([disabled]):not([style*="display:none"]), '
+    + 'input[type=text]:not([disabled]):not([style*="display:none"]), '
+    + '[tabindex]:not([disabled]):not([tabindex="-1"]):not([style*="display:none"])'
+    
+  const items: HTMLElement[] = Array.from(parent.querySelectorAll(focusQuery)) 
+  return items
+    .filter(el => {
+      return (el.offsetWidth > 0 || el.offsetHeight > 0 || el === document.activeElement)
+      && (el.offsetParent !== null && getComputedStyle(el).display !== 'none' && !el.classList.contains('pp-ui-disabled'))
+    })
 }
 
 export function focusNextElement(items: HTMLElement[]) {
-  let index: number = -1;
+  let index = -1
   if (document.activeElement) {
     index = items.indexOf(document.activeElement as HTMLElement)
   }
-  index = index == -1 ? 0 : index + 1
+  index = index === -1 ? 0 : index + 1
   if (index >= items.length) {
     index = 0
   }
@@ -155,57 +147,58 @@ export function focusNextElement(items: HTMLElement[]) {
 }
 
 export function focusPreviousElement(items: HTMLElement[]) {
-  let index: number = -1;
+  let index = -1
   if (document.activeElement) {
     index = items.indexOf(document.activeElement as HTMLElement)
   }
 
-  index = index == -1 ? items.length - 1 : index - 1
+  index = index === -1 ? items.length - 1 : index - 1
   if (index < 0) {
     index = items.length - 1
   }
   focusElement(items[index])
 }
 
-let focusElementTimerId_: any;
+let focusElementTimerId_: ReturnType<typeof setTimeout> | null = null
 
 export function focusElement(item: HTMLElement) {
   if (focusElementTimerId_) {
     clearTimeout(focusElementTimerId_)
+    focusElementTimerId_= null
   }
 
-  if (document.activeElement == item) {
+  if (document.activeElement === item) {
     return
   }
+
   item.focus()
-  if (document.activeElement != item) {
+
+  if (document.activeElement !== item) {
     focusElementTimerId_ = setTimeout(() => {
       focusElement(item)
     }, 64)
   }
 }
 
-// noinspection JSUnusedGlobalSymbols
 export function isTouchDevice() {
-  // @ts-ignore
-  let msTouchValue = navigator.msMaxTouchPoints;
-  return (('ontouchstart' in window) ||
-    (navigator.maxTouchPoints > 0) ||
-    (msTouchValue > 0));
+  return 'ontouchstart' in window ||
+    navigator.maxTouchPoints > 0 ||
+    // @ts-ignore
+    Number(navigator.msMaxTouchPoints) > 0
 }
 
 export function isIOS() {
   if (/iPhone|iPod/.test(navigator.platform)) {
-    return true;
+    return true
   } else {
     return !isIpadOS() && navigator.maxTouchPoints &&
       navigator.maxTouchPoints > 2 &&
-      /MacIntel/.test(navigator.platform);
+      /MacIntel/.test(navigator.platform)
   }
 }
 
 export function isIpadOS() {
   return navigator.maxTouchPoints &&
     navigator.maxTouchPoints > 2 &&
-    /MacIntel/.test(navigator.platform);
+    /MacIntel/.test(navigator.platform)
 }

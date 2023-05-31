@@ -9,11 +9,11 @@ export const clpp = {
       ENDED: 5,
       ERROR: 6,
       UNSET: 7,
-    }
+    },
   },
   events: {
     BufferingReasons: {
-      SEEKING: 1, NO_DATA: 2
-    }
-  }
+      SEEKING: 1, NO_DATA: 2,
+    },
+  },
 }

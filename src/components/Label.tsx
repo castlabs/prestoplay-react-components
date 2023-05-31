@@ -1,11 +1,12 @@
-import React from "react";
-import {BaseComponentProps,} from "../utils";
+import React, { FC } from 'react'
 
-export interface LabelProps extends BaseComponentProps{
+import { BaseComponentProps } from '../utils'
+
+export interface LabelProps extends BaseComponentProps {
   label?: string
 }
 
-export const Label = (props: LabelProps) => {
+export const Label: FC<LabelProps> = props => {
   return (
     <span className={`pp-ui pp-ui-label ${props.className || ''}`}>
       {props.label || ''}
@@ -13,5 +14,3 @@ export const Label = (props: LabelProps) => {
     </span>
   )
 }
-
-export default Label
