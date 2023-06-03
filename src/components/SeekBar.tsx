@@ -1,13 +1,14 @@
-import React, { ForwardedRef, forwardRef, useState } from 'react'
+import React, { ForwardedRef, forwardRef, useContext, useState } from 'react'
 
-import { Player } from '../Player'
+import { PrestoContext } from '../context/PrestoContext'
 import { usePrestoEnabledState, usePrestoUiEvent } from '../react'
-import { BasePlayerComponentProps } from '../utils'
 
 import { Slider } from './Slider'
 import { Thumbnail } from './Thumbnail'
 
-export interface SeekBarProps extends BasePlayerComponentProps {
+import type { BaseComponentProps } from '../utils'
+
+export interface SeekBarProps extends BaseComponentProps {
   adjustWhileDragging?: boolean
   adjustWithKeyboard?: boolean
   enableThumbnailSlider?: boolean
@@ -17,55 +18,61 @@ export interface SeekBarProps extends BasePlayerComponentProps {
   enabled?: boolean
 }
 
-const useEnabled = (player: Player, enabled: boolean) => {
-  const playerEnabled = usePrestoEnabledState(player)
+const useEnabled = (enabled: boolean) => {
+  const playerEnabled = usePrestoEnabledState()
   return enabled && playerEnabled
 }
 
+/**
+ * Seek bar.
+ * Seek bar displays video timeline and playback progress, it can be used for seeking.
+ * 
+ * @param ref - reference to the top element of the Slider component
+ */
 export const SeekBar = forwardRef((props: SeekBarProps, ref: ForwardedRef<HTMLDivElement>) => {
+  const { player } = useContext(PrestoContext)
   const [progress, setProgress] = useState(0)
   const [hoverPosition, setHoverPosition] = useState(-1)
   const [hoverValue, setHoverValue] = useState(0)
   const [thumbWidth, setThumbWidth] = useState(0)
-  const enabled = useEnabled(props.player, props.enabled ?? true)
+  const enabled = useEnabled(props.enabled ?? true)
 
   function updateFromPlayer(position?: number): number {
-    const player = props.player
     const range = player.seekRange
     const rangeDuration = range.end - range.start
-    position = position || props.player.position
+    position = position || player.position
     const positionInRange = position - range.start
     const progress = Math.min(100, Math.max(0, 100.0 * (positionInRange / rangeDuration)))
     setProgress(progress)
     return progress
   }
 
-  usePrestoUiEvent('position', props.player, (position) => {
+  usePrestoUiEvent('position', (position) => {
     updateFromPlayer(position)
   })
 
   function applyValue(progressValue: number) {
-    props.player.surfaceInteraction()
+    player.surfaceInteraction()
 
-    const seekRange = props.player.seekRange
+    const seekRange = player.seekRange
     const range = seekRange.end - seekRange.start
-    props.player.position = seekRange.start + (range * (progressValue / 100.0))
+    player.position = seekRange.start + (range * (progressValue / 100.0))
   }
 
   function applyHoverValue(hoverValue: number) {
     if (hoverValue <= 0) {
-      props.player.setHoverPosition(hoverValue, hoverValue)
+      player.setHoverPosition(hoverValue, hoverValue)
       setHoverPosition(hoverValue)
       setHoverValue(0)
       return
     }
 
-    props.player.surfaceInteraction()
+    player.surfaceInteraction()
 
-    const seekRange = props.player.seekRange
+    const seekRange = player.seekRange
     const range = seekRange.end - seekRange.start
     const hoverPosition = seekRange.start + (range * (hoverValue / 100.0))
-    props.player.setHoverPosition(hoverPosition, hoverValue)
+    player.setHoverPosition(hoverPosition, hoverValue)
     setHoverValue(hoverValue)
     setHoverPosition(hoverPosition)
   }
@@ -77,7 +84,8 @@ export const SeekBar = forwardRef((props: SeekBarProps, ref: ForwardedRef<HTMLDi
   const renderThumbnailSlider = () => {
     if (!props.enableThumbnailSlider || !enabled) {return}
     return (
-      <Thumbnail player={props.player} position={hoverPosition}
+      <Thumbnail
+        position={hoverPosition}
         onThumbSize={onThumbSize}
         style={{
           position: 'absolute',
@@ -88,7 +96,6 @@ export const SeekBar = forwardRef((props: SeekBarProps, ref: ForwardedRef<HTMLDi
   }
 
   const onKeyDown = (e: KeyboardEvent) => {
-    const player = props.player
     const range = player.seekRange
     let targetPosition = -1
     const seekForward = props.keyboardSeekForward ?? 10
@@ -110,8 +117,11 @@ export const SeekBar = forwardRef((props: SeekBarProps, ref: ForwardedRef<HTMLDi
   }
 
   return (
-    <div className={`pp-ui-seekbar ${props.className || ''}`} style={props.style} ref={ref}>
+    <div
+      data-testid="pp-ui-seekbar"
+      className={`pp-ui-seekbar ${props.className || ''}`} style={props.style}>
       <Slider
+        ref={ref}
         hoverMovement={true}
         value={progress}
         onKeyDown={props.adjustWithKeyboard ? undefined : onKeyDown}
@@ -121,13 +131,10 @@ export const SeekBar = forwardRef((props: SeekBarProps, ref: ForwardedRef<HTMLDi
         adjustWhileDragging={props.adjustWhileDragging}
         disabled={!enabled}
         notFocusable={props.notFocusable}
-      >
-      </Slider>
+      />
       {renderThumbnailSlider()}
     </div>
   )
 })
 
 SeekBar.displayName = 'SeekBar'
-
-export default SeekBar

@@ -1,11 +1,14 @@
 import { clpp } from '@castlabs/prestoplay'
-import React, { useDebugValue, useState } from 'react'
+import React, { useContext, useDebugValue, useState } from 'react'
 
+import { PrestoContext } from '../context/PrestoContext'
 import { Player, State } from '../Player'
 import { usePrestoUiEvent } from '../react'
-import { BasePlayerComponentButtonProps } from '../utils'
 
 import { BaseButton } from './BaseButton'
+
+import type { BasePlayerComponentButtonProps } from '../utils'
+
 
 
 /**
@@ -18,6 +21,7 @@ export interface PlayPauseButtonProps extends BasePlayerComponentButtonProps {
    * back to 1.
    */
   resetRate?: boolean
+  children?: React.ReactNode
 }
 
 type Config = {
@@ -48,11 +52,11 @@ function isPlayingState(config: Config): boolean {
 const useIsPlaying = (player: Player, resetRate: boolean): boolean => {
   const [isPlaying, setIsPlaying] = useState(isPlayingState({ state: player.state, player, resetRate }))
 
-  usePrestoUiEvent('ratechange', player, () => {
+  usePrestoUiEvent('ratechange', () => {
     setIsPlaying(isPlayingState({ state: player.state, player, resetRate }))
   })
 
-  usePrestoUiEvent('statechanged', player, ({ currentState, reason }) => {
+  usePrestoUiEvent('statechanged', ({ currentState, reason }) => {
     setIsPlaying(isPlayingState({ state: currentState, player, resetRate, reason }))
   })
 
@@ -63,12 +67,10 @@ const useIsPlaying = (player: Player, resetRate: boolean): boolean => {
 
 /**
  * The play / pause toggle button.
- *
- * @param props
- * @constructor
  */
 export const PlayPauseButton = (props: PlayPauseButtonProps) => {
-  const { player, resetRate } = props
+  const { resetRate } = props
+  const { player } = useContext(PrestoContext)
   const isPlaying = useIsPlaying(player, resetRate ?? false)
 
   const toggle = () => {
@@ -85,10 +87,11 @@ export const PlayPauseButton = (props: PlayPauseButtonProps) => {
     +` ${props.className || ''}`
 
   return (
-    <BaseButton onClick={toggle} disableIcon={props.disableIcon} style={props.style} className={className}>
+    <BaseButton
+      testId="pp-ui-playpause-toggle"
+      onClick={toggle}
+      disableIcon={props.disableIcon} style={props.style} className={className}>
       {props.children}
     </BaseButton>
   )
 }
-
-export default PlayPauseButton

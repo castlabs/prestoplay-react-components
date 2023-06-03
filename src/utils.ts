@@ -1,16 +1,9 @@
 import { CSSProperties } from 'react'
 
-import { Player } from './Player'
-
 /**
  * Base properties for components created by this library
  */
 export interface BaseComponentProps {
-  /**
-   * Optional children that can be passed. If and how they are used depends
-   * on the component.
-   */
-  children?: React.ReactNode
   /**
    * Class name extensions that are passed to the top level element created by
    * a component
@@ -24,19 +17,9 @@ export interface BaseComponentProps {
 }
 
 /**
- * Base interface for component properties that need a player instance
- */
-export interface BasePlayerComponentProps extends BaseComponentProps {
-  /**
-   * The player instance
-   */
-  player: Player
-}
-
-/**
  * Base properties interface for button components that interact with a player.
  */
-export interface BasePlayerComponentButtonProps extends BasePlayerComponentProps {
+export interface BasePlayerComponentButtonProps extends BaseComponentProps {
   /**
    * Buttons, by default assume they have an icon. Use this to disable the icon
    * and turn the button into a text based button.
@@ -183,6 +166,7 @@ export function focusElement(item: HTMLElement) {
 export function isTouchDevice() {
   return 'ontouchstart' in window ||
     navigator.maxTouchPoints > 0 ||
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     Number(navigator.msMaxTouchPoints) > 0
 }

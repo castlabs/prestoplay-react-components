@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { BasePlayerComponentProps } from '../utils'
-
 import { BufferingIndicator } from './BufferingIndicator'
 import { CurrentTime } from './CurrentTime'
 import { Duration } from './Duration'
@@ -26,11 +24,13 @@ import { Thumbnail } from './Thumbnail'
 import { VerticalBar } from './VerticalBar'
 import { VolumeBar } from './VolumeBar'
 
+import type { BaseComponentProps } from '../utils'
+
 
 /**
  * Properties of the basic theme overlay
  */
-export interface BaseThemeOverlayProps extends BasePlayerComponentProps {
+export interface BaseThemeOverlayProps extends BaseComponentProps {
   /**
    * Creates the start button. Before the button is clicked, no video content is loaded
    * and only the poster image might be displayed. To make this work as expected
@@ -43,17 +43,10 @@ export interface BaseThemeOverlayProps extends BasePlayerComponentProps {
    * will be loaded before video content is available.
    */
   posterUrl?: string
-
-  /**
-   * If a ref is passed, the HTML element that is reference is the one that will
-   * be put into fullscreen mode if the fullscreen button is used
-   */
-  fullscreenRef?: React.MutableRefObject<HTMLElement | null>
   /**
    * Options menu selection options can be configured with this property.
    */
   menuSelectionOptions?: SelectionOption[]
-
   /**
    * Number of seconds the seek forward button seeks forward. Defaults
    * to 10. 0 will disable the seek back button.
@@ -71,30 +64,25 @@ export interface BaseThemeOverlayProps extends BasePlayerComponentProps {
   seekBar?: 'enabled' | 'disabled' | 'none'
 }
 
+/**
+ * Base theme overlay.
+ */
 export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
-  const selectionOptions = props.menuSelectionOptions || DEFAULT_SELECTION_OPTIONS
-
-  const renderOptionsMenuButton = () => {
-    if (!selectionOptions || selectionOptions.length === 0) {return}
-    
-    return (
-      <div className="pp-ui-margin-horizontal-sm">
-        <MenuSlideinToggleButton player={props.player} />
-      </div>
-    )
-  }
+  const selectionOptions = props.menuSelectionOptions ?? DEFAULT_SELECTION_OPTIONS
 
   const renderOptionsMenu = () => {
-    if (!selectionOptions || selectionOptions.length === 0) {return}
-    return <MenuSlidein player={props.player} selectionOptions={selectionOptions}/>
+    if (selectionOptions.length === 0) {return}
+    return <MenuSlidein selectionOptions={selectionOptions}/>
   }
 
   const renderTopBar = () => {
-    if (!selectionOptions || selectionOptions.length === 0) {return}
+    if (selectionOptions.length === 0) {return}
     return (
       <HorizontalBar>
         <Spacer/>
-        {renderOptionsMenuButton()}
+        <div className="pp-ui-margin-horizontal-sm">
+          <MenuSlideinToggleButton />
+        </div>
       </HorizontalBar>
     )
   }
@@ -102,25 +90,22 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   // Some component rendering depends on configuration, and
   // we wrap the rendering code into helpers
   const renderFullscreenButton = () => {
-    if (!props.fullscreenRef) {return}
-    return <FullscreenButton fullscreenContainer={props.fullscreenRef}
-      player={props.player}/>
+    return <FullscreenButton />
   }
 
   const renderPosterImage = () => {
     if (!props.posterUrl) {return}
-    return <PosterImage src={props.posterUrl} player={props.player}/>
+    return <PosterImage src={props.posterUrl} />
   }
 
   const renderStartButton = () => {
     if (!props.startButton) {return}
-    return <StartButton player={props.player}
-      onClick={typeof props.startButton === 'object' ? props.startButton.onClick : undefined}/>
+    return <StartButton onClick={typeof props.startButton === 'object' ? props.startButton.onClick : undefined}/>
   }
 
   return (
-    <div className={'pp-ui pp-ui-overlay pp-ui-basic-theme'}>
-      <PlayerControls player={props.player}>
+    <div data-testid="pp-ui-basic-theme" className={'pp-ui pp-ui-overlay pp-ui-basic-theme'} style={props.style}>
+      <PlayerControls>
         <VerticalBar className={'pp-ui-spacer'}>
 
           {/* Top bar */}
@@ -130,19 +115,17 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
 
           {/* Thumbnails */}
           <HorizontalBar className={'pp-ui-transparent'}>
-            <Thumbnail player={props.player} listenToHover={true}
-              moveRelativeToParent={true}/>
+            <Thumbnail moveRelativeToParent={true}/>
           </HorizontalBar>
 
           {/* Bottom bar */}
           <HorizontalBar className="pp-ui-flex-space-between">
             <div className="pp-ui-row pp-ui-margin-horizontal-sm">
-              <PlayPauseButton player={props.player} resetRate={true}/>
-              <SeekButton player={props.player} seconds={props.seekBackward ?? -10}/>
-              <SeekButton player={props.player} seconds={props.seekForward ?? 10}/>
+              <PlayPauseButton resetRate={true}/>
+              <SeekButton seconds={props.seekBackward ?? -10}/>
+              <SeekButton seconds={props.seekForward ?? 10}/>
 
               {props.seekBar === 'none' ? null : <SeekBar
-                player={props.player}
                 adjustWhileDragging={true}
                 adjustWithKeyboard={true}
                 enableThumbnailSlider={false}
@@ -151,12 +134,12 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
             </div>
             
             <div className="pp-ui-row pp-ui-margin-horizontal-sm">
-              <CurrentTime player={props.player}/>
+              <CurrentTime />
               <Label label={'/'}/>
-              <Duration player={props.player}/>
+              <Duration />
 
-              <MuteButton player={props.player}/>
-              <VolumeBar player={props.player} adjustWhileDragging={true}/>
+              <MuteButton />
+              <VolumeBar adjustWhileDragging={true}/>
 
               {renderFullscreenButton()}  
             </div>
@@ -171,11 +154,8 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
 
       {renderStartButton()}
 
-      <BufferingIndicator player={props.player}
-        className={'pp-ui-absolute-center'}/>
+      <BufferingIndicator className="pp-ui-absolute-center" />
 
     </div>
   )
 }
-
-export default BaseThemeOverlay

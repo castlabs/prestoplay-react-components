@@ -1,5 +1,6 @@
-import React, { createRef, useDebugValue, useEffect, useState } from 'react'
+import React, { useContext, useDebugValue, useEffect, useRef, useState } from 'react'
 
+import { PrestoContext } from '../context/PrestoContext'
 import { State, Player } from '../Player'
 import { usePrestoUiEvent } from '../react'
 import { BasePlayerComponentButtonProps, focusElement } from '../utils'
@@ -17,7 +18,7 @@ const isVisibleState = (state: State) => {
 const useVisibility = (player: Player) => {
   const [visible, setVisible] = useState<boolean>(isVisibleState(player.state))
 
-  usePrestoUiEvent('statechanged', player, () => {
+  usePrestoUiEvent('statechanged', () => {
     setVisible(isVisibleState(player.state))
   })
 
@@ -26,9 +27,15 @@ const useVisibility = (player: Player) => {
   return { visible, setVisible }
 }
 
+/**
+ * Start button.
+ * 
+ * (Central button to start the video.)
+ */
 export const StartButton = (props: StartButtonProps) => {
-  const { visible, setVisible } = useVisibility(props.player)
-  const ref = createRef<HTMLButtonElement>()
+  const { player } = useContext(PrestoContext)
+  const { visible, setVisible } = useVisibility(player)
+  const ref = useRef<HTMLButtonElement>(null)
 
   useEffect(() =>{
     if (ref.current && visible) {
@@ -41,11 +48,11 @@ export const StartButton = (props: StartButtonProps) => {
     if (props.onClick) {
       await props.onClick()
     } else {
-      await props.player.load()
-      props.player.playing = true
+      await player.load()
+      player.playing = true
     }
     setVisible(false)
-    props.player.surfaceInteraction()
+    player.surfaceInteraction()
   }
 
   if (!visible) {
@@ -53,13 +60,13 @@ export const StartButton = (props: StartButtonProps) => {
   }
 
   return (
-    <div className="pp-ui-start-button-container">
+    <div
+      data-testid="pp-ui-start-button"
+      className={`pp-ui-start-button-container ${props.className ?? ''}`} style={props.style}>
       <BaseButton onClick={start} ref={ref}
         disableIcon={false}
         style={props.style}
-        className={`pp-ui pp-ui-start-button ${props.className}`}/>
+        className="pp-ui pp-ui-start-button" />
     </div>
   )
 }
-
-export default StartButton

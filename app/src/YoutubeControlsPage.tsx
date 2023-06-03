@@ -5,7 +5,7 @@ import '@castlabs/prestoplay/cl.hls'
 import '@castlabs/prestoplay/cl.htmlcue'
 import '@castlabs/prestoplay/cl.ttml'
 import '@castlabs/prestoplay/cl.vtt'
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { Helmet } from 'react-helmet'
 
 import { Player, usePrestoEnabledState } from '../../src'
@@ -27,11 +27,15 @@ import { VolumeBar } from '../../src/components/VolumeBar'
 
 import { Asset } from './Asset'
 
+
+/**
+ * A custom player skin assembled from our UI components
+ * in the style of YouTube.
+ */
 export const YoutubeControlsPage = (props: {
   asset?: Asset
   autoload?: boolean
 }) => {
-
   // Create the player as state of this component
   const [player] = useState(new Player((pp: clpp.Player) => {
     pp.use(clpp.dash.DashComponent)
@@ -41,12 +45,6 @@ export const YoutubeControlsPage = (props: {
     pp.use(clpp.vtt.VttComponent)
   }))
 
-  const playerEnabled = usePrestoEnabledState(player)
-
-  // Create a ref to the player surface component. We use this here to pass it
-  // to the fullscreen button to make put the player surface to fullscreen
-  const playerSurfaceRef = useRef<HTMLDivElement>(null)
-
   const asset = props.asset
   const playerConfig = asset?.config
 
@@ -55,74 +53,87 @@ export const YoutubeControlsPage = (props: {
       <Helmet>
         <link rel="stylesheet" href="youtube.css"/>
       </Helmet>
-      <PlayerSurface ref={playerSurfaceRef}
+      <PlayerSurface
         player={player}
         config={playerConfig}
         playsInline={true}
         autoload={props.autoload}
         style={{ height: '320px' }}>
-        <PlayerControls player={player} showWhenDisabled={true}>
-
-          <div className="pp-yt-gradient-bottom"></div>
-
-          {/* We are creating a vertical bar to build our controls top to bottom */}
-          <VerticalBar className={'pp-ui-spacer'} style={{ gap: '0', position: 'absolute' }}>
-            {/* The first horizontal row shows some custom title for the content */}
-            <HorizontalBar>
-              <div style={{ flexGrow: 1 }}>
-                <div>
-                  <Label label={asset?.title} className={'pp-ui-label-title'}/>
-                </div>
-                <div>
-                  <Label label={asset?.subtitle} className={'pp-ui-label-subtitle'}/>
-                </div>
-              </div>
-            </HorizontalBar>
-
-            {/* We add a spacer to push the rest of the content to the bottom */}
-            <div style={{ flex: 1, display: 'flex', alignItems: 'stretch', justifyContent: 'stretch' }}>
-              <PlayPauseButton player={player} className={'pp-yt-center-toggle'} style={{ width: '100%', display:playerEnabled ? 'block' : 'none' }}>
-                <div className={'pp-yt-center-background'}></div>
-              </PlayPauseButton>
-            </div>
-
-            {/* We create a horizontal bar for the thumbnails */}
-            <HorizontalBar>
-              <HoverContainer player={player} listenToHover={true}>
-                <Thumbnail player={player} listenToHover={true} moveRelativeToParent={false}/>
-                <CurrentTime player={player} disableHoveringDisplay={false}/>
-              </HoverContainer>
-            </HorizontalBar>
-
-
-            <VerticalBar>
-              <HorizontalBar style={{ alignItems: 'flex-end', marginBottom: '-8px' }}>
-                <SeekBar player={player} adjustWhileDragging={true} enableThumbnailSlider={false} notFocusable={true}/>
-              </HorizontalBar>
-
-              <HorizontalBar className={'pp-yt-bottom-bar'}>
-                <PlayPauseButton player={player} resetRate={true}/>
-                <MuteButton player={player}>
-                  <VolumeBar player={player} notFocusable={true} adjustWhileDragging={true}/>
-                </MuteButton>
-
-                <HorizontalBar className={'pp-ui-yt-timebar'}>
-                  <CurrentTime player={player} disableHoveringDisplay={true}>
-                    &nbsp;/&nbsp;
-                  </CurrentTime>
-                  <Duration player={player}/>
-                </HorizontalBar>
-
-                <Spacer/>
-
-                <FullscreenButton fullscreenContainer={playerSurfaceRef} player={player}/>
-              </HorizontalBar>
-            </VerticalBar>
-          </VerticalBar>
-
-        </PlayerControls>
+        <Ui player={player} asset={asset} />
       </PlayerSurface>
-
     </div>
+  )
+}
+
+type PropsUi = {
+  player: Player
+  asset?: Asset
+}
+
+const Ui = (props: PropsUi) => {
+  const { asset, player } = props 
+  const playerEnabled = usePrestoEnabledState(player)
+
+  return (
+    <PlayerControls  showWhenDisabled={true}>
+
+      <div className="pp-yt-gradient-bottom"></div>
+
+      {/* We are creating a vertical bar to build our controls top to bottom */}
+      <VerticalBar className={'pp-ui-spacer'} style={{ gap: '0', position: 'absolute' }}>
+        {/* The first horizontal row shows some custom title for the content */}
+        <HorizontalBar>
+          <div style={{ flexGrow: 1 }}>
+            <div>
+              <Label label={asset?.title} className={'pp-ui-label-title'}/>
+            </div>
+            <div>
+              <Label label={asset?.subtitle} className={'pp-ui-label-subtitle'}/>
+            </div>
+          </div>
+        </HorizontalBar>
+
+        {/* We add a spacer to push the rest of the content to the bottom */}
+        <div style={{ flex: 1, display: 'flex', alignItems: 'stretch', justifyContent: 'stretch' }}>
+          <PlayPauseButton  className={'pp-yt-center-toggle'} style={{ width: '100%', display:playerEnabled ? 'block' : 'none' }}>
+            <div className={'pp-yt-center-background'}></div>
+          </PlayPauseButton>
+        </div>
+
+        {/* We create a horizontal bar for the thumbnails */}
+        <HorizontalBar>
+          <HoverContainer>
+            <Thumbnail moveRelativeToParent={false}/>
+            <CurrentTime disableHoveringDisplay={false}/>
+          </HoverContainer>
+        </HorizontalBar>
+
+
+        <VerticalBar>
+          <HorizontalBar style={{ alignItems: 'flex-end', marginBottom: '-8px' }}>
+            <SeekBar  adjustWhileDragging={true} enableThumbnailSlider={false} notFocusable={true}/>
+          </HorizontalBar>
+
+          <HorizontalBar className={'pp-yt-bottom-bar'}>
+            <PlayPauseButton  resetRate={true}/>
+            <MuteButton >
+              <VolumeBar  notFocusable={true} adjustWhileDragging={true}/>
+            </MuteButton>
+
+            <HorizontalBar className={'pp-ui-yt-timebar'}>
+              <CurrentTime  disableHoveringDisplay={true}>
+                  &nbsp;/&nbsp;
+              </CurrentTime>
+              <Duration />
+            </HorizontalBar>
+
+            <Spacer/>
+
+            <FullscreenButton />
+          </HorizontalBar>
+        </VerticalBar>
+      </VerticalBar>
+
+    </PlayerControls>
   )
 }

@@ -1,12 +1,11 @@
 import { clpp } from '@castlabs/prestoplay'
-import React, {
-  ForwardedRef, forwardRef,
-  useEffect, useRef,
-} from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
+import { PrestoContext, PrestoContextType } from '../context/PrestoContext'
+import { Player } from '../Player'
 import { usePrestoUiEvent } from '../react'
 import {
-  BasePlayerComponentProps, focusElement,
+  BaseComponentProps, focusElement,
   focusNextElement, focusPreviousElement,
   getFocusableElements, isIpadOS,
 } from '../utils'
@@ -15,7 +14,11 @@ import {
  * The properties of the player surface. This is the element that receives
  * the PRESTOplay configuration.
  */
-export interface PlayerProps extends BasePlayerComponentProps {
+export interface PlayerProps extends BaseComponentProps {
+  /**
+   * The player instance
+   */
+  player: Player
   /**
    * The PRESTOplay player configuration to load and play a video
    */
@@ -36,21 +39,47 @@ export interface PlayerProps extends BasePlayerComponentProps {
    * player will go to full-screen mode and no overlay will be possible.
    */
   playsInline?: boolean
+  children?: React.ReactNode
+  onContext?: (context: PrestoContextType) => void
 }
 
+const getContext = (nullableContext: Partial<PrestoContextType>) => {
+  return Object.values(nullableContext)
+    .every(value => value != null) ? nullableContext as PrestoContextType : null
+}
+
+
 /**
- * The Player Surface receives they player instance and a configuration
- * and renders the related video element. The component can be referenced, and
- * that ref can be use for instance to initiate full screen playback.
+ * Player Surface.
+ * The Player Surface receives the player instance and a configuration
+ * and renders the related video element. It also serves as a container
+ * and a context provider for the rest of the UI.
  */
-export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: PlayerProps, ref: ForwardedRef<HTMLDivElement>) => {
+export const PlayerSurface = (props: PlayerProps) => {
+  const [nullableContext, setPrestoContext ] = useState<Partial<PrestoContextType>>({
+    playerSurface: undefined,
+    player: props.player,
+    presto: undefined,
+  })
+  const context = getContext(nullableContext)
+
+  useEffect(() => {
+    context && props.onContext?.(context)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [context])
+
   const containerRef = useRef<HTMLDivElement|null>(null)
 
-  const createVideo = (video: HTMLVideoElement|null) => {
-    if (!video) {return}
+  const createVideo = async (video: HTMLVideoElement|null) => {
+    if (!video || context) {return}
     
-    props.player.init(video, props.baseConfig)
-      .catch(err => console.error('Failed to initialize the player', err))
+    await props.player.init(video, props.baseConfig)
+    const presto = await props.player.presto()
+
+    setPrestoContext(context => ({
+      ...context,
+      presto,
+    }))
   }
 
   useEffect(() => {
@@ -82,15 +111,15 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
     }
   }
 
-  usePrestoUiEvent('surfaceInteraction', props.player, () => {
+  usePrestoUiEvent('surfaceInteraction', () => {
     maybeFocusSurface()
-  })
+  }, [], props.player)
 
-  usePrestoUiEvent('controlsVisible', props.player, (visible) => {
+  usePrestoUiEvent('controlsVisible', (visible) => {
     if (!visible && !props.player.slideInMenuVisible) {
       maybeFocusSurface(true)
     }
-  })
+  }, [], props.player)
 
   // const mouseMove = () => {
   //   if (!props.player.controlsVisible && !props.player.slideInMenuVisible) {
@@ -192,17 +221,20 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
     }
   }, [props.player])
 
-  const handleContainerRef = (c: HTMLDivElement|null) => {
-    containerRef.current = c
-    if (typeof ref === 'function') {
-      ref(c)
-    } else if (ref) {
-      ref.current = c
+  const handleContainerRef = (element: HTMLDivElement|null) => {
+    containerRef.current = element
+
+    if (element && !nullableContext.playerSurface) {
+      setPrestoContext(context => ({
+        ...context,
+        playerSurface: element,
+      }))
     }
   }
 
   return (
     <div ref={handleContainerRef}
+      data-testid="pp-ui-surface" 
       className={`pp-ui pp-ui-surface ${isIpadOS() ? 'pp-ui-ipad' : ''} ${props.className || ''}`}
       style={props.style}
       onClick={mouseClick}
@@ -215,13 +247,13 @@ export const PlayerSurface = forwardRef<HTMLDivElement, PlayerProps>((props: Pla
         tabIndex={-1}
         playsInline={props.playsInline}>
       </video>
-      <div className={`pp-ui pp-ui-overlay ${isIpadOS() ? 'pp-ui-ipad' : ''}`}>
-        {props.children}
-      </div>
+      {context && 
+        <PrestoContext.Provider value={context}>
+          <div className={`pp-ui pp-ui-overlay ${isIpadOS() ? 'pp-ui-ipad' : ''}`}>
+            {props.children}
+          </div>
+        </PrestoContext.Provider>
+      }
     </div>
   )
-})
-
-PlayerSurface.displayName = 'PlayerSurface'
-
-export default PlayerSurface
+}

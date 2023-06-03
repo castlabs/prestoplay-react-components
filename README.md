@@ -119,8 +119,7 @@ const App = () => {
       baseConfig={baseConfig}
       config={loadConfig}
       autoload>
-        <BaseThemeOverlay
-          player={player}/>
+        <BaseThemeOverlay/>
     </PlayerSurface>
   )
 }

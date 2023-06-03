@@ -1,74 +1,108 @@
 import React, {
-  createRef, CSSProperties, useLayoutEffect, useState,
+  CSSProperties, useCallback, useMemo, useRef,
 } from 'react'
 import '@castlabs/prestoplay/cl.thumbnails'
 
-import { usePrestoUiEvent } from '../react'
+import { useHoverPercent } from '../hooks/hooks'
+import { clamp } from '../utils/math'
 
-import type { BasePlayerComponentProps } from '../utils'
+import type { BaseComponentProps } from '../utils'
 
-
-export interface HoverContainerProps extends BasePlayerComponentProps {
-  listenToHover?: boolean
+export interface HoverContainerProps extends BaseComponentProps {
   style?: CSSProperties
-  notTrackFullWidth?: boolean
+  /**
+   * If `targetRef` is passed, children will be positioned horizontally
+   * relative to the referenced target element.
+   * By default children are positioned relative to top element of
+   * the `HoverContainer`.
+   */
   targetRef?: React.MutableRefObject<HTMLElement | null>
+  children?: React.ReactNode
 }
 
+const debug = false
+const MIN_SAFE_WIDTH = 20
+
+/**
+ * Hover container.
+ * 
+ * This component is intended for displaying thumbnails above
+ * the seek bar. It positions its children horizontally based
+ * on the current hover position.
+ */
 export const HoverContainer = (props: HoverContainerProps) => {
-  const containerRef = createRef<HTMLDivElement>()
-  const ref = createRef<HTMLDivElement>()
-  const [hoverValue, setHoverValue] = useState<number>(-1)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
+  const hoverPercent = useHoverPercent()
 
-  usePrestoUiEvent('hoverPosition', props.player, (data) => {
-    if (!props.listenToHover) {return}
-    setHoverValue(data.percent)
-  })
+  /**
+   * Calculate the horizontal position of child element
+   * based on the current hover value.
+   * 
+   * @see {@link docs/hover_container.drawio} where this calculation
+   *  is explained in more detail.
+   */
+  const calculateChildPosition = useCallback((): number | null => {
+    const child = ref.current
+    const container = containerRef.current
+    const targetEl = (props.targetRef?.current ?? null) as HTMLElement | null
+    if (!child || !container || hoverPercent == null) {
+      return null
+    }
+    const target = targetEl ?? container
 
-  const trackParentStyle = (): CSSProperties => {
+    const childWidth = child.offsetWidth
+    const targetWidth = target.clientWidth
+    const containerWidth = container.clientWidth
+    const targetX = target.getBoundingClientRect().x
+    const containerX = container.getBoundingClientRect().x
+    const childWidthHalf = childWidth / 2
+    const shift = targetX - containerX
+
+    if (childWidth <= MIN_SAFE_WIDTH || targetWidth <= MIN_SAFE_WIDTH || containerWidth <= MIN_SAFE_WIDTH) {
+      return null
+    }
+
+    const minPosition = shift - childWidthHalf
+    const maxPosition = shift + targetWidth - childWidthHalf
+    const length = maxPosition - minPosition
+
+    const position = clamp(minPosition + (length * (hoverPercent / 100.0)), 0, containerWidth - childWidth)
+    return position
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.targetRef, hoverPercent])
+
+  const style = useMemo((): CSSProperties => {
     return {
-      display: (props.listenToHover && hoverValue < 0) ? 'none' : 'block',
+      display: 'block',
+      ...props.style,
     }
-  }
+  }, [props.style])
 
-  useLayoutEffect(() => {
-    if (ref.current && containerRef.current) {
-      const width = ref.current.offsetWidth
-      let containerWidth = containerRef.current.clientWidth
-      const relPos = hoverValue / 100.0
-      const maxPosition = containerWidth - width - 1
-      let targetPosition = 0
+  const childStyle = useMemo((): CSSProperties => {
+    const position = calculateChildPosition()
 
-      if (props.targetRef && props.targetRef.current) {
-        containerWidth = props.targetRef.current?.clientWidth
+    if (position == null) {
+      return debug ? {} : {
+        visibility: 'hidden',
       }
-
-      if (props.notTrackFullWidth) {
-        targetPosition = ((containerWidth - width) * relPos)
-      } else {
-        targetPosition = (containerWidth * relPos) - (width / 2)
+    } else {
+      return {
+        transform: `translateX(${position}px)`,
       }
-
-      if (props.targetRef && props.targetRef.current) {
-        targetPosition += props.targetRef.current?.getBoundingClientRect().x
-      }
-      const position = Math.min(maxPosition, Math.max(0, targetPosition))
-      containerRef.current.style.transform = `translateX(${position}px)`
     }
-  }, [ref, containerRef, props.targetRef])
+  }, [calculateChildPosition])
 
   return (
-    <div ref={containerRef}
-      style={{
-        ...trackParentStyle(),
-        ...props.style || {},
-      }}
-      className={`pp-ui pp-ui-hover-container ${props.className || ''}`}>
-      <div ref={ref} className={'pp-ui-hover-container-content'}>
+    <div
+      data-testid="pp-ui-hover-container"
+      ref={containerRef}
+      className={`pp-ui pp-ui-hover-container ${props.className ?? ''}`}
+      style={style}
+    >
+      <div ref={ref} className={'pp-ui-hover-container-content'} style={childStyle}>
         {props.children}
       </div>
     </div>
   )
 }
-
-export default HoverContainer

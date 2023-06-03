@@ -1,3 +1,45 @@
+# 0.7.0 (Beta)
+
+## Breaking changes
+
+* Removed the `player` prop from all components (except `PlayerSurface`). Instead of it, all components should
+  be descendants of `PlayerSurface` and this way they get access to the `player` instance from its context. 
+  ```jsx
+      <PlayerSurface player={player}>
+          <BaseThemeOverlay/>
+      </PlayerSurface>
+  ```
+  To access the values from the context directly use `PrestoContext`.
+  ```jsx
+  import { PrestoContext } from "@castlabs/prestoplay-react-components"
+
+  // descendant of PlayerSurface
+  const UiComponent = () => {
+    const { player, presto } = useContext(PrestoContext)
+  }
+  ```
+* Changes to hooks:
+  * Hooks `usePrestoCoreEvent`, `usePrestoUiEvent` no longer accept the `player` argument, instead they
+  should be wrapped with `PlayerSurface` (or `PrestoContext`).
+  * Removed the `usePresto`. You can use `PrestoContext` instead to access the PRESTOplay instance.
+    ```jsx
+    import { PrestoContext } from "@castlabs/prestoplay-react-components"
+
+    const useMyHook = () => {
+      const { presto } = useContext(PrestoContext)
+    }
+    ```
+  * Removed the `useGlobalHide` hook.
+  * Hooks `usePrestoEnabledState`, `usePrestoEnabledStateClass` should be wrapped with `PlayerSurface`
+  (or `PrestoContext`), in which case it is not necessary to pass the `player` argument anymore.
+* `HoverContainer` no longer accepts props `listenToHover` and `notTrackFullWidth`.
+
+## Fixes
+
+* Improve positioning by `HoverContainer`.
+* All components now accept `style` and `className` prop and apply them to their top-most element.
+* Removed `children` prop from components that do not render any child components.
+
 # 0.6.0 (Beta)
 
 ## Breaking changes

@@ -2,20 +2,25 @@ import React, { useState } from 'react'
 
 import { usePrestoEnabledStateClass, usePrestoUiEvent } from '../react'
 import {
-  BasePlayerComponentProps,
+  BaseComponentProps,
   getMinimalFormat,
   timeToString,
 } from '../utils'
 
 import { Label } from './Label'
 
-export type DurationProps = BasePlayerComponentProps
+export interface DurationProps extends BaseComponentProps {
+  children?: React.ReactNode
+}
 
+/**
+ * Duration.
+ */
 export const Duration = (props: DurationProps) => {
   const [duration, setDuration] = useState('')
-  const enabledClass = usePrestoEnabledStateClass(props.player)
+  const enabledClass = usePrestoEnabledStateClass()
 
-  usePrestoUiEvent('durationchange', props.player, (duration) => {
+  usePrestoUiEvent('durationchange', (duration) => {
     if (duration === Infinity) {
       setDuration('Live')
     } else {
@@ -25,12 +30,12 @@ export const Duration = (props: DurationProps) => {
 
   return (
     <Label
+      testId="pp-ui-duration"
       label={duration}
       className={`pp-ui-label-duration ${enabledClass} ${props.className || ''}`}
+      style={props.style}
     >
       {props.children}
     </Label>
   )
 }
-
-export default Duration

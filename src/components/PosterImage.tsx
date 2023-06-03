@@ -2,31 +2,36 @@ import React, { useState } from 'react'
 
 import { State } from '../Player'
 import { usePrestoUiEvent } from '../react'
-import { BasePlayerComponentProps } from '../utils'
+import { BaseComponentProps } from '../utils'
 
-export interface PosterImageProps extends BasePlayerComponentProps {
+export interface PosterImageProps extends BaseComponentProps {
   src: string
   alt?: string
 }
 
+/**
+ * Poster image.
+ * An initial image intended to be displayed as a backdrop before video started
+ * loading or while it is being fetched and loaded.
+ */
 export const PosterImage = (props: PosterImageProps) => {
   const [visible, setVisible] = useState(!!props.src)
   const [wasHidden, setWasHidden] = useState(false)
 
-  const hasSource = () => !!props.src
+  const hasSource = props.src != null
 
-  usePrestoUiEvent('statechanged', props.player, ({ currentState }) => {
+  usePrestoUiEvent('statechanged', ({ currentState }) => {
     switch (currentState) {
       case State.Idle:
         setWasHidden(false)
-        setVisible(hasSource() && !wasHidden)
+        setVisible(!wasHidden && hasSource)
         break
       case State.Preparing:
       case State.Buffering:
-        if (!hasSource()) {
-          setVisible(false)
+        if (hasSource) {
+          setVisible(!wasHidden)
         } else {
-          setVisible(!wasHidden && hasSource())
+          setVisible(false)
         }
         break
       case State.Error:
@@ -36,15 +41,16 @@ export const PosterImage = (props: PosterImageProps) => {
         setVisible(false)
         setWasHidden(true)
     }
-  }, [wasHidden, visible])
+  }, [wasHidden, hasSource])
 
   return (
     <div
-      className={`pp-ui pp-ui-poster-image ${visible && hasSource() ? '' : 'pp-ui-poster-image-hidden'}`}>
+      data-testid="pp-ui-poster-image" 
+      className={`pp-ui pp-ui-poster-image ${(visible && hasSource) ? '' : 'pp-ui-poster-image-hidden'} `
+        +`${props.className ?? ''}`}
+      style={props.style}
+    >
       <img src={props.src} alt={props.alt}/>
     </div>
-
   )
 }
-
-export default PosterImage

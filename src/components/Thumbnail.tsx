@@ -6,14 +6,16 @@ import React, {
   useLayoutEffect,
   useState,
   useRef,
+  useContext,
+  useMemo,
 } from 'react'
 
-import { usePresto, usePrestoUiEvent } from '../react'
-import {
-  BasePlayerComponentProps,
-} from '../utils'
+import { PrestoContext } from '../context/PrestoContext'
+import { usePrestoUiEvent } from '../react'
 
-export interface ThumbnailProps extends BasePlayerComponentProps {
+import type { BaseComponentProps } from '../utils'
+
+export interface ThumbnailProps extends BaseComponentProps {
   position?: number
   listenToHover?: boolean
   moveRelativeToParent?: boolean
@@ -21,23 +23,36 @@ export interface ThumbnailProps extends BasePlayerComponentProps {
   onThumbSize?: (width: number, height: number) => void
 }
 
+/**
+ * @returns thumbnails plugin
+ */
+const usePlugin = () => {
+  const { presto } = useContext(PrestoContext)
+  return presto.getPlugin(clpp.thumbnails.ThumbnailsPlugin.Id) as clpp.ThumbnailsPlugin | null
+}
+
+const DEFAULT_STYLE = { height: 130 }
+
+/**
+ * Thumbnail.
+ * A UI for thumbnail images intended to be displayed when hovering over the seek bar.
+ */
 export const Thumbnail = (props: ThumbnailProps) => {
-  const pluginRef = useRef<clpp.ThumbnailsPlugin|null>(null)
+  const plugin = usePlugin()
   const containerRef = useRef<HTMLDivElement>(null)
   const [hoverPosition, setHoverPosition] = useState<number|null>(null)
   const [hoverValue, setHoverValue] = useState<number>(0)
   const [thumbnailElement, setThumbnailElement] = useState<HTMLElement|null>(null)
+  const widthRef = useRef(0)
 
   const clearThumbnail = useCallback(() => {
     setThumbnailElement(null)
   }, [])
 
   const loadThumbnail =  useCallback(async (position: number) => {
-    if (!pluginRef.current) {
-      return
-    }
+    if (!plugin) {return}
   
-    const thumb = await pluginRef.current.get(position)
+    const thumb = await plugin.get(position)
     if (!thumb) {return}
 
     await thumb.load()
@@ -60,7 +75,7 @@ export const Thumbnail = (props: ThumbnailProps) => {
     props.onThumbSize?.(size.width, size.containerHeight)
     setThumbnailElement(element)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.onThumbSize])
+  }, [props.onThumbSize, plugin])
 
   const getThumbSize = (el: HTMLElement | null) => {
     if (!el) {return null}
@@ -81,15 +96,11 @@ export const Thumbnail = (props: ThumbnailProps) => {
     }
   }
 
-  usePresto(props.player, (presto) => {
-    pluginRef.current = presto.getPlugin(clpp.thumbnails.ThumbnailsPlugin.Id) as clpp.ThumbnailsPlugin | null
-  })
-
-  usePrestoUiEvent('hoverPosition', props.player, (data) => {
-    if (!props.listenToHover) {return}
-    setHoverPosition(data.position)
-    setHoverValue(data.percent)
-  })
+  usePrestoUiEvent('hoverPosition', (event) => {
+    if (props.listenToHover === false) {return}
+    setHoverPosition(event.position)
+    setHoverValue(event.percent)
+  }, [props.listenToHover])
 
   useLayoutEffect(() => {
     const position = hoverPosition ?? props.position
@@ -103,25 +114,25 @@ export const Thumbnail = (props: ThumbnailProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hoverPosition, props.position])
 
-  const size = getThumbSize(thumbnailElement)
-  const trackParentStyle = (): CSSProperties => {
-    if (!props.moveRelativeToParent) {return {}}
+  // Keep last width value cached, even if I do not have any thumbnail to
+  // display to prevent UI glitches caused by changing width of this element.
+  widthRef.current = getThumbSize(thumbnailElement)?.width ?? widthRef.current
 
-    return {
+  const style: CSSProperties = useMemo(() => ({
+    width: widthRef.current,
+    ...props.moveRelativeToParent ? {
       position: 'absolute',
       margin: 'auto',
-      left: `calc((100% - ${size?.width ?? 0}px) * ${hoverValue}/100) `,
+      left: `calc((100% - ${widthRef.current ?? 0}px) * ${hoverValue}/100) `,
       transform: 'translateY(-50%)',
-    }
-  }
+    } : {},
+    ...props.style ?? DEFAULT_STYLE,
+  }), [ props.moveRelativeToParent, props.style, hoverValue])
 
   return (
     <div ref={containerRef}
-      style={{
-        ...trackParentStyle(),
-        ...props.style ?? {},
-        ...size ? { width: size.width } : {},
-      }}
+      data-testid="pp-ui-thumbnail"
+      style={style}
       className={`pp-ui pp-ui-thumbnail ${thumbnailElement ? 'pp-ui-thumbnail-with-thumb': ''} ${props.className || ''}`}
       dangerouslySetInnerHTML={{ __html: thumbnailElement?.outerHTML ?? '' }} 
     ></div>
