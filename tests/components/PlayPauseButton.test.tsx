@@ -1,43 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-floating-promises */
+
+import { screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import React from 'react'
-import renderer, { act, create, ReactTestRenderer } from 'react-test-renderer'
+import '@testing-library/jest-dom'
 
 import { PlayPauseButton } from '../../src/components/PlayPauseButton'
-import { Player,  State } from '../../src/Player'
-import { classNames, emitPlayerEvent } from '../test_utils'
-
-const SHOWS_PLAY_BUTTON = `
-<button
-  className="pp-ui pp-ui-button  pp-ui-enabled pp-ui-playpause-toggle pp-ui-playpause-toggle-play "
-  onClick={[Function]}
-  tabIndex={0}
-  type="button"
->
-  <i
-    className="pp-ui pp-ui-icon"
-  />
-</button>
-`
-
-const SHOWS_PAUSE_BUTTON = `
-<button
-  className="pp-ui pp-ui-button  pp-ui-enabled pp-ui-playpause-toggle pp-ui-playpause-toggle-play "
-  onClick={[Function]}
-  tabIndex={0}
-  type="button"
->
-  <i
-    className="pp-ui pp-ui-icon"
-  />
-</button>
-`
-
-const MOCK = {
-  EVENT: { preventDefault: () => {} },
-}
+import { State } from '../../src/Player'
+import { createContextProvider, expectMatchesSnapshot } from '../testUtils'
 
 describe('<PlayPauseButton />', () => {
+  const helpers = createContextProvider()
+  const get = () => {
+    return screen.getByTestId('pp-ui-playpause-toggle')
+  }
 
   afterEach(() => {
     // restore the spy created with spyOn
@@ -45,71 +20,50 @@ describe('<PlayPauseButton />', () => {
   })
 
   test('should match snapshot', () => {
-    const player = new Player()
-    const component = renderer.create(<PlayPauseButton player={player}/>)
-    const tree = component.toJSON()
-    expect(tree).toMatchInlineSnapshot(`
-<button
-  className="pp-ui pp-ui-button  pp-ui-enabled pp-ui-playpause-toggle pp-ui-playpause-toggle-play "
-  onClick={[Function]}
-  tabIndex={0}
-  type="button"
->
-  <i
-    className="pp-ui pp-ui-icon"
-  />
-</button>
-`)
+    expectMatchesSnapshot(<PlayPauseButton/>)
   })
 
   test('should react to state changes', () => {
-    const player = new Player()
-    let component!: ReactTestRenderer
-    act(() => {
-      component = create(<PlayPauseButton player={player}/>)
-    })
-    expect(classNames(component)).toContain('pp-ui-playpause-toggle-play')
-    expect(classNames(component)).not.toContain('pp-ui-playpause-toggle-pause')
+    helpers.render(<PlayPauseButton/>)
 
-    act(() => {
-      emitPlayerEvent(player, 'statechanged', {
-        currentState: State.Playing,
-        previousState: State.Paused,
-        timeSinceLastStateChangeMS: 0,
-      })
-    })
-    expect(classNames(component)).not.toContain('pp-ui-playpause-toggle-play')
-    expect(classNames(component)).toContain('pp-ui-playpause-toggle-pause')
+    const button = get()
 
+    expect(button).toHaveClass('pp-ui-playpause-toggle-play')
+    expect(button).not.toHaveClass('pp-ui-playpause-toggle-pause')
+    expect(button).not.toBeDisabled()
+
+    helpers.emitPlayerEvent('statechanged', {
+      currentState: State.Playing,
+      previousState: State.Paused,
+      timeSinceLastStateChangeMS: 0,
+    })
+
+    expect(button).not.toHaveClass('pp-ui-playpause-toggle-play')
+    expect(button).toHaveClass('pp-ui-playpause-toggle-pause')
   })
 
-  test('should reset rate', () => {
-    const player = new Player()
-    const rateSetter = jest.spyOn(player, 'rate', 'set')
-    let component!: ReactTestRenderer
-    act(() => {
-      component = create(<PlayPauseButton player={player} resetRate={true}/>)
+  test('can reset rate', async () => {
+    helpers.render(<PlayPauseButton resetRate/>)
+
+    const rateSetter = jest.spyOn(helpers.player, 'rate', 'set')
+    const button = get()
+
+    expect(button).toHaveClass('pp-ui-playpause-toggle-play')
+
+    helpers.emitPlayerEvent('statechanged', {
+      currentState: State.Playing,
+      previousState: State.Paused,
+      timeSinceLastStateChangeMS: 0,
     })
+    jest.spyOn(helpers.player, 'rate', 'get').mockReturnValue(2)
+    helpers.emitPlayerEvent('ratechange', 2)
 
-    // go to playing state and change rate
-    act(() => {
-      emitPlayerEvent(player, 'statechanged', {
-        currentState: State.Playing,
-        previousState: State.Paused,
-        timeSinceLastStateChangeMS: 0,
-      })
+    expect(button).toHaveClass('pp-ui-playpause-toggle-play')
 
-      jest.spyOn(player, 'rate', 'get').mockReturnValue(2)
-      emitPlayerEvent(player, 'ratechange', 2)
-    })
-
-    expect(component.toJSON()).toMatchInlineSnapshot(SHOWS_PLAY_BUTTON)
-    // @ts-ignore
-    component.toJSON()!.props.onClick(MOCK.EVENT)
-
+    await userEvent.click(button)
+    
     expect(rateSetter).toHaveBeenCalledTimes(1)
     expect(rateSetter).toHaveBeenCalledWith(1)
-    expect(component.toJSON()).toMatchInlineSnapshot(SHOWS_PAUSE_BUTTON)
+    expect(button).toHaveClass('pp-ui-playpause-toggle-play')
   })
-
 })

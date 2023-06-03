@@ -1,18 +1,19 @@
-import React, { MouseEventHandler, useState } from 'react'
+import React, { MouseEventHandler, useContext, useState } from 'react'
 
+import { PrestoContext } from '../context/PrestoContext'
 import { usePrestoEnabledState, usePrestoUiEvent } from '../react'
 import { TrackType } from '../Track'
 import {
   DefaultTrackLabelerOptions,
   TrackLabeler,
 } from '../TrackLabeler'
-import { BasePlayerComponentProps, classNames } from '../utils'
+import { BaseComponentProps, classNames } from '../utils'
 
 import { BaseButton } from './BaseButton'
 import { Label } from './Label'
 
 
-export interface TrackGroupButtonProps extends BasePlayerComponentProps {
+export interface TrackGroupButtonProps extends BaseComponentProps {
   type: TrackType
   label: string
   hideCurrentlyActive?: boolean
@@ -22,28 +23,32 @@ export interface TrackGroupButtonProps extends BasePlayerComponentProps {
   usePlayingRenditionInAbrLabel?: boolean
 }
 
+/**
+ * Track group button.
+ */
 export const TrackGroupButton = (props: TrackGroupButtonProps) => {
-  const [activeTrack, setActiveTrack] = useState(props.player.activeTrack(props.type))
+  const { player } = useContext(PrestoContext)
+  const [activeTrack, setActiveTrack] = useState(player.activeTrack(props.type))
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, setPlayingVideoTrack] = useState(props.player.playingVideoTrack)
-  const enabled = usePrestoEnabledState(props.player)
+  const [_, setPlayingVideoTrack] = useState(player.playingVideoTrack)
+  const enabled = usePrestoEnabledState()
 
-  usePrestoUiEvent(`${props.type}TrackChanged`, props.player, (track) => {
+  usePrestoUiEvent(`${props.type}TrackChanged`, (track) => {
     setActiveTrack(track)
   })
 
-  usePrestoUiEvent('playingVideoTrackChanged', props.player, (track) => {
+  usePrestoUiEvent('playingVideoTrackChanged', (track) => {
     setPlayingVideoTrack(track)
   })
 
   const hasTracks = () => {
     switch (props.type) {
       case 'video':
-        return props.player.videoTracks.length > 0
+        return player.videoTracks.length > 0
       case 'audio':
-        return props.player.audioTracks.length > 0
+        return player.audioTracks.length > 0
       case 'text':
-        return props.player.textTracks.length > 0
+        return player.textTracks.length > 0
     }
   }
 
@@ -51,13 +56,15 @@ export const TrackGroupButton = (props: TrackGroupButtonProps) => {
     if (props.hideCurrentlyActive || !activeTrack) {return}
     return <Label
       className={'pp-ui-label-subtitle'}
-      label={props.player.getTrackLabel(activeTrack, props.trackLabel, {
+      label={player.getTrackLabel(activeTrack, props.trackLabel, {
         usePlayingRenditionInAbrLabel: props.usePlayingRenditionInAbrLabel == null ? true : props.usePlayingRenditionInAbrLabel,
       } as DefaultTrackLabelerOptions)}/>
   }
 
   return (
-    <BaseButton disableIcon={true}
+    <BaseButton
+      testId="pp-ui-track-group-button"
+      disableIcon={true}
       style={props.style}
       onClick={props.onClick}
       disabled={!enabled}
@@ -71,5 +78,3 @@ export const TrackGroupButton = (props: TrackGroupButtonProps) => {
     </BaseButton>
   )
 }
-
-export default TrackGroupButton

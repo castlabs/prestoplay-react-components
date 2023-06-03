@@ -1,17 +1,21 @@
 import React, { useState } from 'react'
 
 import { usePrestoEnabledStateClass, usePrestoUiEvent } from '../react'
-import { BasePlayerComponentProps } from '../utils'
 
 import { Label } from './Label'
 
-export type RateTextProps = BasePlayerComponentProps
+import type { BaseComponentProps } from '../utils'
+
+
+export interface RateTextProps extends BaseComponentProps {
+  children?: React.ReactNode
+}
 
 export const RateText = (props: RateTextProps) => {
   const [rate, setRate] = useState(1)
-  const enabledClass = usePrestoEnabledStateClass(props.player)
+  const enabledClass = usePrestoEnabledStateClass()
 
-  usePrestoUiEvent('ratechange', props.player, (rate) => {
+  usePrestoUiEvent('ratechange', (rate) => {
     if (rate !== 0) {
       setRate(rate)
     }
@@ -19,12 +23,12 @@ export const RateText = (props: RateTextProps) => {
 
   return (
     <Label
+      testId="pp-ui-rate"
       label={`x${rate}`}
       className={`pp-ui-label-rate ${enabledClass} ${props.className || ''}`}
+      style={props.style}
     >
       {props.children}
     </Label>
   )
 }
-
-export default RateText

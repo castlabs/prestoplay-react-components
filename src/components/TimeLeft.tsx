@@ -1,31 +1,34 @@
-import React, { useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 
+import { PrestoContext } from '../context/PrestoContext'
 import { usePrestoEnabledStateClass, usePrestoUiEvent } from '../react'
 import {
-  BasePlayerComponentProps,
+  BaseComponentProps,
   getMinimalFormat,
   timeToString,
 } from '../utils'
 
 import { Label } from './Label'
 
-export interface TimeLeftProps extends BasePlayerComponentProps {
+export interface TimeLeftProps extends BaseComponentProps {
   disableHoveringDisplay?: boolean
+  children?: React.ReactNode
 }
 
 export const TimeLeft = (props: TimeLeftProps) => {
+  const { player } = useContext(PrestoContext)
   const [timeLeft, setTimeLeft] = useState('')
   const [isHovering, setHovering] = useState(false)
-  const enabledClass = usePrestoEnabledStateClass(props.player)
+  const enabledClass = usePrestoEnabledStateClass()
   const hoveringRef = useRef<boolean>()
   hoveringRef.current = isHovering
 
   function setPositionFromPlayer(position: number) {
-    if (props.player.live) {
+    if (player.live) {
       setTimeLeft('Live')
       return
     }
-    let duration = props.player.duration
+    let duration = player.duration
     if (duration === Infinity) {
       duration = 0
     }
@@ -33,29 +36,29 @@ export const TimeLeft = (props: TimeLeftProps) => {
     setTimeLeft('-' + timeToString(timeLeft, getMinimalFormat(duration)))
   }
 
-  usePrestoUiEvent('position', props.player, (position) => {
+  usePrestoUiEvent('position', (position) => {
     if (hoveringRef.current) {return}
     setPositionFromPlayer(position)
   })
 
-  usePrestoUiEvent('hoverPosition', props.player, data => {
-    if (data.position < 0 || props.disableHoveringDisplay) {
+  usePrestoUiEvent('hoverPosition', event => {
+    if (event.position < 0 || props.disableHoveringDisplay) {
       setHovering(false)
-      setPositionFromPlayer(props.player.position)
+      setPositionFromPlayer(player.position)
     } else {
       setHovering(true)
-      setPositionFromPlayer(data.position)
+      setPositionFromPlayer(event.position)
     }
-  })
+  }, [props.disableHoveringDisplay])
 
   return (
     <Label
+      data-testid="pp-ui-label-time-left"
       label={timeLeft}
       className={`pp-ui-label-time-left ${enabledClass} ${props.className || ''}`}
+      style={props.style}
     >
       {props.children}
     </Label>
   )
 }
-
-export default TimeLeft

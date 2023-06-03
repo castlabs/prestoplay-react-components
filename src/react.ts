@@ -1,6 +1,7 @@
 import { clpp } from '@castlabs/prestoplay'
-import React, { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
+import { PrestoContext } from './context/PrestoContext'
 import { EventListener, EventType } from './EventEmitter'
 import { Player, UIEvents } from './Player'
 
@@ -8,152 +9,99 @@ export type ClppEventHandler = (e: clpp.Event, presto: clpp.Player) => void
 
 /**
  * This is a React hook that can be used to listen to presto play events.
- * pass a valid Presto event name, the player instance and a handler and the
- * hook will register (and de-register) a listener when the player instance is
- * available.
  *
- * While this exposes low level events, try to avoid this and see if you can use
+ * Since this exposes low level PRESTOplay events, try to avoid this and see if you can use
  * the dedicated UI events instead using {@link #usePrestoUiEvent}. This is
  * usually more efficient.
  *
- * @param eventName The event name
- * @param player The player
- * @param handler The handler function
- * @param dependencies Optional list of additional dependencies
+ * @param eventName PRESTOplay event name
+ * @param handler The handler function.
+ * @param dependencies List of dependencies similar to dependencies of useEffect,
+ *  if dependencies change, `handler` will be re-registered.
+ * @param presto_ in case this hook is not used in context of `PlayerSurface`
+ *  for some reason, presto_ must be passed explicitly
  */
 export function usePrestoCoreEvent(
-  eventName: string, player: Player, handler: ClppEventHandler, dependencies?: unknown[],
+  eventName: string, handler: ClppEventHandler, dependencies: unknown[] = [], presto_?: clpp.Player,
 ) {
-  function handleEvent(event: clpp.Event) {
-    player.presto()
-      .then(presto => handler(event, presto))
-      .catch(() => {})
-  }
-
-  dependencies = dependencies || []
-
-  // the hook is "active" until the effect is reversed. We
-  // store this here to make sure we do not add listeners
-  // if the player becomes available "too late" since the core player
-  // instance is resolved async.
-  let active = true
-  // The presto instance. Once we have it, we assume the listener was
-  // added and needs to be removed again
-  let presto: clpp.Player | null = null
+  const presto = useContext(PrestoContext).presto ?? presto_
 
   useEffect(() => {
-    player.presto().then(pp => {
-      if (active) {
-        presto = pp
-        pp.on(eventName, handleEvent)
-      }
-    }).catch(() => {})
-
-    return () => {
-      active = false
-      if (presto) {
-        presto.off(eventName, handleEvent)
-      }
+    const handleEvent = (event: clpp.Event) => {
+      handler(event, presto)
     }
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  }, [player, ...dependencies])
+
+    presto.on(eventName, handleEvent)
+    return () => {
+      presto.off(eventName, handleEvent)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventName, ...dependencies])
 }
 
 /**
  * Helper hook to listen to UI related events from the player
  *
  * @param eventName The event name
- * @param player The player
- * @param handler The handler function
- * @param dependencies List of optional additional dependencies
+ * @param handler The handler function.
+ * @param dependencies List of dependencies similar to dependencies of useEffect,
+ *  if dependencies change, `handler` will be re-registered.
+ * @param player_ in case this hook is not used in context of `PlayerSurface`
+ *  for some reason, player_ must be passed explicitly
+ * 
+ * @example
+ *  // Simple usage:
+ *  usePrestoUiEvent('position', (position) => {
+ *     setTime(position)
+ *   }, [offset])
+ * 
+ *  // Do not forget to pass any captured variables into the dependencies array:
+ *  const [offset, setOffset] = useState(0)
+ * 
+ *  usePrestoUiEvent('position', (position) => {
+ *     setTime(position + offset)
+ *   }, [offset])
  */
 export function usePrestoUiEvent<E extends EventType<UIEvents>>(
-  eventName: E, player: Player, handler: EventListener<UIEvents[E]>, dependencies?: unknown[],
+  eventName: E, handler: EventListener<UIEvents[E]>, dependencies?: unknown[], player_?: Player,
 ) {
+  const player = useContext(PrestoContext).player ?? player_
   dependencies = dependencies || []
+
   useEffect(() => {
     player.onUIEvent(eventName, handler)
     return () => {
       player.offUIEvent(eventName, handler)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [player, handler, eventName, ...dependencies])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventName, ...dependencies])
 }
 
 /**
- * Helper hook that provides access to the presto play instance once it becomes
- * available.
- *
- * @param player The player instance
- * @param receiver The receiver is a function that takes the presto instance as
- *   the first argument
+ * Helper to track enabled state of the player.
+ * 
+ * @param player_ in case this hook is not used in context of `PlayerSurface`
+ *  for some reason, player_ must be passed explicitly
  */
-export function usePresto(player: Player, receiver: (presto: clpp.Player) => void) {
-  useEffect(() => {
-    let completed = false
-
-    player.presto().then((presto) => {
-      if (!completed) {
-        receiver(presto)
-      }
-    }).catch(() => {})
-
-    return () => {
-      completed = true
-    }
-  }, [player, receiver])
-}
-
-/**
- * Helper hook that takes a random element and calls the passed hide function
- * if a mouse click is registered anywhere outside the provided element.
- *
- * @param ref The ref to the element
- * @param hide The hide function that will be called if a click is registered
- *   outside
- */
-export function useGlobalHide(ref: React.MutableRefObject<Element|null>, hide: () => unknown) {
-  useEffect(() => {
-    const handleClick = (event: MouseEvent) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-      if (ref.current && !ref.current.contains((event.target as Node))) {
-        hide()
-      }
-    }
-
-    document.addEventListener('click', handleClick)
-
-    return () => {
-      document.removeEventListener('click', handleClick)
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hide])
-}
-
-/**
- * Helper to track enabled state of the player. The returned boolean represents
- * the enabled state of the player
- *
- * @param player
- */
-export function usePrestoEnabledState(player: Player): boolean {
+export function usePrestoEnabledState(player_?: Player): boolean {
+  const player = useContext(PrestoContext).player ?? player_
   const [enabled, setEnabled] = useState(player.enabled)
-  usePrestoUiEvent('enabled', player, (e) => {
-    setEnabled(e)
+
+  usePrestoUiEvent('enabled', (event) => {
+    setEnabled(event)
   })
+
   return enabled
 }
 
 /**
- * Helper to track enabled state of the player and return the state as the
- * appropriate css class
- *
- * @param player
+ * Helper to track enabled state of the player and return the state
+ * as the appropriate CSS class.
+ * 
+ * @param player_ in case this hook is not used in context of `PlayerSurface`
+ *  for some reason, player_ must be passed explicitly
  */
-export function usePrestoEnabledStateClass(player: Player): string {
-  const [enabled, setEnabled] = useState(player.enabled)
-  usePrestoUiEvent('enabled', player, (e) => {
-    setEnabled(e)
-  })
+export function usePrestoEnabledStateClass(player_?: Player): string {
+  const enabled = usePrestoEnabledState(player_)
   return enabled ? 'pp-ui-enabled' : 'pp-ui-disabled'
 }

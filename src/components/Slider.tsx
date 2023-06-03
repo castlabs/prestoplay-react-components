@@ -1,9 +1,14 @@
 import React, {
   CSSProperties,
+  forwardRef,
+  useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
+
+import { setRef } from '../utils/react'
 
 import type { BaseComponentProps } from '../utils'
 
@@ -88,7 +93,7 @@ const getPositionFromMouseEvent = (e: PressEvent, container: HTMLDivElement | nu
 /**
  * A horizontal slider.
  */
-export const Slider = (props: SliderProps) => {
+export const Slider = forwardRef((props: SliderProps, ref) => {
   const [interacting, setInteracting] = useState(false)
   const [adjustPosition, setAdjustPosition] = useState(false)
   const [progress, setProgress] = useState(props.value)
@@ -266,10 +271,13 @@ export const Slider = (props: SliderProps) => {
     }
   }) // TODO fix this
 
-  const sliderStyles: CSSProperties = {
-    position: 'relative',
-    touchAction: 'none',
-  }
+  const sliderStyles = useMemo((): CSSProperties => {
+    return {
+      ...props.style,
+      position: 'relative',
+      touchAction: 'none',
+    }
+  }, [props.style])
 
   const rangeStyles: CSSProperties = {
     position: 'absolute',
@@ -296,8 +304,15 @@ export const Slider = (props: SliderProps) => {
     right: `${100 - currentProgress()}%`,
   }
 
+  const handleContainerRef = useCallback((ref_: HTMLDivElement | null) => {
+    containerRef.current= ref_
+    setRef(ref, ref_)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
-    <div ref={containerRef}
+    <div ref={handleContainerRef}
+      data-testid="pp-ui-slider"
       className={`pp-ui-slider ${interacting ? 'pp-ui-slider-interacting' : ''} `
         + `${props.disabled ? 'pp-ui-disabled' : 'pp-ui-enabled'} ${props.className || ''}`}
       style={sliderStyles}
@@ -331,4 +346,6 @@ export const Slider = (props: SliderProps) => {
 
     </div>
   )
-}
+})
+
+Slider.displayName = 'Slider'

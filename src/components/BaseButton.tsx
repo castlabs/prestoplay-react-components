@@ -1,6 +1,6 @@
 import React, { ForwardedRef, forwardRef } from 'react'
 
-import { BaseComponentProps } from '../utils'
+import type { BaseComponentProps } from '../utils'
 
 /**
  * The base button properties
@@ -20,15 +20,16 @@ export interface BaseButtonProps extends BaseComponentProps {
    * Indicate that the button is disabled
    */
   disabled?: boolean
+  children?: React.ReactNode
+  testId?: string
 }
 
 /**
+ * Base button.
+ * 
  * Basic button that exposes an onClick callback. The base button, by default,
  * assumes that it will have an icon. Of that is not the case, adjust the
  * `disableIcon` property.
- *
- * @param props
- * @constructor
  */
 export const BaseButton = forwardRef((props: BaseButtonProps, ref: ForwardedRef<HTMLButtonElement>) => {
   const generateIcon = () => props.disableIcon ? undefined :
@@ -46,7 +47,9 @@ export const BaseButton = forwardRef((props: BaseButtonProps, ref: ForwardedRef<
   }
 
   return (
-    <button type="button" ref={ref}
+    <button
+      type="button" ref={ref}
+      data-testid={props.testId}
       tabIndex={props.disabled ? -1 : 0}
       style={props.style}
       className={`pp-ui pp-ui-button ${props.disableIcon ? 'pp-ui-button-no-icon': ''} `
@@ -59,5 +62,3 @@ export const BaseButton = forwardRef((props: BaseButtonProps, ref: ForwardedRef<
 })
 
 BaseButton.displayName = 'BaseButton'
-
-export default BaseButton

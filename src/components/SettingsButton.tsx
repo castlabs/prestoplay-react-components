@@ -1,30 +1,37 @@
 import React, {
   forwardRef,
+  useContext,
   useRef,
   useState,
 } from 'react'
 
+import { PrestoContext } from '../context/PrestoContext'
 import {
   usePrestoEnabledState,
   usePrestoUiEvent,
 } from '../react'
-import { BasePlayerComponentButtonProps } from '../utils'
 
 import { BaseButton } from './BaseButton'
 
-export type SettingsButtonProps = BasePlayerComponentButtonProps
+import type { BasePlayerComponentButtonProps } from '../utils'
+
+
+export interface SettingsButtonProps extends BasePlayerComponentButtonProps {
+  children?: React.ReactNode
+}
 
 /**
  * @deprecated This is not used, neither exported
  */
 export const SettingsButton = forwardRef((props: SettingsButtonProps) => {
+  const { player } = useContext(PrestoContext)
   const [isVisible, setVisible] = useState(false)
-  const enabled = usePrestoEnabledState(props.player)
+  const enabled = usePrestoEnabledState()
   const ref = useRef<HTMLButtonElement>(null)
 
   function toggle(event: React.MouseEvent) {
     setVisible(!isVisible)
-    props.player.slideInMenuVisible = !isVisible
+    player.slideInMenuVisible = !isVisible
 
     event.stopPropagation()
     event.preventDefault()
@@ -34,13 +41,17 @@ export const SettingsButton = forwardRef((props: SettingsButtonProps) => {
     }
   }
 
-  usePrestoUiEvent('slideInMenuVisible', props.player, (visible) => {
+  usePrestoUiEvent('slideInMenuVisible', (visible) => {
     setVisible(visible)
   })
 
   return (
-    <BaseButton onClick={toggle} disableIcon={false} disabled={!enabled} ref={ref}
-      className={`pp-ui-settings-button ${props.className || ''}`}>
+    <BaseButton ref={ref}
+      testId="pp-ui-settings-button"
+      onClick={toggle} disableIcon={false} disabled={!enabled}
+      className={`pp-ui-settings-button ${props.className || ''}`}
+      style={props.style}
+    >
       {props.children}
     </BaseButton>
   )

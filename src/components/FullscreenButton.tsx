@@ -1,70 +1,29 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 
+import { PrestoContext } from '../context/PrestoContext'
 import { usePrestoEnabledState } from '../react'
+import { fullscreen } from '../services/fullscreen'
 import { BasePlayerComponentButtonProps, isIOS, isIpadOS } from '../utils'
 
 import { BaseButton } from './BaseButton'
 
-const REQUEST_FULLSCREEN = [
-  'requestFullscreen',
-  'webkitRequestFullscreen',
-  'webkitRequestFullScreen',
-  'mozRequestFullScreen',
-  'msRequestFullscreen',
-  'webkitEnterFullscreen',
-]
-
-const EXIT_FULLSCREEN = [
-  'exitFullscreen',
-  'webkitExitFullscreen',
-  'webkitCancelFullScreen',
-  'mozCancelFullScreen',
-  'msExitFullscreen',
-  'webkitExitFullscreen',
-]
-
-const FULLSCREEN_ELEMENT = [
-  'fullscreenElement',
-  'webkitFullscreenElement',
-  'webkitCurrentFullScreenElement',
-  'mozFullScreenElement',
-  'msFullscreenElement',
-  'webkitDisplayingFullscreen',
-]
-
-const FULLSCREEN_CHANGE = [
-  'fullscreenchange',
-  'webkitfullscreenchange',
-  'mozfullscreenchange',
-  'MSFullscreenChange',
-  'webkitbeginfullscreen',
-  'webkitendfullscreen',
-]
-
 export interface FullscreenButtonProps extends BasePlayerComponentButtonProps {
   /**
-   * Reference to the container that will be displayed in fullscreen mode.
-   * 
-   * (Not all platforms support this, e.g. on iOS only the video element
-   * can be displayed in fullscreen mode, so this props will be ignored there).
-   */
-  fullscreenContainer: React.MutableRefObject<HTMLElement | null>
-  /**
-   * Configure whether the video element or the `fullscreenContainer` should
-   * be displayed in fullscreen mode.
-   * 
-   * By default on iOS the video element will be displayed in fullscreen mode
-   * and everywhere else the `fullscreenContainer` will be displayed in fullscreen mode.
+   * Configure what element should be used for fullscreen mode.
+   * By default it is the whole {@link PlayerSurface} except for iOS
+   * where it is only the video element.
    */
   useVideoElementForFullscreen?: UseVideoElement[]
+  children?: React.ReactNode
 }
 
 /**
- * The fullscreen button will try to put the passed element to
- * fullscreen mode if that is possible. However, on some platforms, it is not
- * possible to put a random DOM element to fullscreen mode and instead the video
- * element needs to be put in fullscreen. This also means that no custom overlays
- * and controls are possible and that the native controls will be used.
+ * The fullscreen button will try to put {@link PlayerSurface} to
+ * fullscreen mode if that is possible.
+ * However, on some platforms, it is not possible to put any DOM element
+ * to fullscreen mode only video element supports that. In such cases
+ * no custom overlays or controls are can be displayed in fullscreen mode,
+ * only native controls will be used.
  *
  * This is currently needed on iOS and can be enabled for iPadOS.
  */
@@ -81,20 +40,6 @@ export enum UseVideoElement {
    * Use the fullscreen mode on iPadOS
    */
   'iPadOS'='iPadOS',
-}
-
-const isInFullScreen = () => {
-  return FULLSCREEN_ELEMENT.some(name => {
-    // @ts-ignore
-    return document[name] != null
-  })
-}
-
-const findApi = (element: HTMLElement | Document, choices: string[]) => {
-  return choices.find(name => {
-    // @ts-ignore
-    return typeof element[name] === 'function'
-  })
 }
 
 const shouldUseVideoElementForFullscreen = (settings: UseVideoElement[]) => {
@@ -115,99 +60,84 @@ const shouldUseVideoElementForFullscreen = (settings: UseVideoElement[]) => {
   return false
 }
 
+/**
+ * @returns descendant video element or null
+ */
+const getVideoChild = (element: HTMLElement) => {
+  return element.querySelector('video') ?? null
+}
 
-export const FullscreenButton = (props: FullscreenButtonProps) => {
-  const [fullscreen, setFullscreen] = useState(!!document.fullscreenElement)
-  const enabled = usePrestoEnabledState(props.player)
+/**
+ * This hook will return whether the element of its descendant video 
+ * element is currently in fullscreen mode.
+ */
+const useIsFullscreen = (playerSurface: HTMLElement | null) => {
+  const [is, setIs] = useState(fullscreen.isInFullscreen())
 
-
-  const requestFullscreen = () => {
-    let element = props.fullscreenContainer.current as HTMLElement | undefined | null
-    if (!element) {return}
-
-    let name = findApi(element, REQUEST_FULLSCREEN)
-    const useVideoSettings = props.useVideoElementForFullscreen ?? [UseVideoElement.iOS]
-    if (!name || shouldUseVideoElementForFullscreen(useVideoSettings)) {
-      // we could not find a valid fullscreen API on the provided element
-      // This can happen, for instance, on iOS, where only the video element
-      // can be put in fullscreen.
-      //
-      // Here we search for a nested video element and try to put that into
-      // fullscreen
-      const videoElement = element.querySelector('video')
-      if (!videoElement) {
-        return
-      }
-      element = videoElement
-      name = findApi(element, REQUEST_FULLSCREEN)
-      if (!name) {
-        return
-      }
-    }
-
-    // @ts-ignore
-    return element[name].call(element)
-  }
-
-  const exitFullscreen = () => {
-    const name = findApi(document, EXIT_FULLSCREEN)
-    if (!name) {return}
-    // @ts-ignore
-    return document[name].call(document)
-  }
-
-  function toggle() {
-    const element = props.fullscreenContainer.current
-    if (element) {
-      if (!fullscreen) {
-        requestFullscreen()
-        setFullscreen(true)
-      } else {
-        exitFullscreen()
-        setFullscreen(false)
-      }
-    }
-  }
-
-  const onFullscreenChangeListener = () => {
-    setFullscreen(isInFullScreen())
+  const listener = () => {
+    setIs(fullscreen.isInFullscreen())
   }
 
   useEffect(() => {
-    FULLSCREEN_CHANGE.forEach(name => {
-      document.addEventListener(name, onFullscreenChangeListener)
-    })
-    return () => {
-      FULLSCREEN_CHANGE.forEach(name => {
-        document.removeEventListener(name, onFullscreenChangeListener)
-      })
-    }
+    return fullscreen.addListener(document, listener)
   }, [])
 
   useEffect(() => {
+    if (!playerSurface) {return}
+    
     // we _might_ need to use the video element to go fullscreen
     // so let's attach fullscreen listeners explicitly.
     // This is needed at least on iOS
-    const element = props.fullscreenContainer.current
-    if (!element) {return}
-    const videoElement = element.querySelector('video')
+    const videoElement = getVideoChild(playerSurface)
     if (!videoElement) {return}
-    FULLSCREEN_CHANGE.forEach(name => {
-      // @ts-ignore
-      videoElement.addEventListener(name, onFullscreenChangeListener)
-    })
-    return () => {
-      FULLSCREEN_CHANGE.forEach(name => {
-        // @ts-ignore
-        videoElement.removeEventListener(name, onFullscreenChangeListener)
-      })
+
+    return fullscreen.addListener(videoElement, listener)
+  }, [playerSurface])
+
+  return is
+}
+
+/**
+ * Fullscreen button.
+ * A button that brings the player into fullscreen mode.
+ */
+export const FullscreenButton = (props: FullscreenButtonProps) => {
+  const enabled = usePrestoEnabledState()
+  const { playerSurface } = useContext(PrestoContext)
+  const isFullscreen = useIsFullscreen(playerSurface)
+
+  /**
+   * If we cannot find a valid fullscreen API on playerSurface,
+   * then use the video element instead.
+   * (This can happen, for instance, on iOS where only video elements
+   * have support for fullscreen.)
+   */
+  const target = useMemo(() => {
+    const shouldUseVideoElement = !fullscreen.canEnter(playerSurface) ||
+      shouldUseVideoElementForFullscreen(props.useVideoElementForFullscreen ?? [UseVideoElement.iOS])
+
+    if (shouldUseVideoElement) {
+      return getVideoChild(playerSurface)
+    } else {
+      return playerSurface
     }
-  }, [props.fullscreenContainer])
+  }, [playerSurface, props.useVideoElementForFullscreen])
+
+  const toggle = () => {
+    if (!fullscreen.isSupported() || !target) {return}
+
+    fullscreen.toggle(target)
+  }
 
   return (
-    <BaseButton onClick={toggle} disableIcon={props.disableIcon}
+    <BaseButton
+      testId="pp-ui-fullscreen-button"
+      onClick={toggle}
+      disableIcon={props.disableIcon}
       disabled={!enabled}
-      className={`pp-ui-fullscreen pp-ui-fullscreen-${fullscreen ? 'enabled' : 'disabled'} ${props.className || ''}`}>
+      className={`pp-ui-fullscreen pp-ui-fullscreen-${isFullscreen ? 'enabled' : 'disabled'} ${props.className || ''}`}
+      style={props.style}  
+    >
       {props.children}
     </BaseButton>
   )

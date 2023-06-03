@@ -1,45 +1,52 @@
-import React, { useState } from 'react'
+import React, { useContext, useLayoutEffect, useState } from 'react'
 
-import { usePresto, usePrestoEnabledState, usePrestoUiEvent } from '../react'
-import { BasePlayerComponentProps } from '../utils'
+import { PrestoContext } from '../context/PrestoContext'
+import { usePrestoEnabledState, usePrestoUiEvent } from '../react'
 
 import { Slider } from './Slider'
 
-export interface VolumeBarProps extends BasePlayerComponentProps{
+import type { BaseComponentProps } from '../utils'
+
+
+export interface VolumeBarProps extends BaseComponentProps {
   adjustWhileDragging?: boolean
   notFocusable?: boolean
 }
 
+/**
+ * Volume bar
+ */
 export const VolumeBar = (props: VolumeBarProps) => {
+  const { player } = useContext(PrestoContext)
   const [progress, setProgress] = useState(100)
-  const enabled = usePrestoEnabledState(props.player)
+  const enabled = usePrestoEnabledState()
 
   function updateFromPlayer(): number {
-    const player = props.player
     const progress = player.muted ? 0 : (player.volume * 100)
     setProgress(progress)
     return progress
   }
 
-  usePrestoUiEvent('volumechange', props.player, () => {
+  usePrestoUiEvent('volumechange', () => {
     updateFromPlayer()
   })
 
-  usePresto(props.player,  () => {
+  useLayoutEffect(() => {
     updateFromPlayer()
-  })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  usePrestoUiEvent('statechanged', props.player, () => {
+  usePrestoUiEvent('statechanged', () => {
     updateFromPlayer()
   })
 
   const applyValue = (progressValue: number) => {
     setProgress(progressValue)
-    props.player.volume = progressValue / 100.0
+    player.volume = progressValue / 100.0
   }
 
   const onKeyDown = async (e: KeyboardEvent) => {
-    const presto = await props.player.presto()
+    const presto = await player.presto()
     const current = presto.isMuted() ? 0 : presto.getVolume()
     let targetPosition = current
     
@@ -60,7 +67,9 @@ export const VolumeBar = (props: VolumeBarProps) => {
   }
 
   return (
-    <div className={`pp-ui-volumebar ${props.className || ''}`}>
+    <div
+      data-testid="pp-ui-volumebar"
+      className={`pp-ui-volumebar ${props.className || ''}`} style={props.style}>
       <Slider
         value={progress}
         onApplyValue={applyValue}
@@ -72,4 +81,3 @@ export const VolumeBar = (props: VolumeBarProps) => {
     </div>
   )
 }
-export default VolumeBar

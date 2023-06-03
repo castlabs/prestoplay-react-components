@@ -5,18 +5,20 @@ import '@castlabs/prestoplay/cl.hls'
 import '@castlabs/prestoplay/cl.htmlcue'
 import '@castlabs/prestoplay/cl.ttml'
 import '@castlabs/prestoplay/cl.vtt'
-import React, { createRef, useState } from 'react'
+import React, { useState } from 'react'
 
 import { DefaultTrackLabelerOptions, Player, BaseThemeOverlay, PlayerSurface } from '../../src'
 
 import { Asset } from './Asset'
 
 
+/**
+ * A player skin that we ship as `BaseThemeOverlay` component.
+ */
 export const BasicOverlayPage = (props: {
   asset?: Asset
   autoload?: boolean
 }) => {
-
   const [showStartButton, setShowStartButton] = useState<boolean>(true)
   const [showPoster, setShowPoster] = useState<boolean>(true)
 
@@ -28,10 +30,6 @@ export const BasicOverlayPage = (props: {
     pp.use(clpp.ttml.TtmlComponent)
     pp.use(clpp.vtt.VttComponent)
   }))
-
-  // Create a ref to the player surface component. We use this here to pass it
-  // to the fullscreen button to make put the player surface to fullscreen
-  const playerSurfaceRef = createRef<HTMLDivElement>()
 
   const asset = props.asset
   const playerConfig = asset?.config
@@ -47,17 +45,15 @@ export const BasicOverlayPage = (props: {
 
   return (
     <>
-      <PlayerSurface player={player}
+      <PlayerSurface
+        player={player}
         config={playerConfig}
         autoload={props.autoload}
-        ref={playerSurfaceRef}
         playsInline={true}
       >
         <BaseThemeOverlay
-          player={player}
           startButton={!props.autoload && showStartButton}
           posterUrl={showPoster ? asset?.poster: ''}
-          fullscreenRef={playerSurfaceRef}
           seekForward={10}
           seekBackward={-10}
           menuSelectionOptions={[

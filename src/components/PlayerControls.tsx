@@ -1,26 +1,35 @@
 import React, {
+  useContext,
   useEffect,
   useRef,
   useState,
 } from 'react'
 
+import { PrestoContext } from '../context/PrestoContext'
 import { usePrestoUiEvent } from '../react'
 import {
-  BasePlayerComponentProps, focusElement,
+  BaseComponentProps, focusElement,
   focusNextElement,
   getFocusableElements, isIpadOS,
 } from '../utils'
 
 const DEFAULT_HIDE_DELAY = 5
+const debug = false
 
-export interface PlayerControlsProps extends BasePlayerComponentProps {
+export interface PlayerControlsProps extends BaseComponentProps {
   hideDelay?: number
   showWhenDisabled?: boolean
+  children?: React.ReactNode
 }
 
+/**
+ * Player Controls.
+ * A horizontal area component that contains player controls.
+ */
 export const PlayerControls = (props: PlayerControlsProps) => {
+  const { player } = useContext(PrestoContext)
   const [controlsVisible, setControlsVisible_] = useState(
-    props.player.controlsVisible || (props.showWhenDisabled && !props.player.enabled))
+    player.controlsVisible || (props.showWhenDisabled && !player.enabled))
   const [lastFocusIndex, setLastFocusIndex] = useState(-1)
 
   const timer = useRef<ReturnType<typeof setTimeout>|null>(null)
@@ -28,27 +37,27 @@ export const PlayerControls = (props: PlayerControlsProps) => {
 
   const setControlsVisible = (visible: boolean, fromUiEvent = false) => {
     if (!fromUiEvent) {
-      props.player.controlsVisible = visible
+      player.controlsVisible = visible
     }
     setControlsVisible_(visible)
   }
 
-  usePrestoUiEvent('controlsVisible', props.player, (visible) => {
+  usePrestoUiEvent('controlsVisible', (visible) => {
     setControlsVisible(visible, true)
     if (visible) {
       createTimer()
     }
   })
 
-  usePrestoUiEvent('slideInMenuVisible', props.player, (visible) => {
+  usePrestoUiEvent('slideInMenuVisible', (visible) => {
     setControlsVisible(!visible)
     if (!visible) {
       createTimer()
     }
   })
 
-  usePrestoUiEvent('surfaceInteraction', props.player, () => {
-    if (!props.player.slideInMenuVisible) {
+  usePrestoUiEvent('surfaceInteraction', () => {
+    if (!player.slideInMenuVisible) {
       setControlsVisible(true)
       createTimer()
     }
@@ -77,6 +86,7 @@ export const PlayerControls = (props: PlayerControlsProps) => {
         timer.current = null
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -119,7 +129,9 @@ export const PlayerControls = (props: PlayerControlsProps) => {
 
   return (
     <div ref={ref}
-      className={`pp-ui-controls ${isIpadOS() ? 'pp-ui-ipad' : ''} ${controlsVisible ? 'pp-ui-controls-visible' : ''}${props.className || ''}`}
+      data-testid="pp-ui-controls" 
+      className={`pp-ui-controls ${isIpadOS() ? 'pp-ui-ipad' : ''}`
+        + ` ${(controlsVisible || debug) ? 'pp-ui-controls-visible' : ''} ${props.className || ''}`}
       style={props.style}
       onMouseMove={mouseMove}
     >
@@ -127,5 +139,3 @@ export const PlayerControls = (props: PlayerControlsProps) => {
     </div>
   )
 }
-
-export default PlayerControls
