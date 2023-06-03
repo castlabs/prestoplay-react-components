@@ -143,7 +143,7 @@ declare module '@castlabs/prestoplay' {
 
     export type SourceLike = string | clpp.Source | string[] | clpp.Source[]
 
-    export type LoadConfig = SourceLike | clpp.PlayerConfiguration & { source: SourceLike }
+    export type LoadConfig = SourceLike | clpp.PlayerConfiguration & { config: SourceLike }
 
     export namespace events {
       export const BITRATE_CHANGED = 'bitratechanged'
