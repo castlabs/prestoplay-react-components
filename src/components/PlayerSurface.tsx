@@ -88,7 +88,7 @@ export const PlayerSurface = (props: PlayerProps) => {
 
   const createVideo = async (video: HTMLVideoElement|null) => {
     if (!video || context) {return}
-    
+
     await props.player.init(video, props.baseConfig)
     const presto = await props.player.presto()
 
@@ -250,7 +250,7 @@ export const PlayerSurface = (props: PlayerProps) => {
 
   return (
     <div ref={handleContainerRef}
-      data-testid="pp-ui-surface" 
+      data-testid="pp-ui-surface"
       className={`pp-ui pp-ui-surface ${isIpadOS() ? 'pp-ui-ipad' : ''} ${props.className || ''}`}
       style={props.style}
       onClick={mouseClick}

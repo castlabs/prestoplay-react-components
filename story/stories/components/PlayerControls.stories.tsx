@@ -41,7 +41,7 @@ export const Primary: Story = {
     hideDelay: {
       table: { defaultValue: { summary: 3000 } },
     },
-    mode: {
+    visibilityMode: {
       table: { defaultValue: { summary: 'auto' } },
     },
   },

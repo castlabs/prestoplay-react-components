@@ -1,4 +1,4 @@
-export type ControlsVisibilityMode = 'auto' | 'always-visible'
+export type ControlsVisibilityMode = 'auto' | 'always' | 'never'
 
 type Callback = (visible: boolean) => void
 
@@ -19,13 +19,14 @@ export class Controls {
 
   set mode(mode: ControlsVisibilityMode) {
     this._mode = mode
-    if (mode === 'always-visible') {
+    if (mode === 'always') {
       this._show()
+    } else if (mode === 'never') {
+      this._hide()
     }
   }
 
   get visible() {
-    if (this.mode === 'always-visible') {return true}
     return this._visible
   }
 
@@ -33,7 +34,7 @@ export class Controls {
    * Show controls and keep them visible until a call to `unpin()`
    */
   pin() {
-    if (this.mode === 'always-visible' || this.isPinned) {return}
+    if (this.mode !== 'auto' || this.isPinned) {return}
 
     this._show()
     this.isPinned = true
@@ -43,25 +44,23 @@ export class Controls {
    * Cancel the effect of a `pin()` call and go back to auto-hiding
    */
   unpin() {
-    if (this.mode === 'always-visible' || !this.isPinned) {return}
+    if (this.mode !== 'auto' || !this.isPinned) {return}
 
     this.isPinned = false
     this.autoHide()
   }
 
   show() {
-    if (this.mode === 'always-visible' || this.isPinned || this.visible) {return}
-    
+    if (this.mode !== 'auto' || this.isPinned || this.visible) {return}
+
     this._show()
     this.autoHide()
   }
 
   hide() {
-    if (this.mode === 'always-visible' || this.isPinned || !this.visible) {return}
+    if (this.mode !== 'auto' || this.isPinned || !this.visible) {return}
 
-    this.clearTimeout()
-    this._visible = false
-    this.onChange(false)
+    this._hide()
   }
 
   setVisible(visible: boolean) {
@@ -70,6 +69,12 @@ export class Controls {
     } else {
       this.hide()
     }
+  }
+
+  private _hide() {
+    this.clearTimeout()
+    this._visible = false
+    this.onChange(false)
   }
 
   private _show() {

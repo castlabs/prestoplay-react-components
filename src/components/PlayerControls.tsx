@@ -20,18 +20,18 @@ export interface PlayerControlsProps extends BaseComponentProps {
   /**
    * Time in milliseconds after which the controls will be automatically hidden.
    * This applies only when the mode is set to 'auto'.
-   * 
+   *
    * Defaults to 3000.
    */
   hideDelay?: number
   /**
-   * Visibility mode of the content. If set to 'auto' the content appears 
+   * Visibility mode of the content. If set to 'auto' the content appears
    * based on user interaction with the player or when the player is paused,
    * and it automatically hides after the specified delay.
-   * 
+   *
    * Defaults to 'auto'.
    */
-  mode?: ControlsVisibilityMode
+  visibilityMode?: ControlsVisibilityMode
   /**
    * Content to display. This is intended to be used for player controls.
    */
@@ -54,8 +54,8 @@ export const PlayerControls = (props: PlayerControlsProps) => {
   }, [player, props.hideDelay])
 
   useEffect(() => {
-    player.controlsVisibilityMode = props.mode ?? 'auto'
-  }, [player, props.mode])
+    player.controlsVisibilityMode = props.visibilityMode ?? 'auto'
+  }, [player, props.visibilityMode])
 
   const ref = useRef<HTMLDivElement>(null)
 
@@ -91,11 +91,11 @@ export const PlayerControls = (props: PlayerControlsProps) => {
         ref.current.removeEventListener('focusin', onFocusIn)
       }
     }
-  }) 
+  })
 
   return (
     <div ref={ref}
-      data-testid="pp-ui-controls" 
+      data-testid="pp-ui-controls"
       className={`pp-ui-controls ${isIpadOS() ? 'pp-ui-ipad' : ''}`
         + ` ${controlsVisible ? 'pp-ui-controls-visible' : ''} ${props.className || ''}`}
       style={props.style}
