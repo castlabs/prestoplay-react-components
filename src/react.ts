@@ -1,9 +1,10 @@
 import { clpp } from '@castlabs/prestoplay'
-import { useContext, useEffect, useState } from 'react'
+import useResizeObserver from '@react-hook/resize-observer'
+import { useContext, useDebugValue, useEffect, useLayoutEffect, useState } from 'react'
 
 import { PrestoContext } from './context/PrestoContext'
 import { EventListener, EventType } from './EventEmitter'
-import { Player, UIEvents } from './Player'
+import { Player, State, UIEvents } from './Player'
 
 export type ClppEventHandler = (e: clpp.Event, presto: clpp.Player) => void
 
@@ -69,9 +70,9 @@ export function usePrestoUiEvent<E extends EventType<UIEvents>>(
   dependencies = dependencies || []
 
   useEffect(() => {
-    player.onUIEvent(eventName, handler)
+    player?.onUIEvent(eventName, handler)
     return () => {
-      player.offUIEvent(eventName, handler)
+      player?.offUIEvent(eventName, handler)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventName, ...dependencies])
@@ -104,4 +105,99 @@ export function usePrestoEnabledState(player_?: Player): boolean {
 export function usePrestoEnabledStateClass(player_?: Player): string {
   const enabled = usePrestoEnabledState(player_)
   return enabled ? 'pp-ui-enabled' : 'pp-ui-disabled'
+}
+
+/**
+ * @returns Size of the player surface, reacts on runtime changes.
+ */
+export function usePlayerSize() {
+  const { playerSurface } = useContext(PrestoContext)
+  return useSize(playerSurface)
+}
+
+/**
+ * @returns True if player controls should be visible
+ */
+export function useControlsVisible() {
+  const { player } = useContext(PrestoContext)
+  const [visible, setVisible] = useState(player.controlsVisible)
+
+  usePrestoUiEvent('controlsVisible', setVisible)
+
+  return visible
+}
+
+/**
+ * @returns video duration in seconds or 0 if not video is loaded
+ */
+export const useDuration = () => {
+  const { player } = useContext(PrestoContext)
+  const [duration, setDuration] = useState(player.duration)
+
+  usePrestoUiEvent('durationchange', setDuration)
+
+  return duration
+}
+
+/**
+ * @param target HTML element
+ * @returns element's size, changes on resize
+ */
+export const useSize = (target: HTMLElement) => {
+  const [size, setSize] = useState<{ width: number; height: number }>(target.getBoundingClientRect())
+
+  useLayoutEffect(() => {
+    setSize(target.getBoundingClientRect())
+  }, [target])
+
+  useResizeObserver(target, (entry) => setSize(entry.contentRect))
+
+  return size
+}
+
+
+
+type Config = {
+  player: Player
+  state: State
+  resetRate: boolean
+  reason?: clpp.events.BufferingReasons
+}
+
+function isPlayingState(config: Config): boolean {
+  const { player, state, resetRate, reason } = config
+
+  if (state === State.Buffering && reason === clpp.events.BufferingReasons.SEEKING) {
+    return player.playing
+  }
+
+  if (state !== State.Playing) {
+    return false
+  }
+
+  if (resetRate && player.rate !== 1) {
+    return false
+  }
+
+  return true
+}
+
+/**
+ * @returns whether player state is paused or playing
+ */
+export const useIsPlaying = (resetRate = false): boolean => {
+  const { player } = useContext(PrestoContext)
+  const [isPlaying, setIsPlaying] = useState(isPlayingState({ state: player.state, player, resetRate }))
+
+  usePrestoUiEvent('ratechange', () => {
+    setIsPlaying(isPlayingState({ state: player.state, player, resetRate }))
+  })
+
+  usePrestoUiEvent('statechanged', ({ currentState, reason }) => {
+    setIsPlaying(isPlayingState({ state: currentState, player, resetRate, reason }))
+  })
+
+  useDebugValue(isPlaying ? 'playing' : 'not playing')
+
+  return isPlaying
 }

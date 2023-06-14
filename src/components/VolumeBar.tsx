@@ -5,7 +5,7 @@ import { usePrestoEnabledState, usePrestoUiEvent } from '../react'
 
 import { Slider } from './Slider'
 
-import type { BaseComponentProps } from '../utils'
+import type { BaseComponentProps } from './types'
 
 
 export interface VolumeBarProps extends BaseComponentProps {
@@ -14,7 +14,8 @@ export interface VolumeBarProps extends BaseComponentProps {
 }
 
 /**
- * Volume bar
+ * Volume bar.
+ * This component can increase/decrease volume by dragging the slider.
  */
 export const VolumeBar = (props: VolumeBarProps) => {
   const { player } = useContext(PrestoContext)

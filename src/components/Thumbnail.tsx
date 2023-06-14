@@ -13,7 +13,7 @@ import React, {
 import { PrestoContext } from '../context/PrestoContext'
 import { usePrestoUiEvent } from '../react'
 
-import type { BaseComponentProps } from '../utils'
+import type { BaseComponentProps } from './types'
 
 export interface ThumbnailProps extends BaseComponentProps {
   position?: number

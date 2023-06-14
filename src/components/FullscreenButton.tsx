@@ -3,9 +3,12 @@ import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { PrestoContext } from '../context/PrestoContext'
 import { usePrestoEnabledState } from '../react'
 import { fullscreen } from '../services/fullscreen'
-import { BasePlayerComponentButtonProps, isIOS, isIpadOS } from '../utils'
+import { isIOS, isIpadOS } from '../utils'
 
 import { BaseButton } from './BaseButton'
+
+import type { BasePlayerComponentButtonProps } from './types'
+
 
 export interface FullscreenButtonProps extends BasePlayerComponentButtonProps {
   /**

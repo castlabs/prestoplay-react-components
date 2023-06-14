@@ -3,6 +3,7 @@ import React from 'react'
 import { BufferingIndicator } from './BufferingIndicator'
 import { CurrentTime } from './CurrentTime'
 import { Duration } from './Duration'
+import { ForSize } from './ForSize'
 import { FullscreenButton } from './FullscreenButton'
 import { HorizontalBar } from './HorizontalBar'
 import { Label } from './Label'
@@ -24,7 +25,7 @@ import { Thumbnail } from './Thumbnail'
 import { VerticalBar } from './VerticalBar'
 import { VolumeBar } from './VolumeBar'
 
-import type { BaseComponentProps } from '../utils'
+import type { BaseComponentProps } from './types'
 
 
 /**
@@ -122,26 +123,32 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
           <HorizontalBar className="pp-ui-flex-space-between">
             <div className="pp-ui-row pp-ui-margin-horizontal-sm">
               <PlayPauseButton resetRate={true}/>
-              <SeekButton seconds={props.seekBackward ?? -10}/>
-              <SeekButton seconds={props.seekForward ?? 10}/>
-
-              {props.seekBar === 'none' ? null : <SeekBar
-                adjustWhileDragging={true}
-                adjustWithKeyboard={true}
-                enableThumbnailSlider={false}
-                enabled={(props.seekBar ?? 'enabled') === 'enabled'}
-              />}
+              <ForSize size="small">
+                <SeekButton seconds={props.seekBackward ?? -10}/>
+                <SeekButton seconds={props.seekForward ?? 10}/>
+              </ForSize>
             </div>
-            
+
+            {props.seekBar === 'none' ? null : <SeekBar
+              adjustWhileDragging={true}
+              adjustWithKeyboard={true}
+              enableThumbnailSlider={false}
+              enabled={(props.seekBar ?? 'enabled') === 'enabled'}
+            />}
+
             <div className="pp-ui-row pp-ui-margin-horizontal-sm">
-              <CurrentTime />
-              <Label label={'/'}/>
-              <Duration />
+              <ForSize size="small">
+                <CurrentTime />
+                <Label label={'/'}/>
+                <Duration />
+              </ForSize>
 
               <MuteButton />
-              <VolumeBar adjustWhileDragging={true}/>
 
-              {renderFullscreenButton()}  
+              <ForSize size="medium">
+                <VolumeBar adjustWhileDragging={true}/>
+                {renderFullscreenButton()}  
+              </ForSize>
             </div>
           </HorizontalBar>
 

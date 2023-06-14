@@ -4,3 +4,4 @@ dist/
 app/dist/
 .npmrc
 .vscode/
+.DS_Store

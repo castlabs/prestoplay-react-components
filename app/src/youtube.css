@@ -105,65 +105,6 @@
     position: relative;
 }
 
-.pp-yt-center-background {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    right: 50%;
-    bottom: 50%;
-    width: 64px;
-    height: 64px;
-
-    transform: translate(-50%,-50%);
-    z-index: -1;
-    border-radius: 32px;
-    background-color: rgba(0, 0, 0, .25);
-}
-
-.pp-yt-center-toggle .pp-ui-playpause-toggle {
-    opacity: 0;
-}
-
-.pp-yt-center-toggle.pp-ui-playpause-toggle-pause {
-    opacity: 0;
-    animation-name: center-fade;
-    animation-duration: 500ms;
-    animation-direction: normal;
-    animation-fill-mode: forwards;
-    animation-timing-function: ease;
-}
-
-.pp-yt-center-toggle.pp-ui-playpause-toggle-play {
-    opacity: 0;
-    animation-name: center-fade-2;
-    animation-duration: 500ms;
-    animation-direction: normal;
-    animation-fill-mode: forwards;
-    animation-timing-function: ease;
-}
-
-@keyframes center-fade {
-    from {
-        opacity: .8;
-        scale: .25;
-    }
-    to {
-        opacity: 0;
-        scale: 1.75;
-    }
-}
-
-
-@keyframes center-fade-2 {
-    from {
-        opacity: .8;
-        scale: .25;
-    }
-    to {
-        opacity: 0;
-        scale: 1.75;
-    }
-}
 
 .pp-yt-gradient-bottom {
     height: 146px;

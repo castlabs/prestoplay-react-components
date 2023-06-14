@@ -3,7 +3,6 @@ import React, {
   useMemo,
   useState,
 } from 'react'
-import ClickAway from 'react-hook-click-away'
 
 import { Asset, TestAssets } from './Asset'
 import { BasicOverlayPage } from './BasicOverlayPage'
@@ -78,26 +77,24 @@ export function App() {
         <h1>PRESTOplay React Components</h1>
       </div>
       
-      <ClickAway onClickAway={() => setNavVisible(false)}>
-        <nav className={`sidenav ${navVisible ? 'visible' : ''}`} ref={navRef}>
-          <button onClick={toggleNav} className={'nav-toggle'}>Hide</button>
-          <h3>Content</h3>
-          <button onClick={selectAsset(0)} className={`${assetId === 0 ? 'selected' : ''}`}>{TestAssets[0].title}</button>
-          <button onClick={selectAsset(1)} className={`${assetId === 1 ? 'selected' : ''}`}>{TestAssets[1].title}</button>
-          <button onClick={selectAsset(2)} className={`${assetId === 2 ? 'selected' : ''}`}>{TestAssets[2].title}</button>
-          <button onClick={selectAsset(3)} className={`${assetId === 3 ? 'selected' : ''}`}>{TestAssets[3].title}</button>
-          <h3>Options</h3>
-          <label>
-            <input type={'checkbox'} checked={autoload} onChange={() => {setAutoload(!autoload)}}/>
+      <nav className={`sidenav ${navVisible ? 'visible' : ''}`} ref={navRef}>
+        <button onClick={toggleNav} className={'nav-toggle'}>Hide</button>
+        <h3>Content</h3>
+        <button onClick={selectAsset(0)} className={`${assetId === 0 ? 'selected' : ''}`}>{TestAssets[0].title}</button>
+        <button onClick={selectAsset(1)} className={`${assetId === 1 ? 'selected' : ''}`}>{TestAssets[1].title}</button>
+        <button onClick={selectAsset(2)} className={`${assetId === 2 ? 'selected' : ''}`}>{TestAssets[2].title}</button>
+        <button onClick={selectAsset(3)} className={`${assetId === 3 ? 'selected' : ''}`}>{TestAssets[3].title}</button>
+        <h3>Options</h3>
+        <label>
+          <input type={'checkbox'} checked={autoload} onChange={() => {setAutoload(!autoload)}}/>
           Auto Load
-          </label>
-          <h3>Layouts</h3>
-          <button onClick={selectPage('basic')} className={`${pageId === 'basic' ? 'selected' : ''}`}>Basic Overlay</button>
-          <button onClick={selectPage('custom')} className={`${pageId === 'custom' ? 'selected' : ''}`}>Custom Overlay</button>
-          <button onClick={selectPage('youtube')} className={`${pageId === 'youtube' ? 'selected' : ''}`}>Youtube Overlay</button>
-          <button onClick={selectPage('components')} className={`${pageId === 'components' ? 'selected' : ''}`}>Components</button>
-        </nav>
-      </ClickAway>
+        </label>
+        <h3>Layouts</h3>
+        <button onClick={selectPage('basic')} className={`${pageId === 'basic' ? 'selected' : ''}`}>Basic Overlay</button>
+        <button onClick={selectPage('custom')} className={`${pageId === 'custom' ? 'selected' : ''}`}>Custom Overlay</button>
+        <button onClick={selectPage('youtube')} className={`${pageId === 'youtube' ? 'selected' : ''}`}>Youtube Overlay</button>
+        <button onClick={selectPage('components')} className={`${pageId === 'components' ? 'selected' : ''}`}>Components</button>
+      </nav>
 
       <div>
         {page}

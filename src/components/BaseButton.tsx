@@ -1,6 +1,6 @@
 import React, { ForwardedRef, forwardRef } from 'react'
 
-import type { BaseComponentProps } from '../utils'
+import type { BaseComponentProps } from './types'
 
 /**
  * The base button properties

@@ -1,0 +1,21 @@
+import { Canvas, Meta, Primary, Controls, Story, ArgTypes, Source } from '@storybook/blocks';
+import * as DefaultSkin from './DefaultSkin.stories';
+import { SOURCE_DEFAULT_SKIN } from './DefaultSkinSource.tsx';
+import { Link } from '../link';
+
+<Meta of={DefaultSkin} name="Docs" />
+
+# PRESTOplay Default Skin
+
+With the PRESTOplay Default Skin you can have a fully functional modern player ready in a matter of seconds!
+This component is complete with track & quality selection, volume controls, the full-screen button and more.
+
+<Canvas of={DefaultSkin.Primary} sourceState="none" />
+
+The Default Skin is highly customizable. Refer to the
+<Link title="Components Base Theme Overlay">BaseThemeOverlay docs</Link> for details and for more information
+about the root component, visit the <Link title="Components Player Surface">PlayerSurface docs</Link>.
+
+## Source Code
+
+<Source code={SOURCE_DEFAULT_SKIN} />

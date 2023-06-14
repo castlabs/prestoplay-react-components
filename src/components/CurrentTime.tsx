@@ -6,16 +6,27 @@ import {
   usePrestoUiEvent,
 } from '../react'
 import {
-  BaseComponentProps,
   getMinimalFormat,
   timeToString,
 } from '../utils'
 
 import { Label } from './Label'
 
+import type {
+  BaseComponentProps,
+} from './types'
+
+
 export interface CurrentTimeProps extends BaseComponentProps {
   disableHoveringDisplay?: boolean
   children?: React.ReactNode
+  /**
+   * Time in seconds.
+   * 
+   * By default you should leave this `undefined` and let the component
+   * display the real the current time of the player.
+   */
+  seconds?: number
 }
 
 /**
@@ -23,7 +34,7 @@ export interface CurrentTimeProps extends BaseComponentProps {
  */
 export const CurrentTime = (props: CurrentTimeProps) => {
   const { player } = useContext(PrestoContext)
-  const [currentTime, setCurrentTime] = useState('')
+  const [currentTime, setCurrentTime] = useState(timeToString(props.seconds ?? 0, getMinimalFormat(0)))
   const [isHovering, setHovering] = useState(false)
   const hoveringRef = useRef<boolean>()
   const enabledClass = usePrestoEnabledStateClass()

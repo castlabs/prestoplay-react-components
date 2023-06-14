@@ -1,0 +1,24 @@
+import { Canvas, Meta, Primary, Controls, Story, ArgTypes } from '@storybook/blocks';
+import * as PlayerSurfaceStories from './PlayerSurface.stories';
+
+<Meta of={PlayerSurfaceStories} name="Docs" />
+
+<Canvas of={PlayerSurfaceStories.Primary} />
+
+# Player Surface
+
+Player Surface is a root component that should always be rendered first and it should contain all PRESTOplay UI components.
+
+
+Is serves two purposes: It renders a video element which stretches across its whole area and it serves as a container
+for player UI controls. **It supplies its sub-components with the necessary React context and gives them access
+PRESTOplay player instance**, so that they can either control it (e.g. the `PlayPauseButton` can call play or pause)
+or react to state changes (e.g. `SeekBar` renders the current timeline position).
+
+Player surface also serves as the element which will enter full-screen mode when it is requested. (With the exception
+or certain platforms that do not support full-screen mode for `<div>` elements).
+
+
+### Props
+
+<ArgTypes of={PlayerSurfaceStories.Primary} />

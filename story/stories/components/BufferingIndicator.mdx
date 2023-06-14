@@ -1,0 +1,17 @@
+import { Canvas, Meta, Primary, Controls, Story, ArgTypes } from '@storybook/blocks';
+import * as BufferingIndicatorStories from './BufferingIndicator.stories';
+
+<Meta of={BufferingIndicatorStories} name="Docs" />
+
+<Canvas of={BufferingIndicatorStories.Primary} />
+
+# Buffering Indicator
+
+Buffering indicator is an animated component indicating that video is buffering. By default it reflects
+the current state of the player based on context, but its visibility can be overridden via the `visible` prop.
+
+### Props
+
+<ArgTypes of={BufferingIndicatorStories.Primary} />
+
+{/* <Controls of={BufferingIndicatorStories.Primary} /> */}

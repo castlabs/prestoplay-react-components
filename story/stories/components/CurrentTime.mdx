@@ -1,0 +1,14 @@
+import { Canvas, Meta, Primary, Controls, Story, ArgTypes } from '@storybook/blocks';
+import * as CurrentTimeStories from './CurrentTime.stories';
+
+<Meta of={CurrentTimeStories} name="Docs" />
+
+<Canvas of={CurrentTimeStories.Primary} />
+
+# Current Time
+
+A component showing the current playback time.
+
+### Props
+
+<ArgTypes of={CurrentTimeStories.Primary} />

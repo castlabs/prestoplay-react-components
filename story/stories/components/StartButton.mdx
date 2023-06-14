@@ -1,0 +1,16 @@
+
+import { Canvas, Meta, Primary, Controls, Story, ArgTypes } from '@storybook/blocks';
+import * as StartButtonStories from './StartButton.stories';
+
+<Meta of={StartButtonStories} name="Docs" />
+
+<Canvas of={StartButtonStories.Primary} />
+
+# Start Button
+
+A button to be displayed when the player starts paused and after it is clicked
+the player starts playing and the button disappears.
+
+### Props
+
+<ArgTypes of={StartButtonStories.Primary} />

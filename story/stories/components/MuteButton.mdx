@@ -1,0 +1,16 @@
+import { Canvas, Meta, Primary, Controls, Story, ArgTypes } from '@storybook/blocks';
+import * as MuteButtonStories from './MuteButton.stories';
+
+<Meta of={MuteButtonStories} name="Docs" />
+
+<Canvas of={MuteButtonStories.Primary} />
+
+<Canvas of={MuteButtonStories.Secondary} />
+
+# Mute Button
+
+Clicking this button will mute and un-mute the audio.
+
+### Props
+
+<ArgTypes of={MuteButtonStories.Primary} />

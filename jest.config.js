@@ -5,8 +5,8 @@ module.exports = {
   },
   testRegex: "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
   testEnvironment: 'jsdom',
-  transformIgnorePatterns: ['/node_modules/(?!(@castlabs/prestoplay)/)'],
   moduleNameMapper: {
     '@castlabs/prestoplay.*': '<rootDir>/tests/fake_clpp.js',
-  }
+  },
+  resolver: '<rootDir>/jest.resolver.js',
 }

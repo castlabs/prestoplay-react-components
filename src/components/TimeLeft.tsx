@@ -3,12 +3,13 @@ import React, { useContext, useRef, useState } from 'react'
 import { PrestoContext } from '../context/PrestoContext'
 import { usePrestoEnabledStateClass, usePrestoUiEvent } from '../react'
 import {
-  BaseComponentProps,
   getMinimalFormat,
   timeToString,
 } from '../utils'
 
 import { Label } from './Label'
+
+import type { BaseComponentProps } from './types'
 
 export interface TimeLeftProps extends BaseComponentProps {
   disableHoveringDisplay?: boolean

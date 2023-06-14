@@ -168,10 +168,16 @@
     display: block;
 }
 
-.pp-ui-button .pp-ui-icon {
+.pp-ui-button .pp-ui-icon, .pp-ui-icon-white .pp-ui-icon {
     background-color: var(--pp-fg-color);
     min-width: var(--pp-ui-button-size);
     min-height: var(--pp-ui-button-size);
+}
+
+.pp-ui-icon-white .pp-ui-icon {
+  background-color: var(--pp-fg-color);
+  min-width: var(--pp-ui-button-size);
+  min-height: var(--pp-ui-button-size);
 }
 
 .pp-ui-button:hover .pp-ui-icon, .pp-ui-button:focus .pp-ui-icon {
@@ -196,7 +202,64 @@
     mask: var(--pp-ui-icon-playpause-toggle-pause);
     /*This one is needed for safari, otherwise transitioning the mask will flicker*/
     mask-size: contain;
+}
 
+
+@keyframes ppAnimationFadeout {
+  from {
+    opacity: 1;
+    scale: .75;
+  }
+  to {
+    opacity: 0;
+    scale: 1.5;
+  }
+}
+
+/*
+ This has a different name from ppAnimationFadeout, so that we can alternate between
+ them and thus re-trigger the animation.
+*/
+@keyframes ppAnimationFadeout2 {
+  from {
+    opacity: 1;
+    scale: .75;
+  }
+  to {
+    opacity: 0;
+    scale: 1.5;
+  }
+}
+
+
+.pp-ui-state-play .pp-ui-icon {
+    -webkit-mask: var(--pp-ui-icon-playpause-toggle-play);
+    mask: var(--pp-ui-icon-playpause-toggle-play);
+}
+
+.pp-ui-state-pause .pp-ui-icon {
+    -webkit-mask: var(--pp-ui-icon-playpause-toggle-pause);
+    mask: var(--pp-ui-icon-playpause-toggle-pause);
+    /*This one is needed for safari, otherwise transitioning the mask will flicker*/
+    mask-size: contain;
+}
+
+.pp-ui-playpause-indicator.pp-ui-state-pause {
+    opacity: 0;
+    animation-name: ppAnimationFadeout;
+    animation-duration: 800ms;
+    animation-direction: normal;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease;
+}
+
+.pp-ui-playpause-indicator.pp-ui-state-play {
+    opacity: 0;
+    animation-name: ppAnimationFadeout2;
+    animation-duration: 800ms;
+    animation-direction: normal;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease;
 }
 
 .pp-ui-slideinmenu-toggle {
@@ -598,16 +661,44 @@
 .pp-ui-controls {
     width: 100%;
     height: 100%;
+    position: relative;
 
     opacity: 0;
     visibility: hidden;
     transition: opacity var(--pp-ui-controls-animation-time), visibility var(--pp-ui-controls-animation-time);
 }
 
+.pp-ui-layers {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.pp-ui-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.pp-ui-centered {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .pp-ui-controls-visible {
     opacity: 1;
     visibility: visible;
     transition: visibility 0s, opacity var(--pp-ui-controls-animation-time);
+}
+
+.pp-ui-circle-bg {
+  width: 64px;
+  height: 64px;
+  border-radius: 32px;
+  background-color: rgba(0, 0, 0, .25);
 }
 
 .pp-ui-label.pp-ui-disabled {
@@ -652,7 +743,7 @@
 }
 
 .pp-ui-basic-theme .pp-ui-volumebar {
-    width: 200px;
+    width: 120px;
     max-width: 200px;
 }
 
@@ -661,6 +752,13 @@
     flex-shrink: 1;
     width: 100%;
     height: 100%;
+}
+
+.pp-ui-top-and-bottom-layout {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .pp-ui-transparent {

@@ -1,0 +1,15 @@
+import { Canvas, Meta, Primary, Controls, Story, ArgTypes } from '@storybook/blocks';
+import * as PlayerControlsStories from './PlayerControls.stories';
+
+<Meta of={PlayerControlsStories} name="Docs" />
+
+<Canvas of={PlayerControlsStories.Primary} />
+
+# Player Controls
+
+This is a container intended to contain player controls. It makes it's content visible
+when user wants to interact with the player and hides it when idle.
+
+### Props
+
+<ArgTypes of={PlayerControlsStories.Primary} />

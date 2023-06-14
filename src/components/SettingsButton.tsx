@@ -13,7 +13,7 @@ import {
 
 import { BaseButton } from './BaseButton'
 
-import type { BasePlayerComponentButtonProps } from '../utils'
+import type { BasePlayerComponentButtonProps } from './types'
 
 
 export interface SettingsButtonProps extends BasePlayerComponentButtonProps {

@@ -3,9 +3,12 @@ import React, { useContext, useDebugValue, useEffect, useRef, useState } from 'r
 import { PrestoContext } from '../context/PrestoContext'
 import { State, Player } from '../Player'
 import { usePrestoUiEvent } from '../react'
-import { BasePlayerComponentButtonProps, focusElement } from '../utils'
+import { focusElement } from '../utils'
 
 import { BaseButton } from './BaseButton'
+
+import type { BasePlayerComponentButtonProps } from './types'
+
 
 export interface StartButtonProps extends BasePlayerComponentButtonProps {
   onClick?: () => Promise<void>

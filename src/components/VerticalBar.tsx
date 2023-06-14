@@ -1,6 +1,6 @@
 import React from 'react'
 
-import type { BaseComponentProps } from '../utils'
+import type { BaseComponentProps } from './types'
 
 export interface VerticalBarProps extends BaseComponentProps{
   children?: React.ReactNode
@@ -16,5 +16,20 @@ export const VerticalBar = (props: VerticalBarProps) => {
       className={`pp-ui pp-ui-vertical-bar ${props.className || ''}`} style={props.style}>
       {props.children}
     </div>
+  )
+}
+
+export const VerticalBarStory = (props: VerticalBarProps) => {
+  const style = {
+    color: 'grey',
+    border: '1px dashed grey',
+    padding: '0 20px',
+  }
+  return (
+    <VerticalBar {...props}>
+      <div style={style}>Item 1</div>
+      <div style={style}>Item 2</div>
+      <div style={style}>Item 3</div>
+    </VerticalBar>
   )
 }

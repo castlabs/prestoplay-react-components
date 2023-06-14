@@ -1,0 +1,18 @@
+
+import { Canvas, Meta, Primary, Controls, Story, ArgTypes } from '@storybook/blocks';
+import * as RateButtonStories from './RateButton.stories';
+
+<Meta of={RateButtonStories} name="Docs" />
+
+<Canvas of={RateButtonStories.Primary} />
+
+<Canvas of={RateButtonStories.Secondary} />
+
+# Rate Button
+
+Click this button to speed up or slow down video playback (change the playback rate)
+depending on the value of the `factor`.
+
+### Props
+
+<ArgTypes of={RateButtonStories.Primary} />

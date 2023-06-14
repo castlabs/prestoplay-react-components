@@ -10,7 +10,7 @@ import React, {
 
 import { setRef } from '../utils/react'
 
-import type { BaseComponentProps } from '../utils'
+import type { BaseComponentProps } from './types'
 
 /**
  * Properties that can be passed to the slider

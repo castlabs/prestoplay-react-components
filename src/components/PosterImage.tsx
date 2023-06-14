@@ -2,10 +2,17 @@ import React, { useState } from 'react'
 
 import { State } from '../Player'
 import { usePrestoUiEvent } from '../react'
-import { BaseComponentProps } from '../utils'
+
+import type { BaseComponentProps } from './types'
 
 export interface PosterImageProps extends BaseComponentProps {
+  /**
+   * Poster image source URL.
+   */
   src: string
+  /**
+   * Alternative description of the image.
+   */
   alt?: string
 }
 

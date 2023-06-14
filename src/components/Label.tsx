@@ -1,8 +1,11 @@
 import React, { FC } from 'react'
 
-import type { BaseComponentProps } from '../utils'
+import type { BaseComponentProps } from './types'
 
 export interface LabelProps extends BaseComponentProps {
+  /**
+   * The text to display.
+   */
   label?: string
   children?: React.ReactNode
   testId?: string

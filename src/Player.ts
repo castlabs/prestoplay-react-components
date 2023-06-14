@@ -1,6 +1,7 @@
 import { clpp } from '@castlabs/prestoplay'
 
 import { EventEmitter, EventListener, EventType } from './EventEmitter'
+import { Controls, ControlsVisibilityMode } from './services/controls'
 import {
   fromPrestoTrack,
   getAbrTrack,
@@ -341,11 +342,16 @@ export class Player {
    */
   private _configLoaded = false
 
+  private _controls = new Controls()
+
   constructor(initializer?: PlayerInitializer) {
     this._initializer = initializer
     this._actionQueuePromise = new Promise<void>((resolve) => {
       this._actionQueueResolved = resolve
     })
+    this._controls.onChange = (visible) => {
+      this.emitUIEvent('controlsVisible', visible)
+    }
   }
 
   /**
@@ -403,6 +409,12 @@ export class Player {
 
       if (isEnabledState(currentState) !== isEnabledState(previousState)) {
         this.emitUIEvent('enabled', isEnabledState(currentState))
+      }
+
+      if (!isEnabledState(currentState) || currentState === State.Paused) {
+        this._controls.pin()
+      } else {
+        this._controls.unpin()
       }
     })
 
@@ -511,7 +523,7 @@ export class Player {
   }
 
   get duration(): number {
-    return this.pp_ ? this.pp_.getDuration() : 0
+    return (this.pp_ && this.pp_.getDuration() > 0) ? this.pp_.getDuration() : 0
   }
 
   get live(): boolean {
@@ -638,16 +650,20 @@ export class Player {
 
 
   get controlsVisible(): boolean {
-    return this._controlsVisible
+    return this._controls.visible
   }
 
   set controlsVisible(value: boolean) {
-    if (value !== this._controlsVisible) {
-      this._controlsVisible = value
-      this.emitUIEvent('controlsVisible', value)
-    }
+    this._controls.setVisible(value)
   }
 
+  set controlsAutoHideDelayMs(value: number) {
+    this._controls.hideDelayMs = value
+  }
+
+  set controlsVisibilityMode(value: ControlsVisibilityMode) {
+    this._controls.mode = value
+  }
 
   get slideInMenuVisible(): boolean {
     return this._slideInMenuVisible
@@ -658,6 +674,8 @@ export class Player {
       this._slideInMenuVisible = value
       this.emitUIEvent('slideInMenuVisible', value)
     }
+
+    this.controlsVisible = !value
   }
 
   /**
@@ -668,6 +686,10 @@ export class Player {
    */
   surfaceInteraction() {
     this.emitUIEvent('surfaceInteraction', undefined)
+
+    if (!this.slideInMenuVisible) {
+      this.controlsVisible = true
+    }
   }
 
 

@@ -1,0 +1,17 @@
+
+import { Canvas, Meta, Primary, Controls, Story, ArgTypes } from '@storybook/blocks';
+import * as SeekButtonStories from './SeekButton.stories';
+
+<Meta of={SeekButtonStories} name="Docs" />
+
+<Canvas of={SeekButtonStories.Primary} />
+
+<Canvas of={SeekButtonStories.Secondary} />
+
+# Seek Button
+
+Click this button to jump-seek a few seconds forward or backward depending on the value of `seconds`.
+
+### Props
+
+<ArgTypes of={SeekButtonStories.Primary} />
