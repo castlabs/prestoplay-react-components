@@ -1,6 +1,6 @@
 # PRESTOplay React Components (Beta)
 
-This is a React Component library that provides components to build user interfaces for PRESTOplay video player.
+This is a React xxxComponent library that provides components to build user interfaces for PRESTOplay video player.
 
 ⚠️ *Currently this is in Beta version (0.x.x), therefore be aware that breaking changes may occur between minor releases. The versions will switch to standard semantic versioning once version 1.0.0 is released.* ⚠️
 
