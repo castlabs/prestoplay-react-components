@@ -36,6 +36,10 @@
   (or `PrestoContext`), in which case it is not necessary to pass the `player` argument anymore.
 * `HoverContainer` no longer accepts props `listenToHover` and `notTrackFullWidth`.
 
+## New Features
+
+* VU Meter component.
+
 ## Fixes
 
 * Fixes to `BaseThemeOverlay`:
