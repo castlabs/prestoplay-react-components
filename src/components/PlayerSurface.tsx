@@ -25,7 +25,7 @@ export interface PlayerProps extends BaseComponentProps {
    * The PRESTOplay player configuration to load and play a video
    * https://demo.castlabs.com/#/docs?q=clpp#PlayerConfiguration
    */
-  config?: clpp.LoadConfig
+  config?: clpp.PlayerConfiguration
   /**
    * The PRESTOplay player configuration to initialize the player
    * https://demo.castlabs.com/#/docs?q=clpp#PlayerConfiguration

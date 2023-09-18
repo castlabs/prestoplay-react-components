@@ -29,6 +29,11 @@ export type PlayerInitializer = (presto: clpp.Player) => void
  */
 type Action = () => Promise<void>
 
+type Range = {
+  start: number
+  end: number
+}
+
 /**
  * Player states
  */
@@ -334,7 +339,7 @@ export class Player {
    *
    * @private
    */
-  private _config: clpp.LoadConfig | null = null
+  private _config: clpp.PlayerConfiguration | null = null
 
   /**
    * Indicate that the config was loaded
@@ -395,15 +400,20 @@ export class Player {
     this.pp_.on(clpp.events.VIDEO_TRACK_CHANGED, handlePlayerTracksChanged('video'))
     this.pp_.on(clpp.events.TEXT_TRACK_CHANGED, handlePlayerTracksChanged('text'))
 
-    this.pp_.on(clpp.events.STATE_CHANGED, (event: clpp.Event) => {
-      const e = event as clpp.StateChangeEvent
+    this.pp_.on(clpp.events.STATE_CHANGED, (event: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const e = event
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const currentState = toState(e.detail.currentState)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const previousState = toState(e.detail.previousState)
-      
+
       this.emitUIEvent('statechanged', {
         currentState,
         previousState,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         reason: e.detail.reason,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         timeSinceLastStateChangeMS: e.detail.timeSinceLastStateChangeMS,
       })
 
@@ -448,9 +458,9 @@ export class Player {
       })
     })
 
-    this.pp_.on(clpp.events.BITRATE_CHANGED, (e: clpp.Event) => {
+    this.pp_.on(clpp.events.BITRATE_CHANGED, (e: any) => {
       const tm = this.trackManager
-      
+
       if (tm) {
         this.playingVideoTrack = fromPrestoTrack(tm, e.detail.rendition as clpp.Rendition, 'video')
       } else {
@@ -530,12 +540,12 @@ export class Player {
     return this.pp_ ? this.pp_.isLive() : false
   }
 
-  get seekRange(): { start: number; end: number } {
-    return this.pp_ ? this.pp_.getSeekRange() : { start: 0, end: 0 }
+  get seekRange(): Range {
+    return this.pp_ ? this.pp_.getSeekRange() as Range : { start: 0, end: 0 }
   }
 
   get volume(): number {
-    return this.pp_ ? this.pp_.getVolume() : 1
+    return this.pp_ ? this.pp_.getVolume() ?? 0 : 1
   }
 
   set volume(volume: number) {
@@ -548,7 +558,7 @@ export class Player {
   }
 
   get muted() {
-    return this.pp_ ? this.pp_.isMuted() : false
+    return this.pp_ ? this.pp_.isMuted() ?? false : false
   }
 
   set muted(muted: boolean) {
@@ -596,7 +606,7 @@ export class Player {
     }
   }
 
-  load(config?: clpp.LoadConfig, autoload = false) {
+  load(config?: clpp.PlayerConfiguration, autoload = false) {
     if (config) {
       this._config = config
       return this.action(async () => {
@@ -705,9 +715,8 @@ export class Player {
 
   async presto(): Promise<clpp.Player> {
     await this._actionQueuePromise
-    // @ts-ignore I am not sure if this.pp_ is
-    // always defined here or if it can possibly be null...
-    return this.pp_
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    return (this.pp_ as clpp.Player)
   }
 
   /**
@@ -788,7 +797,8 @@ export class Player {
 
   set videoTracks(value: Track[]) {
     value = value.filter(v => {
-      // @ts-ignore type conflicet between Track and Rendition
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore type conflict between Track and Rendition
       return v.ppTrack && v.ppTrack.height && v.ppTrack.width
     })
     if (value.length > 0 && !value.find(t => t.id === 'abr')) {
@@ -828,18 +838,21 @@ export class Player {
       } else {
         track.selected = true
         if (track.type === 'audio') {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore Rendition is not assignable to Track
           // there is a type conflict
           tm.setAudioTrack(track.ppTrack)
           this.audioTrack = getActiveTrack(tm, 'audio')
           this.audioTracks = getTracks(tm, 'audio')
         } else if (track.type === 'text') {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore Rendition is not assignable to Track
           // there is a type conflict
           tm.setTextTrack(track.ppTrack)
           this.textTrack = getActiveTrack(tm, 'text')
           this.textTracks = getTracks(tm, 'text')
         } else if (track.type === 'video') {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore Track is not assignable to Rendition
           // there is a miss match between the types
           tm.setVideoRendition(track.ppTrack, true)
