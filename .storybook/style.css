@@ -1,0 +1,21 @@
+button.docblock-code-toggle {
+  font-style:italic;
+}
+
+.sb-clpp-anchor {
+  font-size: 1em;
+  cursor: pointer;
+  color: #2c98db;
+  font-family: "Nunito Sans",-apple-system,".SFNSText-Regular",
+    "San Francisco",BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif
+}
+.sb-clpp-anchor:visited {
+  color: #205576; 
+}
+.sb-clpp-anchor:hover {
+  color: #58baf6;
+}
+
+.css-79elbk {
+  display: none;
+}

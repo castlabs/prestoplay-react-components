@@ -1,37 +1,45 @@
-import React, { useState } from 'react'
+import React from 'react'
 
-import { usePrestoEnabledStateClass, usePrestoUiEvent } from '../react'
+import { useDuration, usePrestoEnabledStateClass } from '../react'
 import {
-  BaseComponentProps,
   getMinimalFormat,
   timeToString,
 } from '../utils'
 
 import { Label } from './Label'
+import {
+  BaseComponentProps,
+} from './types'
+
+const toString = (duration: number) => {
+  if (duration === Infinity) {
+    return 'Live'
+  }
+  return timeToString(duration, getMinimalFormat(duration))
+}
 
 export interface DurationProps extends BaseComponentProps {
   children?: React.ReactNode
+  /**
+   * Time in seconds.
+   * 
+   * By default you should leave this `undefined` and let the component
+   * display the real duration of the video.
+   */
+  seconds?: number
 }
 
 /**
  * Duration.
  */
 export const Duration = (props: DurationProps) => {
-  const [duration, setDuration] = useState('')
+  const duration = useDuration()
   const enabledClass = usePrestoEnabledStateClass()
-
-  usePrestoUiEvent('durationchange', (duration) => {
-    if (duration === Infinity) {
-      setDuration('Live')
-    } else {
-      setDuration(timeToString(duration, getMinimalFormat(duration)))
-    }
-  })
 
   return (
     <Label
       testId="pp-ui-duration"
-      label={duration}
+      label={toString(props.seconds ?? duration)}
       className={`pp-ui-label-duration ${enabledClass} ${props.className || ''}`}
       style={props.style}
     >

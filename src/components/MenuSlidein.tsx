@@ -1,17 +1,17 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { useClickAway } from 'react-hook-click-away'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import { PrestoContext } from '../context/PrestoContext'
 import { usePrestoUiEvent } from '../react'
 import { TrackType } from '../Track'
 import {
-  BasePlayerComponentButtonProps,
   focusNextElement,
   getFocusableElements,
 } from '../utils'
 
 import { TrackGroupButton } from './TrackGroupButton'
 import { TrackSelectionList } from './TrackSelectionList'
+
+import type { BasePlayerComponentButtonProps } from './types'
 
 /**
  * The available selection types
@@ -53,14 +53,6 @@ export const MenuSlidein = (props: MenuSlideinProps) => {
   const [textListVisible, setTextListVisible] = useState(false)
   const [videoListVisible, setVideoListVisible] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
-
-  const hide = useCallback(() => {
-    player.slideInMenuVisible = false
-    setVisible(false)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-  
-  useClickAway(ref, hide)
 
   usePrestoUiEvent('slideInMenuVisible', (visible) => {
     setVisible(visible)

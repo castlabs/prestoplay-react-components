@@ -4,10 +4,17 @@ import { PrestoContext } from '../context/PrestoContext'
 import { State } from '../Player'
 import { usePrestoUiEvent } from '../react'
 
-import type { BaseComponentProps } from '../utils'
+import type { BaseComponentProps } from './types'
 
 export interface BufferingIndicatorProps extends BaseComponentProps {
   children?: React.ReactNode
+  /**
+   * Whether the buffering indicator should be visible or not.
+   *
+   * By default you should leave this `undefined` and let the buffering indicator
+   * automatically react to the current state of the player.
+   */
+  visible?: boolean
 }
 
 const isBufferingState = (state: State): boolean => {
@@ -16,7 +23,7 @@ const isBufferingState = (state: State): boolean => {
 
 const useIsBuffering = (): boolean => {
   const { player } = useContext(PrestoContext)
-  const [buffering, setBuffering] = useState(isBufferingState(player.state))
+  const [buffering, setBuffering] = useState(isBufferingState(player?.state ?? State.Idle))
 
   usePrestoUiEvent('statechanged', (event) => {
     setBuffering(isBufferingState(event.currentState))
@@ -33,11 +40,12 @@ const useIsBuffering = (): boolean => {
  */
 export const BufferingIndicator = (props: BufferingIndicatorProps) => {
   const buffering = useIsBuffering()
+  const isBuffering = props.visible ?? buffering
 
   return (
     <div
       data-testid="pp-ui-buffering-indicator" 
-      className={`pp-ui pp-ui-spinner ${buffering ? 'pp-ui-spinner-loading': ''} ${props.className || ''}`}
+      className={`pp-ui pp-ui-spinner ${isBuffering ? 'pp-ui-spinner-loading': ''} ${props.className || ''}`}
       style={props.style}
     >
       <i className={'pp-ui pp-ui-icon'}/>

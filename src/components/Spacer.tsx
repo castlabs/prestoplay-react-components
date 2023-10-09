@@ -1,6 +1,6 @@
 import React from 'react'
 
-import type { BaseComponentProps } from '../utils'
+import type { BaseComponentProps } from './types'
 
 export interface SpacerProps extends BaseComponentProps {
   children?: React.ReactNode

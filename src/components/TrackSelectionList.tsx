@@ -4,9 +4,11 @@ import { PrestoContext } from '../context/PrestoContext'
 import { Player } from '../Player'
 import { usePrestoUiEvent } from '../react'
 import { TrackType } from '../Track'
-import { BaseComponentProps, classNames } from '../utils'
+import { classNames } from '../utils'
 
 import { TrackSelectionButton } from './TrackSelectionButton'
+
+import type { BaseComponentProps } from './types'
 
 
 export interface TrackSelectionListProps extends BaseComponentProps {

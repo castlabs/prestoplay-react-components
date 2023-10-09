@@ -7,10 +7,13 @@ import {
   DefaultTrackLabelerOptions,
   TrackLabeler,
 } from '../TrackLabeler'
-import { BaseComponentProps, classNames } from '../utils'
+import { classNames } from '../utils'
+
 
 import { BaseButton } from './BaseButton'
 import { Label } from './Label'
+
+import type { BaseComponentProps } from './types'
 
 
 export interface TrackGroupButtonProps extends BaseComponentProps {

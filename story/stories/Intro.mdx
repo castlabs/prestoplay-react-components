@@ -1,0 +1,50 @@
+import { Canvas, Meta } from '@storybook/blocks';
+import { Link } from './link';
+import cover from './cover.png'
+
+<Meta title="Intro" sortId="0" />
+
+
+<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '5%' }}>
+  <img src={cover} style={{ width: '30%' }} />
+</div>
+
+
+# PRESTOplay React v0.6.0 (#Beta)
+
+This library provides React components to build user interfaces for PRESTOplay video player. It comes with
+a configurable ready-to-use UI as well as a set of individual components and hooks that can
+be assembled in order to build a custom UI.
+
+## Installation
+
+The library can be installed as a dependency from
+<Link uri="https://www.npmjs.com/package/@castlabs/prestoplay-react-components">NPM</Link>:
+
+```sh
+npm i @castlabs/prestoplay-react-components
+```
+
+Please note that you should also install the peer dependencies, i.e. `react`, `react-dom` and `@castlabs/prestoplay`:
+
+```sh
+npm i react@18 react-dom@18 @castlabs/prestoplay@6.2
+```
+
+*This library is compatible with React version 18 and `@castlabs/prestoplay` version 6.2.0 and higher.*
+
+
+## Using Default UI
+
+PRESTOplay React comes with a ready-to-use skin, <Link title="Examples Default Skin">TRY IT OUT</Link>!
+
+(About skinning and CSS classes).
+
+## Building Custom UIs
+
+<Link title="Examples Youtube Skin">Youtube-like example</Link>
+
+
+
+
+<div style={{textAlign: 'center', fontSize: '.6em'}}>©2020-2023 castLabs</div>

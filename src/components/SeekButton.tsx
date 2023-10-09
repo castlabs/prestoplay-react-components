@@ -5,10 +5,14 @@ import { usePrestoEnabledState } from '../react'
 
 import { BaseButton } from './BaseButton'
 
-import type { BasePlayerComponentButtonProps } from '../utils'
+import type { BasePlayerComponentButtonProps } from './types'
 
 
 export interface SeekButtonProps extends BasePlayerComponentButtonProps {
+  /**
+   * The number of seconds to seek forward, if this number is negative
+   * the button will seek backwards.
+   */
   seconds: number
   children?: React.ReactNode
 }

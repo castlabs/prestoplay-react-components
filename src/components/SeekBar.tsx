@@ -6,7 +6,7 @@ import { usePrestoEnabledState, usePrestoUiEvent } from '../react'
 import { Slider } from './Slider'
 import { Thumbnail } from './Thumbnail'
 
-import type { BaseComponentProps } from '../utils'
+import type { BaseComponentProps } from './types'
 
 export interface SeekBarProps extends BaseComponentProps {
   adjustWhileDragging?: boolean

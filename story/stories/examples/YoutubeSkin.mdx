@@ -1,0 +1,30 @@
+import { Canvas, Meta, Primary, Controls, Story, ArgTypes, Source } from '@storybook/blocks';
+import * as YoutubeSkin from './YoutubeSkin.stories';
+import { Link } from '../link';
+import { SOURCE_YOUTUBE_SKIN, SOURCE_YOUTUBE_CSS } from './YoutubeSkinSource.ts';
+
+<Meta of={YoutubeSkin} name="Docs" />
+
+# Example: Youtube look-alike
+
+PRESTOplay React can be used to build all kinds of UIs. Let's have a look at this example which tries to recreate the all too familiar look of the Youtube player by combining some components from PRESTOplay React and overriding a couple of styles.
+
+<Canvas of={YoutubeSkin.Primary} sourceState="none" />
+
+The Default Skin is highly customizable. Refer to the
+<Link title="Components Base Theme Overlay">BaseThemeOverlay docs</Link> for details and for more information
+about the root component, visit the <Link title="Components Player Surface">PlayerSurface docs</Link>.
+
+## Source Code
+
+Start by instantiating the `Player`, make sure you always use <Link title="Components Player Surface">PlayerSurface</Link> as your root component, then render your UI inside.
+
+<Source code={SOURCE_YOUTUBE_SKIN} />
+
+## CSS Styles
+
+Override CSS styles with `youtube-style.css`. In this example we override several existing style rules and add a couple of new ones.
+
+PRESTOplay React class selectors follow the `pp-ui-*` format.
+
+<Source code={SOURCE_YOUTUBE_CSS} />

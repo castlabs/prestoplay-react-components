@@ -3,10 +3,12 @@ import React, { memo, useContext } from 'react'
 import { PrestoContext } from '../context/PrestoContext'
 import { Track } from '../Track'
 import { TrackLabeler } from '../TrackLabeler'
-import { BaseComponentProps, classNames } from '../utils'
+import { classNames } from '../utils'
 
 import { BaseButton } from './BaseButton'
 import { TrackLabel } from './TrackLabel'
+
+import type { BaseComponentProps } from './types'
 
 export interface TrackSelectionButtonProps extends BaseComponentProps {
   track: Track

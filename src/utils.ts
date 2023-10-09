@@ -1,32 +1,3 @@
-import { CSSProperties } from 'react'
-
-/**
- * Base properties for components created by this library
- */
-export interface BaseComponentProps {
-  /**
-   * Class name extensions that are passed to the top level element created by
-   * a component
-   */
-  className?: string
-  /**
-   * Style extensions that are passed to the top level element created by
-   * a component
-   */
-  style?: CSSProperties
-}
-
-/**
- * Base properties interface for button components that interact with a player.
- */
-export interface BasePlayerComponentButtonProps extends BaseComponentProps {
-  /**
-   * Buttons, by default assume they have an icon. Use this to disable the icon
-   * and turn the button into a text based button.
-   */
-  disableIcon?: boolean
-}
-
 /**
  * Small helper that makes it a little easier dealing with a lot of dynamic
  * class names

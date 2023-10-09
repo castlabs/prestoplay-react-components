@@ -6,7 +6,7 @@ import '@castlabs/prestoplay/cl.thumbnails'
 import { useHoverPercent } from '../hooks/hooks'
 import { clamp } from '../utils/math'
 
-import type { BaseComponentProps } from '../utils'
+import type { BaseComponentProps } from './types'
 
 export interface HoverContainerProps extends BaseComponentProps {
   style?: CSSProperties

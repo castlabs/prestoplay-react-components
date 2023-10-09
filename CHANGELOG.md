@@ -2,6 +2,8 @@
 
 ## Breaking changes
 
+* Removed `showWhenDisabled` props from `PlayerControls`, it is no longer meaningful after the recent changes
+  to controls visibility. Now controls are always visible when video is paused or idle.
 * Removed the `player` prop from all components (except `PlayerSurface`). Instead of it, all components should
   be descendants of `PlayerSurface` and this way they get access to the `player` instance from its context. 
   ```jsx
@@ -36,9 +38,19 @@
 
 ## Fixes
 
+* Fixes to `BaseThemeOverlay`:
+  * Before start of playback make sure `CurrentTime` displays a valid value of `0:00`.
+  * Make sure seek bar is visible.
+  * Improve responsiveness of the UI.
 * Improve positioning by `HoverContainer`.
 * All components now accept `style` and `className` prop and apply them to their top-most element.
 * Removed `children` prop from components that do not render any child components.
+* Fix `Duration` to display the correct value even when it is rendered after the video has been loaded.
+
+## Changes
+
+* Player controls auto-hide after 3s instead of 5s.
+* Added `mode` prop to `PlayerControls` which can be used to configure the visibility of player controls.
 
 # 0.6.0 (Beta)
 

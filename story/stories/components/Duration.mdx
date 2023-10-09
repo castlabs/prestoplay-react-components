@@ -1,0 +1,18 @@
+import { Canvas, Meta, Primary, Controls, Story, ArgTypes } from '@storybook/blocks';
+import * as DurationStories from './Duration.stories';
+
+<Meta of={DurationStories} name="Docs" />
+
+<Canvas of={DurationStories.Primary} />
+
+<Canvas of={DurationStories.Secondary} />
+
+<Canvas of={DurationStories.Third} />
+
+# Duration
+
+A component displaying the duration of the video.
+
+### Props
+
+<ArgTypes of={DurationStories.Primary} />

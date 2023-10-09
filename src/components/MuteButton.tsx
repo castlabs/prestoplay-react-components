@@ -5,11 +5,18 @@ import { usePrestoCoreEvent, usePrestoEnabledState } from '../react'
 
 import { BaseButton } from './BaseButton'
 
-import type { BasePlayerComponentButtonProps } from '../utils'
+import type { BasePlayerComponentButtonProps } from './types'
 
 
 export interface MuteButtonProps extends BasePlayerComponentButtonProps {
   children?: React.ReactNode
+  /**
+   * Whether audio is muted or not.
+   * 
+   * By default you should leave this `undefined` and let the component
+   * display the real mute state of the player.
+   */
+  muted?: boolean
 }
 
 /**
@@ -37,7 +44,7 @@ export const MuteButton = (props: MuteButtonProps) => {
     <BaseButton
       testId="pp-ui-mute-button"
       onClick={toggle} disableIcon={props.disableIcon} disabled={!enabled}
-      className={`pp-ui-mute-toggle pp-ui-mute-toggle-${muted? 'unmuted' : 'muted'} ${props.className || ''}`}
+      className={`pp-ui-mute-toggle pp-ui-mute-toggle-${(props.muted ?? muted) ? 'unmuted' : 'muted'} ${props.className || ''}`}
       style={props.style}
     >
       {props.children}

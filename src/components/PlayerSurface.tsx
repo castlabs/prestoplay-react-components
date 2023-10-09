@@ -5,10 +5,12 @@ import { PrestoContext, PrestoContextType } from '../context/PrestoContext'
 import { Player } from '../Player'
 import { usePrestoUiEvent } from '../react'
 import {
-  BaseComponentProps, focusElement,
+  focusElement,
   focusNextElement, focusPreviousElement,
   getFocusableElements, isIpadOS,
 } from '../utils'
+
+import type { BaseComponentProps } from './types'
 
 /**
  * The properties of the player surface. This is the element that receives
@@ -21,10 +23,12 @@ export interface PlayerProps extends BaseComponentProps {
   player: Player
   /**
    * The PRESTOplay player configuration to load and play a video
+   * https://demo.castlabs.com/#/docs?q=clpp#PlayerConfiguration
    */
   config?: clpp.LoadConfig
   /**
    * The PRESTOplay player configuration to initialize the player
+   * https://demo.castlabs.com/#/docs?q=clpp#PlayerConfiguration
    */
   baseConfig?: clpp.PlayerConfiguration
   /**
@@ -40,12 +44,24 @@ export interface PlayerProps extends BaseComponentProps {
    */
   playsInline?: boolean
   children?: React.ReactNode
+  /**
+   * @private
+   */
   onContext?: (context: PrestoContextType) => void
 }
 
 const getContext = (nullableContext: Partial<PrestoContextType>) => {
   return Object.values(nullableContext)
     .every(value => value != null) ? nullableContext as PrestoContextType : null
+}
+
+/**
+ * Stub for storybook
+ */
+export const PlayerSurfaceForStory = (props: PlayerProps) => {
+  return <div style={{ background: 'black', width: 500, height: 300 }}>
+    {props.children}
+  </div>
 }
 
 
