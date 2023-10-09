@@ -38,3 +38,7 @@ npm run test
 ## Docs
 
 We are transitioning to use `Storybook` for public docs. Once that is done `app` can be deleted.
+
+```sh
+npm run storybook
+```
