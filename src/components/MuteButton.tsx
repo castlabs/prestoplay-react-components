@@ -29,10 +29,10 @@ export const MuteButton = (props: MuteButtonProps) => {
   const enabled = usePrestoEnabledState()
 
   usePrestoCoreEvent('volumechange', (e, presto) => {
-    setMuted(presto.isMuted())
+    setMuted(presto.isMuted() ?? false)
   })
   usePrestoCoreEvent('loadedmetadata', (e, presto) => {
-    setMuted(presto.isMuted())
+    setMuted(presto.isMuted() ?? false)
   })
 
   function toggle(e: React.MouseEvent) {

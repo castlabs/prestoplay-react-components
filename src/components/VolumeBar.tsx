@@ -50,7 +50,9 @@ export const VolumeBar = (props: VolumeBarProps) => {
     const presto = await player.presto()
     const current = presto.isMuted() ? 0 : presto.getVolume()
     let targetPosition = current
-    
+
+    if (targetPosition == null || current == null) {return}
+
     if (e.key === 'ArrowLeft') {
       targetPosition = Math.max(0, current + (-0.1))
       e.preventDefault()

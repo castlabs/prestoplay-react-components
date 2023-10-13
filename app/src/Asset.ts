@@ -1,10 +1,10 @@
-import type { clpp } from '@castlabs/prestoplay'
+import { clpp } from '@castlabs/prestoplay'
 
 export interface Asset {
   /**
    * The player load configuration
    */
-  config: clpp.LoadConfig
+  config: clpp.PlayerConfiguration
   /**
    * Optional asset title
    */
@@ -40,7 +40,7 @@ export const TestAssets: Asset[] = [
     config: {
       source: {
         url: 'https://content.players.castlabs.com/demos/drm-agent/manifest.mpd',
-        type: 'application/dash+xml',
+        type: clpp.Type.DASH,
         drmProtected: true,
       },
       autoplay: true,
@@ -72,7 +72,7 @@ export const TestAssets: Asset[] = [
     config: {
       source: {
         url: 'https://content.players.castlabs.com/demos/clear-segmented/master.m3u8',
-        type: 'application/x-mpegurl',
+        type: clpp.Type.HLS,
         drmProtected: false,
       },
       autoplay: false,

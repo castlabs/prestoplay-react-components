@@ -75,7 +75,7 @@ const Ui = (props: PropsUi) => {
   const playerEnabled = usePrestoEnabledState(player)
 
   return (
-    <PlayerControls  showWhenDisabled={true}>
+    <PlayerControls>
 
       <div className="pp-yt-gradient-bottom"></div>
 

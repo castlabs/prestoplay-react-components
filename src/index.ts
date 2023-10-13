@@ -38,5 +38,6 @@ export * from './components/TrackSelectionList'
 export * from './components/VerticalBar'
 export * from './components/VolumeBar'
 export * from './components/PlayPauseIndicator'
+export * from './components/VuMeter'
 
 export * from './context/PrestoContext'

@@ -6,7 +6,7 @@ import { PrestoContext } from './context/PrestoContext'
 import { EventListener, EventType } from './EventEmitter'
 import { Player, State, UIEvents } from './Player'
 
-export type ClppEventHandler = (e: clpp.Event, presto: clpp.Player) => void
+type ClppEventHandler = (event: Record<string, any>, presto: clpp.Player) => void
 
 /**
  * This is a React hook that can be used to listen to presto play events.
@@ -28,7 +28,7 @@ export function usePrestoCoreEvent(
   const presto = useContext(PrestoContext).presto ?? presto_
 
   useEffect(() => {
-    const handleEvent = (event: clpp.Event) => {
+    const handleEvent = (event: Record<string, any>) => {
       handler(event, presto)
     }
 
