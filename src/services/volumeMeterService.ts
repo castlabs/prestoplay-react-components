@@ -308,7 +308,6 @@ export class VolumeMeterService {
       const average = array.reduce((a, b) => a + b, 0) / groupSize
       averages.push(average)
     }
-    // clpp.log.info('AAA audio FFT averages', averages);
     const average = Math.max(...averages)
     const averagePercent = average / MAX_VALUE
 
