@@ -311,7 +311,6 @@ export class VolumeMeterService {
     const average = Math.max(...averages)
     const averagePercent = average / MAX_VALUE
 
-    // const levelText = Math.round(averagePercent * 100 - 100);
     const barHeight = maxHeight * averagePercent
     return barHeight
   }
