@@ -797,8 +797,6 @@ export class Player {
 
   set videoTracks(value: Track[]) {
     value = value.filter(v => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore type conflict between Track and Rendition
       return v.ppTrack && v.ppTrack.height && v.ppTrack.width
     })
     if (value.length > 0 && !value.find(t => t.id === 'abr')) {
@@ -838,23 +836,14 @@ export class Player {
       } else {
         track.selected = true
         if (track.type === 'audio') {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore Rendition is not assignable to Track
-          // there is a type conflict
           tm.setAudioTrack(track.ppTrack)
           this.audioTrack = getActiveTrack(tm, 'audio')
           this.audioTracks = getTracks(tm, 'audio')
         } else if (track.type === 'text') {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore Rendition is not assignable to Track
-          // there is a type conflict
           tm.setTextTrack(track.ppTrack)
           this.textTrack = getActiveTrack(tm, 'text')
           this.textTracks = getTracks(tm, 'text')
         } else if (track.type === 'video') {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore Track is not assignable to Rendition
-          // there is a miss match between the types
           tm.setVideoRendition(track.ppTrack, true)
           this.videoTrack = getActiveTrack(tm, 'video')
           this.videoTracks = getTracks(tm, 'video')
