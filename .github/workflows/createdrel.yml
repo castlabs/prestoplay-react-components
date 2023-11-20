@@ -1,0 +1,13 @@
+name: Release created
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish:
+    name: Release created Debug
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout Code
+        run: echo "release created lol"

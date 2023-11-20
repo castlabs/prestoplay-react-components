@@ -16,14 +16,13 @@
   "module": "dist/index.js",
   "types": "dist/prestoplay-react.d.ts",
   "scripts": {
-    "prepublishOnly": "bash ./scripts/prepublish.sh",
     "build": "bash ./scripts/build.sh",
     "start": "bash ./scripts/start.sh",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "npx eslint .",
     "storybook": "storybook dev --port 6006",
-    "build-storybook": "storybook build --output-dir ./dist/storybook"
+    "build-storybook": "storybook build --debug --output-dir ./dist/storybook"
   },
   "license": "Apache-2.0",
   "devDependencies": {

@@ -24,10 +24,8 @@ npm run build
 
 ## Publish
 
-To publish the library:
-```sh
-npm run publish
-```
+TODO auto via pipeline. Just create a release > create a new tag >
+this will trigger auto publish to NPM and docs.
 
 ## Test
 
@@ -42,3 +40,5 @@ We are transitioning to use `Storybook` for public docs. Once that is done `app`
 ```sh
 npm run storybook
 ```
+
+## Publishing

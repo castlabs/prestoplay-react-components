@@ -1,0 +1,75 @@
+name: Publish
+
+on:
+  release:
+    types: [released]
+
+# TODO switch out envs
+env:
+  NPM_TOKEN: ${{ secrets.CLPLAYERS_NPM_TOKEN_RW }}
+  # VERSION: ${{ github.event.release.tag_name }}
+  # WEB_PATH: "react-dom/${{ env.VERSION }}/docs/"
+  VERSION: 0.7.7
+  WEB_PATH: "react-dom/0.7.7/docs/"
+
+permissions:
+  contents: read # Permission for actions/checkout
+  id-token: write # Permission for aws-actions/configure-aws-credentials
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Write NPM RC File
+        run: |
+          echo '@castlabs:registry=https://registry.npmjs.org' > .npmrc
+          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> .npmrc
+
+      - name: Set Package Version
+        run: npm --no-git-tag-version --allow-same-version version ${{ env.VERSION }}
+
+      - name: Build
+        run: npm run build
+
+      # TODO remove the --dry-run
+      - name: Publish to NPM
+        run: npm publish --dry-run
+
+      - name: Add NPM Release Job summary
+        run: |
+          echo '### NPM Release' >> $GITHUB_STEP_SUMMARY
+          echo "Released version ${{ env.VERSION }} of https://www.npmjs.com/package/@castlabs/prestoplay-react-components" >> $GITHUB_STEP_SUMMARY
+
+      - name: Build Storybook
+        run: npm run build-storybook
+
+      - name: Assume AWS role
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::068037490145:role/prestoplay-web-web-uploader
+          aws-region: us-east-1
+
+      # TODO remove the --dryrun
+      - name: Upload to S3
+        run: aws s3 cp --dryrun --recursive “./dist/storybook" "s3://players-castlabs-com-root/${{ env.WEB_PATH }}"
+        # Note: the default cache policy is 1 day, I think that's OK for now.
+        # In the future if traffic increases we can increase the expiration
+        # as much as we want.
+
+      - name: Add Docs Publish Job Summary
+        run: |
+          echo '### Docs' >> $GITHUB_STEP_SUMMARY
+          echo "Published docs to https://players.castlabs.com/${{ env.WEB_PATH }}" >> $GITHUB_STEP_SUMMARY
