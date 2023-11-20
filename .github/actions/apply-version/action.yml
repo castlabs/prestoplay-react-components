@@ -1,0 +1,11 @@
+name: 'Apply version'
+description: 'Apply version to package.json, readme and docs, also update versioned links'
+
+inputs:
+  version:
+    description: The SDK version
+    required: true
+
+runs:
+  using: 'node16'
+  main: './main.js'

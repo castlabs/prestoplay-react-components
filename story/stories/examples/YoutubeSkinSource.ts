@@ -1,3 +1,5 @@
+// TODO fix the import paths here!
+
 export const SOURCE_YOUTUBE_SKIN = `
 import { clpp } from '@castlabs/prestoplay'
 import '@castlabs/prestoplay/cl.mse'
@@ -7,23 +9,13 @@ import '@castlabs/prestoplay/cl.htmlcue'
 import '@castlabs/prestoplay/cl.ttml'
 import '@castlabs/prestoplay/cl.vtt'
 
-import { Player } from '@castlabs/prestoplay-react-components'
-import { CurrentTime } from '@castlabs/prestoplay-react-components/components/CurrentTime'
-import { Duration } from '@castlabs/prestoplay-react-components/components/Duration'
-import { FullscreenButton } from '@castlabs/prestoplay-react-components/components/FullscreenButton'
-import { HorizontalBar } from '@castlabs/prestoplay-react-components/components/HorizontalBar'
-import { HoverContainer } from '@castlabs/prestoplay-react-components/components/HoverContainer'
-import { Label } from '@castlabs/prestoplay-react-components/components/Label'
-import { MuteButton } from '@castlabs/prestoplay-react-components/components/MuteButton'
-import { PlayerControls } from '@castlabs/prestoplay-react-components/components/PlayerControls'
-import { PlayerSurface } from '@castlabs/prestoplay-react-components/components/PlayerSurface'
-import { PlayPauseButton } from '@castlabs/prestoplay-react-components/components/PlayPauseButton'
-import { PlayPauseIndicator } from '@castlabs/prestoplay-react-components/components/PlayPauseIndicator'
-import { SeekBar } from '@castlabs/prestoplay-react-components/components/SeekBar'
-import { Spacer } from '@castlabs/prestoplay-react-components/components/Spacer'
-import { Thumbnail } from '@castlabs/prestoplay-react-components/components/Thumbnail'
-import { VerticalBar } from '@castlabs/prestoplay-react-components/components/VerticalBar'
-import { VolumeBar } from '@castlabs/prestoplay-react-components/components/VolumeBar'
+import {
+  Player, CurrentTime, Duration, FullscreenButton, HorizontalBar,
+  HoverContainer, Label, MuteButton, PlayerControls, PlayerSurface,
+  PlayPauseButton, PlayPauseIndicator, SeekBar, Spacer, Thumbnail,
+  VerticalBar, VolumeBar,
+} from '@castlabs/prestoplay-react-components'
+
 import React from 'react'
 
 import '@castlabs/prestoplay/clpp.styles.css'
@@ -32,16 +24,14 @@ import 'youtube-style.css'
 
 import type { Meta, StoryObj } from '@storybook/react'
 
-const asset =   {
-  title: 'Maldives',
-  subtitle: 'State of the Mahal Dibiyat',
-  config: {
-    source: 'https://content.players.castlabs.com/demos/clear-segmented/manifest.mpd',
-  },
+
+const baseConfig = {
+  // Replace this by your license key
+  license: '7c8165...81d53b1c',
 }
 
-const playerConfig = {
-  source: asset.config.source ?? '',
+const sourceConfig = {
+  source: 'https://.../manifest.mpd',
 }
 
 const player = new Player((pp: clpp.Player) => {
@@ -60,7 +50,8 @@ const YoutubeSkin = () => {
   return (
     <PlayerSurface
       player={player}
-      config={playerConfig}
+      baseConfig={baseConfig}
+      config={sourceConfig}
       playsInline={true}
       autoload={true}
       style={{ height: '320px' }}>
@@ -73,8 +64,7 @@ const YoutubeSkin = () => {
           <div className='pp-ui-layer'>
             <div className="pp-ui-top-and-bottom-layout">
 
-              {/* Top half: */}
-              {/* The first horizontal row shows some custom title for the content */}
+              {/* Top - a custom title for the content */}
               <HorizontalBar>
                 <div style={{ flexGrow: 1 }}>
                   <div>
@@ -86,10 +76,11 @@ const YoutubeSkin = () => {
                 </div>
               </HorizontalBar>
 
-              {/* Bottom half: */}
+              {/* Bottom half */}
               <div>
                 <div className="pp-yt-gradient-bottom"></div>
-                {/* We create a horizontal bar for the thumbnails */}
+
+                {/* A container for thumbnails that appear when hover over the seek bar */}
                 <HorizontalBar>
                   <HoverContainer>
                     <Thumbnail moveRelativeToParent={false}/>
@@ -97,7 +88,7 @@ const YoutubeSkin = () => {
                   </HoverContainer>
                 </HorizontalBar>
 
-
+                {/* Seek bar, play buttons etc. */}
                 <VerticalBar>
                   <HorizontalBar style={{ alignItems: 'flex-end', marginBottom: '-8px' }}>
                     <SeekBar  adjustWhileDragging={true} enableThumbnailSlider={false} notFocusable={true}/>
@@ -119,11 +110,11 @@ const YoutubeSkin = () => {
                     <FullscreenButton />
                   </HorizontalBar>
                 </VerticalBar>
+
               </div>
             </div>
           </div>
         </div>
-   
       </PlayerControls>
     </PlayerSurface>
   )

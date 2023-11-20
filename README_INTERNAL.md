@@ -24,10 +24,18 @@ npm run build
 
 ## Publish
 
-To publish the library:
-```sh
-npm run publish
-```
+Create a release in GitHub and select a tag to create along with the release
+(e.g. `1.0.0`), the tag must be equal to the version to be released. This will
+trigger a GitHub action which will publish the release.
+
+### Publish a Beta version
+
+To publish a beta version the process is the same, just use a "beta" format for
+the version string (e.g. `1.0.0-<beta>.1`), where `<beta>` can be any
+alphabetical string (letters only).
+
+The `publish` workflow will automatically publish this package into
+a `<beta>` (non-main) NPM channel.
 
 ## Test
 
