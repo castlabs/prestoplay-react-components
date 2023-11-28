@@ -7,6 +7,7 @@ on:
 env:
   VERSION: ${{ github.event.release.tag_name }}
   WEB_PATH: "react-dom/${{ github.event.release.tag_name }}/docs/"
+  DRY_RUN: false
 
 permissions:
   contents: read # Permission for actions/checkout
@@ -46,10 +47,11 @@ jobs:
           aws-region: us-east-1
 
       - name: Upload to S3
-        run: aws s3 cp --recursive "./dist/storybook" "${{ secrets.AWS_WEB_BUCKET }}/${{ env.WEB_PATH }}"
-        # Note: the default cache policy is 1 day, I think that's OK for now.
-        # In the future if traffic increases we can increase the expiration
-        # as much as we want.
+        uses: ./.github/actions/upload-to-s3
+        with:
+          directory: "./dist/storybook"
+          destination: "${{ secrets.AWS_WEB_BUCKET }}/${{ env.WEB_PATH }}"
+          dry-run: ${{ env.DRY_RUN }}
 
     ## Publish the NPM package
 
@@ -61,7 +63,7 @@ jobs:
         with:
           version: ${{ env.VERSION }}
           npm-token: ${{ secrets.CLPLAYERS_NPM_TOKEN_RW }}
-          dry-run: false
+          dry-run: ${{ env.DRY_RUN }}
 
       - name: Add Job summary
         run: |
