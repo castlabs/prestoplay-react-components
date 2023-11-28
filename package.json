@@ -5,7 +5,7 @@
   "homepage": "https://github.com/castlabs/prestoplay-react-components",
   "repository": {
     "type": "git",
-    "url": "https://github.com/castlabs/prestoplay-react-components"
+    "url": "git+https://github.com/castlabs/prestoplay-react-components.git"
   },
   "bugs": {
     "url": "https://github.com/castlabs/prestoplay-react-components/issues"
