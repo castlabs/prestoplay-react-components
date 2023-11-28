@@ -62,7 +62,7 @@ jobs:
         uses: ./.github/actions/publish
         with:
           version: ${{ env.VERSION }}
-          npm-token: ${{ secrets.CLPLAYERS_NPM_TOKEN_RW }}
+          npm-token: ${{ secrets.CLPLAYERS_NPM_TOKEN_REACT_COMPONENTS }}
           dry-run: ${{ env.DRY_RUN }}
 
       - name: Add Job summary
