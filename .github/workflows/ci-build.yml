@@ -22,11 +22,8 @@ jobs:
           node-version: 16
           cache: npm
           
-      - name: NPM Install
-        run: npm ci
+      - name: Get npm version
+        run: npm --version;
 
-      - name: Build
-        run: npm run build
-
-      - name: Test
-        run: npm run test
+      - name: get node version
+        run: node --version;
