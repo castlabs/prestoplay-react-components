@@ -46,7 +46,7 @@ if (versionInfo === null) {
 }
 
 const { type, label } = versionInfo;
-const args = []
+const args = ['--provenance']
 if (dryRun) {
   args.push('--dry-run')
 }
