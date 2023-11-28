@@ -1,5 +1,7 @@
 const execSync = require('child_process').execSync
 const core = require('@actions/core')
+const fs = require('fs')
+const utils = require('../utils')
 
 /**
  * @fileoverview Publish to NPM, if the version is in the beta format
@@ -55,4 +57,16 @@ if (label) {
 }
 
 core.info(`Publishing ${type === 'beta' ? 'Beta version' : 'version'} ${version}.`)
-execSync(`export NPM_TOKEN=${npmToken}; npm publish ${args.join(' ')}`, { stdio: 'inherit' })
+
+const npmRcContent = `
+@castlabs:registry=https://registry.npmjs.org
+//registry.npmjs.org/:_authToken=\${NPM_TOKEN}
+`
+
+try {
+  fs.writeFileSync(utils.file('.npmrc'), npmRcContent)
+  execSync(`export NPM_TOKEN=${npmToken}; npm publish ${args.join(' ')}`, { stdio: 'inherit' })
+} catch (error) {
+  core.error('Failed to publish to NPM' + error)
+  process.exit(1)
+}

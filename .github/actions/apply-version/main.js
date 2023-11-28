@@ -1,20 +1,12 @@
 const fs = require('fs')
-const path = require('path')
 const execSync = require('child_process').execSync
 const core = require('@actions/core')
+const utils = require('../utils')
 
 /**
  * @fileoverview Replace version and links to API docs with the current/fresh
  * value where needed (package.json, readme, storybook intro).
  */
-
-/**
- * @param {string} filepath relative to project root
- * @return {string} absolute path
- */
-function file(filepath) {
-  return path.resolve(__dirname, `../../../${filepath}`)
-}
 
 const TOKENS = {
   LINK_DOCS: 'CI_REPLACE_LINK_DOCS',
@@ -22,8 +14,8 @@ const TOKENS = {
 }
 
 const FILES = {
-  README: file('README.md'),
-  STORYBOOK_INTRO: file('story/stories/Intro.mdx'),
+  README: utils.file('README.md'),
+  STORYBOOK_INTRO: utils.file('story/stories/Intro.mdx'),
 }
 
 const version = core.getInput('version', {required: true})
