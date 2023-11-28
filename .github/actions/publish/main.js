@@ -35,6 +35,7 @@ function parseVersion(version) {
 
 
 const version = core.getInput('version', {required: true})
+const npmToken = core.getInput('npm-token', {required: true})
 const dryRun = core.getBooleanInput('dry-run')
 
 const versionInfo = parseVersion(version)
@@ -54,4 +55,4 @@ if (label) {
 }
 
 core.info(`Publishing ${type === 'beta' ? 'Beta version' : 'version'} ${version}.`)
-execSync(`npm publish ${args.join(' ')}`, { stdio: 'inherit' })
+execSync(`export NPM_TOKEN=${npmToken}; npm publish ${args.join(' ')}`, { stdio: 'inherit' })
