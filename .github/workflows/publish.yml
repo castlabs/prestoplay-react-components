@@ -1,5 +1,8 @@
 name: Publish
 
+# Test new NPM TOKEN and provenance (1 beta release)
+# Test that `publish` still works (beta/non beta on dry run)
+
 on:
   release:
     types: [released]
@@ -46,7 +49,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Upload to S3
-        run: aws s3 cp --recursive "./dist/storybook" "${{ secrets.AWS_WEB_BUCKET }}/${{ env.WEB_PATH }}"
+        run: aws s3 cp --recursive --dryrun "./dist/storybook" "${{ secrets.AWS_WEB_BUCKET }}/${{ env.WEB_PATH }}"
         # Note: the default cache policy is 1 day, I think that's OK for now.
         # In the future if traffic increases we can increase the expiration
         # as much as we want.
@@ -60,8 +63,9 @@ jobs:
         uses: ./.github/actions/publish
         with:
           version: ${{ env.VERSION }}
+          # TODO change
           npm-token: ${{ secrets.CLPLAYERS_NPM_TOKEN_RW }}
-          dry-run: false
+          dry-run: true
 
       - name: Add Job summary
         run: |
