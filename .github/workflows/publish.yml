@@ -37,7 +37,7 @@ jobs:
 
     ## Publish the API docs
 
-      - name: Build Storybook
+      - name: Build API Docs
         run: npm run build-storybook
 
       - name: Assume AWS role
@@ -46,7 +46,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_UPLOADER_ROLE_PLAYERS }}
           aws-region: us-east-1
 
-      - name: Upload to S3
+      - name: Upload API Docs
         uses: ./.github/actions/upload-to-s3
         with:
           directory: "./dist/storybook"
