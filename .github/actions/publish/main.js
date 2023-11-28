@@ -8,7 +8,7 @@ const core = require('@actions/core')
 
 const version = core.getInput('version', {required: true})
 const dryRun = core.getBooleanInput('dry-run')
-const NPM_TOKEN = core.getBooleanInput('npm-token')
+const npmToken = core.getInput('npm-token', {required: true})
 
 const regexBetaVersion = /^\d+\.\d+\.\d+-(\w+)\.\d+$/
 const regexVersion = /^\d+\.\d+\.\d+$/
@@ -35,5 +35,5 @@ const args = [
   '--provenance'
 ].filter(Boolean).join(' ')
 
-execSync(`export NPM_TOKEN=${NPM_TOKEN}; npm publish ${args}`, { stdio: 'inherit' })
+execSync(`export NPM_TOKEN=${npmToken}; npm publish ${args}`, { stdio: 'inherit' })
 process.exit(0);
