@@ -26,8 +26,9 @@ import type { Meta, StoryObj } from '@storybook/react'
 
 
 const baseConfig = {
-  // Replace this by your license key
-  license: '7c8165...81d53b1c',
+  // For production uncomment this and insert your license key
+  // (for local development a license is not required)
+  license: '',
 }
 
 const sourceConfig = {

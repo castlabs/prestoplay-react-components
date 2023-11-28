@@ -14,8 +14,9 @@ import '@castlabs/prestoplay/clpp.styles.css'
 import '@castlabs/prestoplay-react-components/dist/themes/pp-ui-base-theme-embedded.css'
 
 const baseConfig = {
-  // Replace this by your license key
-  license: '7c816...81d53b1c',
+  // For production uncomment this and insert your license key
+  // (for local development a license is not required)
+  // license: '',
 }
 
 const player = new Player(pp => {
