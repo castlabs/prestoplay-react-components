@@ -1,7 +1,10 @@
 name: CI Build
 
 on:
-  pull_request
+  pull_request:
+    types:
+      - opened
+
       
 jobs:
   build:
