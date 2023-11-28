@@ -5,7 +5,6 @@ on:
     types: [released]
 
 env:
-  NPM_TOKEN: ${{ secrets.CLPLAYERS_NPM_TOKEN_RW }}
   VERSION: ${{ github.event.release.tag_name }}
   WEB_PATH: "react-dom/${{ github.event.release.tag_name }}/docs/"
 
@@ -54,11 +53,6 @@ jobs:
 
     ## Publish the NPM package
 
-      - name: Write NPM RC File
-        run: |
-          echo '@castlabs:registry=https://registry.npmjs.org' > .npmrc
-          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> .npmrc
-
       - name: Build
         run: npm run build
 
@@ -66,7 +60,8 @@ jobs:
         uses: ./.github/actions/publish
         with:
           version: ${{ env.VERSION }}
-          dryRun: false
+          npm-token: ${{ secrets.CLPLAYERS_NPM_TOKEN_RW }}
+          dry-run: false
 
       - name: Add Job summary
         run: |

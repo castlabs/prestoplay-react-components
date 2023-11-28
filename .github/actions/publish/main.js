@@ -7,27 +7,32 @@ const core = require('@actions/core')
  */
 
 const version = core.getInput('version', {required: true})
-const dryRun = core.getBooleanInput('dryRun')
+const dryRun = core.getBooleanInput('dry-run')
+const NPM_TOKEN = core.getBooleanInput('npm-token')
 
-const regexBetaVersion = /^\d+\.\d+\.\d+-(\w+)\.\d+$/;
-const regexVersion = /^\d+\.\d+\.\d+$/;
+const regexBetaVersion = /^\d+\.\d+\.\d+-(\w+)\.\d+$/
+const regexVersion = /^\d+\.\d+\.\d+$/
 
-const betaMatch = version.match(regexBetaVersion);
-
-if (betaMatch) {
-  const betaLabel = betaMatch[1];
-  core.info(`Publishing a Beta version ${version}.`)
-  execSync(`npm publish ${dryRun ? '--dry-run' : ''} --tag ${betaLabel}`, { stdio: 'inherit' })
-  process.exit(0);
-}
-
+const betaMatch = version.match(regexBetaVersion)
+let betaLabel = betaMatch ? betaMatch[1] : null
+const isBeta = betaMatch != null
 const isNormal = regexVersion.test(version);
 
-if (isNormal) {
-  core.info(`Publishing version ${version}.`)
-  execSync(`npm publish ${dryRun ? '--dry-run' : ''}`, { stdio: 'inherit' })
-  process.exit(0);
+if (!isBeta || !isNormal) {
+  core.error(`Invalid version format. Version: ${version}`);
+  process.exit(1);
 }
 
-core.error(`Invalid version format. Version: ${version}`);
-process.exit(1);
+if (isBeta) {
+  core.info(`Publishing a Beta version ${version}.`)
+} else {
+  core.info(`Publishing version ${version}.`)
+}
+
+const args = [
+  dryRun ? '--dry-run' : null,
+  betaLabel ? `--tag ${betaLabel}` : null,
+].filter(Boolean).join(' ')
+
+execSync(`export NPM_TOKEN=${NPM_TOKEN}; npm publish ${args}`, { stdio: 'inherit' })
+process.exit(0);

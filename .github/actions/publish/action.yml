@@ -5,7 +5,10 @@ inputs:
   version:
     description: The SDK version
     required: true
-  dryRun:
+  npm-token:
+    description: NPM Auth token
+    required: true
+  dry-run:
     description: If true, run the commands but don't publish to NPM
     required: false
 
