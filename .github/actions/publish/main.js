@@ -32,6 +32,7 @@ if (isBeta) {
 const args = [
   dryRun ? '--dry-run' : null,
   betaLabel ? `--tag ${betaLabel}` : null,
+  '--provenance'
 ].filter(Boolean).join(' ')
 
 execSync(`export NPM_TOKEN=${NPM_TOKEN}; npm publish ${args}`, { stdio: 'inherit' })
