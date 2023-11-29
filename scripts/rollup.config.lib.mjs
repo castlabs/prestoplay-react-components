@@ -95,6 +95,7 @@ const options = [
           .replace(/^.*\/src\//, '')
           .replace(/\.tsx?$/, '.js')
       },
+      sourcemap: true,
     }],
   }),
 
@@ -108,6 +109,7 @@ const options = [
        * format as well.
        */
       format: 'cjs',
+      sourcemap: true,
     }],
     plugins: [terser(), /* analyze() */],
   }),
