@@ -65,7 +65,10 @@ const npmRcContent = `
 
 try {
   fs.writeFileSync(utils.file('.npmrc'), npmRcContent)
-  execSync(`export NPM_TOKEN=${npmToken}; npm publish ${args.join(' ')}`, { stdio: 'inherit' })
+  execSync(
+    `npm publish ${args.join(' ')}`,
+    { stdio: 'inherit',  env: { ...process.env, NPM_TOKEN: npmToken }},
+  )
 } catch (error) {
   core.error('Failed to publish to NPM' + error)
   process.exit(1)
