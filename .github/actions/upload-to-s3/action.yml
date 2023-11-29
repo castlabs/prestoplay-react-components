@@ -1,0 +1,17 @@
+name: 'Upload to S3'
+description: 'Upload the contents of a directory to an S3 bucket'
+
+inputs:
+  directory:
+    description: Directory to upload
+    required: true
+  destination:
+    description: S3 destination path URI
+    required: true
+  dry-run:
+    description: If true, run the commands but don't actually upload
+    required: false
+
+runs:
+  using: 'node20'
+  main: './main.js'

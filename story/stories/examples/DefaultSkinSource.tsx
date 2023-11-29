@@ -6,6 +6,7 @@ import '@castlabs/prestoplay/cl.hls'
 import '@castlabs/prestoplay/cl.htmlcue'
 import '@castlabs/prestoplay/cl.ttml'
 import '@castlabs/prestoplay/cl.vtt'
+
 import { Player, BaseThemeOverlay, PlayerSurface } from '@castlabs/prestoplay-react-components'
 import React from 'react'
 
@@ -13,8 +14,9 @@ import '@castlabs/prestoplay/clpp.styles.css'
 import '@castlabs/prestoplay-react-components/dist/themes/pp-ui-base-theme-embedded.css'
 
 const baseConfig = {
-  // Replace this by your license key
-  license: '7c8165eb7231508ce4eae02181d53b1c',
+  // For production uncomment this and insert your license key
+  // (for local development a license is not required)
+  // license: '',
 }
 
 const player = new Player(pp => {
@@ -26,7 +28,7 @@ const player = new Player(pp => {
 })
 
 const sourceConfig = {
-  source: 'https://content.players.castlabs.com/demos/clear-segmented/manifest.mpd',
+  source: 'https://c.../manifest.mpd',
 }
 
 const App = () => {

@@ -1,0 +1,17 @@
+name: 'Publish'
+description: 'Publish to NPM, if it is a beta version publish to beta channel'
+
+inputs:
+  version:
+    description: The SDK version
+    required: true
+  npm-token:
+    description: The NPM token
+    required: true
+  dry-run:
+    description: If true, run the commands but don't publish to NPM
+    required: false
+
+runs:
+  using: 'node20'
+  main: './main.js'
