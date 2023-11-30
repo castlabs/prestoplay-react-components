@@ -1,3 +1,9 @@
+# 0.7.1 (Beta)
+
+## Fixes
+
+* Make sure the default entry point is ESM (this helps prevent [Webpack issue 4674](https://github.com/webpack/webpack/issues/4674)).
+
 # 0.7.0 (Beta)
 
 ## Breaking changes
