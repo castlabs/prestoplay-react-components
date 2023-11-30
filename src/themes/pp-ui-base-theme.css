@@ -585,11 +585,14 @@
 
 .pp-ui-video {
     display: flex;
+    height: 100%;
+    width: 100%;
 }
 
 .pp-ui-surface {
     position: relative;
-    height: 480px;
+    height: 100%;
+    width: 100%;
     background-color: var(--pp-ui-surface-bg);
 }
 
@@ -787,6 +790,11 @@
 
 .pp-ui-disabled {
 
+}
+
+.clpp-video {
+  height: 100%;
+  width: 100%;
 }
 
 @media (max-width: 800px) {

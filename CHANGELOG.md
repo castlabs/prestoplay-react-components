@@ -1,3 +1,9 @@
+# 0.7.2 (Beta)
+
+## Fixes
+
+* Fix styling of video canvas.
+
 # 0.7.1 (Beta)
 
 ## Fixes
