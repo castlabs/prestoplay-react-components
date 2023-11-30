@@ -11,10 +11,8 @@
     "url": "https://github.com/castlabs/prestoplay-react-components/issues"
   },
   "author": "castLabs GmbH (https://castlabs.com/)",
-  "browser": "dist/prestoplay-react.cjs.min.js",
-  "main": "dist/prestoplay-react.cjs.min.js",
-  "module": "dist/index.js",
-  "types": "dist/prestoplay-react.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "bash ./scripts/build.sh",
     "start": "bash ./scripts/start.sh",
