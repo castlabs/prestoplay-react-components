@@ -88,7 +88,7 @@ export const PlayerSurface = (props: PlayerProps) => {
 
   const createVideo = async (video: HTMLVideoElement|null) => {
     if (!video || context) {return}
-    
+
     await props.player.init(video, props.baseConfig)
     const presto = await props.player.presto()
 
@@ -137,11 +137,11 @@ export const PlayerSurface = (props: PlayerProps) => {
     }
   }, [], props.player)
 
-  // const mouseMove = () => {
-  //   if (!props.player.controlsVisible && !props.player.slideInMenuVisible) {
-  //     props.player.surfaceInteraction()
-  //   }
-  // }
+  const mouseMove = () => {
+    if (!props.player.controlsVisible && !props.player.slideInMenuVisible) {
+      props.player.surfaceInteraction()
+    }
+  }
 
   const mouseClick = (e: React.MouseEvent) => {
     if (!e.defaultPrevented) {
@@ -192,29 +192,28 @@ export const PlayerSurface = (props: PlayerProps) => {
       }
     }
 
-    // let player = props.player;
-    // switch (e.code) {
-    //   case "ArrowRight":
-    //     player.position += 10
-    //     break
-    //   case "ArrowLeft":
-    //     player.position -= 10
-    //     break
-    //   case "Space":
-    //     player.playing = !player.playing
-    //     e.preventDefault()
-    //     break
-    //   case "Escape":
-    //     if (props.player.slideInMenuVisible) {
-    //       console.log('>>> ESCAPE, close menu and register interaction')
-    //       props.player.slideInMenuVisible = false
-    //       setTimeout(() => {
-    //         props.player.surfaceInteraction()
-    //       }, 100)
-    //       e.preventDefault()
-    //     }
-    //     break
-    // }
+    const player = props.player
+    switch (e.code) {
+      case 'ArrowRight':
+        player.position += 10
+        break
+      case 'ArrowLeft':
+        player.position -= 10
+        break
+      case 'Space':
+        player.playing = !player.playing
+        e.preventDefault()
+        break
+      case 'Escape':
+        if (props.player.slideInMenuVisible) {
+          props.player.slideInMenuVisible = false
+          setTimeout(() => {
+            props.player.surfaceInteraction()
+          }, 100)
+          e.preventDefault()
+        }
+        break
+    }
   }
 
   useEffect(() => {
@@ -250,11 +249,11 @@ export const PlayerSurface = (props: PlayerProps) => {
 
   return (
     <div ref={handleContainerRef}
-      data-testid="pp-ui-surface" 
+      data-testid="pp-ui-surface"
       className={`pp-ui pp-ui-surface ${isIpadOS() ? 'pp-ui-ipad' : ''} ${props.className || ''}`}
       style={props.style}
       onClick={mouseClick}
-      // onMouseMove={mouseMove}
+      onMouseMove={mouseMove}
       onKeyDown={onKeyDown}
       tabIndex={0}
     >
@@ -263,7 +262,7 @@ export const PlayerSurface = (props: PlayerProps) => {
         tabIndex={-1}
         playsInline={props.playsInline}>
       </video>
-      {context && 
+      {context &&
         <PrestoContext.Provider value={context}>
           <div className={`pp-ui pp-ui-overlay ${isIpadOS() ? 'pp-ui-ipad' : ''}`}>
             {props.children}

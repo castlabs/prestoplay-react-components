@@ -1,3 +1,10 @@
+# 0.7.3 (Beta)
+
+## Fixes
+
+* Show UI controls on mouse move.
+* Add basic keyboard shortcuts (Fast-forward, Rewind, Pause/Play).
+
 # 0.7.2 (Beta)
 
 ## Fixes
