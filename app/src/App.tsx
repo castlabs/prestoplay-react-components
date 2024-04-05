@@ -16,8 +16,9 @@ import './styles.css'
 import '@castlabs/prestoplay/clpp.styles.css'
 // load the theme
 import '../../src/themes/pp-ui-base-theme.css'
+import { InterstitialPage } from './InterstitialPage'
 
-type Page = 'basic' | 'custom' | 'components' | 'youtube'
+type Page = 'basic' | 'custom' | 'components' | 'youtube' | 'interstitial'
 
 function getQueryVariable(variable: string) {
   const searchParams = new URLSearchParams(window.location.search)
@@ -33,7 +34,7 @@ function setQueryParam(key: string, value: string) {
 export function App() {
   // We track the configuration here to make sure we can dynamically change it
   const [assetId, setAssetId] = useState<number>(Number(getQueryVariable('asset') || 0))
-  const [pageId, setPageId] = useState<Page>(getQueryVariable('page') ?? 'basic')
+  const [pageId, setPageId] = useState<Page>(getQueryVariable('page') ?? 'interstitial')
   const [asset, setAsset] = useState<Asset|undefined>(TestAssets[assetId])
   const [autoload, setAutoload] = useState<boolean>(false)
   const [navVisible, setNavVisible] = useState<boolean>(false)
@@ -60,6 +61,8 @@ export function App() {
       return <ComponentsOverviewPage asset={asset} autoload={autoload}/>
     } else if (pageId === 'youtube') {
       return <YoutubeControlsPage asset={asset} autoload={autoload}/>
+    } else if (pageId === 'interstitial') {
+      return <InterstitialPage asset={asset} autoload={autoload}/>
     }
     return <div>Unknown Page!</div>
   }, [pageId, asset, autoload])
