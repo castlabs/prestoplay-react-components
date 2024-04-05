@@ -98,6 +98,7 @@ const toState = (state: number): State => {
 }
 
 export interface UIEvents {
+  ad: boolean
   /**
    * Triggered when the slide in menu state changes
    */
@@ -382,12 +383,12 @@ export class Player {
 
     this.ip_ = new clpp.interstitial.Player({ anchorId })
 
-    // this.ip_.on('interstitial-started', (event) => {
-    //   console.info('Interstitial event interstitial-started', event)
-    // })
-    // this.ip_.on('interstitial-ended', (event) => {
-    //   console.info('Interstitial event interstitial-ended', event)
-    // })
+    this.ip_.on('interstitial-started', () => {
+      this.emitUIEvent('ad', true)
+    })
+    this.ip_.on('interstitial-ended', () => {
+      this.emitUIEvent('ad', false)
+    })
     // this.ip_.on('interstitial-item-started', (event) => {
     //   console.info('Interstitial event interstitial-item-started', event)
     // })

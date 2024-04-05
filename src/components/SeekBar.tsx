@@ -23,6 +23,16 @@ const useEnabled = (enabled: boolean) => {
   return enabled && playerEnabled
 }
 
+const useAd = () => {
+  const [ad, setAd] = useState(false)
+
+  usePrestoUiEvent('ad', (isAd) => {
+    setAd(isAd)
+  })
+
+  return ad
+}
+
 /**
  * Seek bar.
  * Seek bar displays video timeline and playback progress, it can be used for seeking.
@@ -36,6 +46,7 @@ export const SeekBar = forwardRef((props: SeekBarProps, ref: ForwardedRef<HTMLDi
   const [hoverValue, setHoverValue] = useState(0)
   const [thumbWidth, setThumbWidth] = useState(0)
   const enabled = useEnabled(props.enabled ?? true)
+  const isAd = useAd()
 
   function updateFromPlayer(position?: number): number {
     const range = player.seekRange
@@ -121,6 +132,7 @@ export const SeekBar = forwardRef((props: SeekBarProps, ref: ForwardedRef<HTMLDi
       data-testid="pp-ui-seekbar"
       className={`pp-ui-seekbar ${props.className || ''}`} style={props.style}>
       <Slider
+        isAd={isAd}
         ref={ref}
         hoverMovement={true}
         value={progress}

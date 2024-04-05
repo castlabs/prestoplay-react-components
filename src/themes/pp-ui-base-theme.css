@@ -18,6 +18,8 @@
     /* Slider */
     --pp-ui-slider-height: .25rem;
     --pp-ui-slider-height-interaction: .5rem;
+    --pp-ui-slider-range-bg-ad: #58642c;
+    --pp-ui-slider-range-progress-ad: #daff06;
     --pp-ui-slider-range-bg: #b4b4b4;
     --pp-ui-slider-range-progress: #ffffff;
     --pp-ui-slider-range-thumb-bg: #ffffff;
@@ -474,8 +476,15 @@
     transition: height 200ms;
 }
 
+.pp-ui-ad .pp-ui-slider-range {
+    background-color: var(--pp-ui-slider-range-bg-ad);
+}
+
 .pp-ui-slider-range-progress {
     background-color: var(--pp-ui-slider-range-progress);
+}
+.pp-ui-ad .pp-ui-slider-range-progress {
+    background-color: var(--pp-ui-slider-range-progress-ad);
 }
 
 .pp-ui-slider-range-thumb {

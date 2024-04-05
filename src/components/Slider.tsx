@@ -16,6 +16,7 @@ import type { BaseComponentProps } from './types'
  * Properties that can be passed to the slider
  */
 export interface SliderProps extends BaseComponentProps {
+  isAd?: boolean
   /**
    * If true, mouse moves over the slider are tracked and reported
    * as the hover position. Use {@link SliderProps.onApplyHoverValue} to
@@ -310,11 +311,16 @@ export const Slider = forwardRef((props: SliderProps, ref) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  let className = `pp-ui-slider ${interacting ? 'pp-ui-slider-interacting' : ''} `
+   + `${props.disabled ? 'pp-ui-disabled' : 'pp-ui-enabled'} ${props.className || ''}`
+  if (props.isAd) {
+    className += ' pp-ui-ad'
+  }
+
   return (
     <div ref={handleContainerRef}
       data-testid="pp-ui-slider"
-      className={`pp-ui-slider ${interacting ? 'pp-ui-slider-interacting' : ''} `
-        + `${props.disabled ? 'pp-ui-disabled' : 'pp-ui-enabled'} ${props.className || ''}`}
+      className={className}
       style={sliderStyles}
       onClick={props.disabled ? noop : mouseClick}
 
@@ -332,7 +338,7 @@ export const Slider = forwardRef((props: SliderProps, ref) => {
     >
       <div ref={barContainer}
         style={rangeStyles}
-        className="pp-ui-slider-range ">
+        className="pp-ui-slider-range">
       </div>
 
       <div className="pp-ui-slider-range pp-ui-slider-range-progress"
