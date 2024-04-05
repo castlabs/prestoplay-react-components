@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { clpp } from '@castlabs/prestoplay'
 import { createContext } from 'react'
 
 import { Player } from '../Player'
@@ -7,7 +6,6 @@ import { Player } from '../Player'
 export type PrestoContextType = {
   playerSurface: HTMLDivElement
   player: Player
-  presto: clpp.Player
 }
 
 /**
@@ -19,6 +17,4 @@ export const PrestoContext = createContext<PrestoContextType>({
   playerSurface: null,
   // @ts-ignore
   player: null,
-  // @ts-ignore
-  presto: null,
 })

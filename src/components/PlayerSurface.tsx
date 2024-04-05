@@ -75,7 +75,6 @@ export const PlayerSurface = (props: PlayerProps) => {
   const [nullableContext, setPrestoContext ] = useState<Partial<PrestoContextType>>({
     playerSurface: undefined,
     player: props.player,
-    presto: undefined,
   })
   const context = getContext(nullableContext)
 
@@ -86,16 +85,9 @@ export const PlayerSurface = (props: PlayerProps) => {
 
   const containerRef = useRef<HTMLDivElement|null>(null)
 
-  const createVideo = async (video: HTMLVideoElement|null) => {
-    if (!video || context) {return}
-
-    await props.player.init(video, props.baseConfig)
-    const presto = await props.player.presto()
-
-    setPrestoContext(context => ({
-      ...context,
-      presto,
-    }))
+  const onAnchorReady = async (anchor: HTMLDivElement|null) => {
+    if (!anchor) {return}
+    await props.player.init(anchor.id)
   }
 
   useEffect(() => {
@@ -105,15 +97,6 @@ export const PlayerSurface = (props: PlayerProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    if (!props.config) {return}
-
-    props.player.load(props.config, props.autoload)
-      .catch(err => console.error('Failed to load source', props.config, err))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.config, props.player])
-
 
   function maybeFocusSurface(forceSurfaceFocus?: boolean) {
     if (containerRef.current) {
@@ -257,11 +240,12 @@ export const PlayerSurface = (props: PlayerProps) => {
       onKeyDown={onKeyDown}
       tabIndex={0}
     >
-      <video className={'pp-ui pp-ui-video'}
-        ref={createVideo}
+      <div
+        className='pp-video-anchor'
+        id="pp-video-anchor"
+        ref={onAnchorReady}
         tabIndex={-1}
-        playsInline={props.playsInline}>
-      </video>
+      ></div>
       {context &&
         <PrestoContext.Provider value={context}>
           <div className={`pp-ui pp-ui-overlay ${isIpadOS() ? 'pp-ui-ipad' : ''}`}>
