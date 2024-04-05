@@ -27,8 +27,7 @@ export interface ThumbnailProps extends BaseComponentProps {
  * @returns thumbnails plugin
  */
 const usePlugin = () => {
-  const { presto } = useContext(PrestoContext)
-  return presto.getPlugin(clpp.thumbnails.ThumbnailsPlugin.Id) as clpp.thumbnails.ThumbnailsPlugin | null
+  return null as  clpp.thumbnails.ThumbnailsPlugin | null
 }
 
 const DEFAULT_STYLE = { height: 130 }

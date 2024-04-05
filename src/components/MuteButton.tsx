@@ -24,7 +24,7 @@ export interface MuteButtonProps extends BasePlayerComponentButtonProps {
  * A button that mutes/un-mutes audio.
  */
 export const MuteButton = (props: MuteButtonProps) => {
-  const { presto } = useContext(PrestoContext)
+  const { player } = useContext(PrestoContext)
   const [muted, setMuted] = useState(false)
   const enabled = usePrestoEnabledState()
 
@@ -35,8 +35,9 @@ export const MuteButton = (props: MuteButtonProps) => {
     setMuted(presto.isMuted() ?? false)
   })
 
-  function toggle(e: React.MouseEvent) {
+  async function toggle(e: React.MouseEvent) {
     if (e.defaultPrevented) {return}
+    const presto = await player.presto()
     presto.setMuted(!presto.isMuted())
   }
 
