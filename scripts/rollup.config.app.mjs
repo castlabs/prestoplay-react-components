@@ -49,7 +49,7 @@ const options = [
         open: true,
         verbose: true,
         contentBase: ["", "app", "app/src"],
-        host: "0.0.0.0",
+        host: "localhost",
         port: "3000",
       }),
       livereload({

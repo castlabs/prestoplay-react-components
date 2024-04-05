@@ -63,7 +63,7 @@ export const InterstitialPage = (props: {
       try {
         await player.load({
           source: {
-            url: 'https://placeholder.joneriks.developer.mediatailor.aws.a2z.com/v1/master/5d22c610440c419b9290f9233dc99fe61adb77ab/mt-dev-vod/index.m3u8?aws.insertionMode=GUIDED',
+            url: 'http://localhost:3000/vod-fixed.m3u8',
             type: clpp.Type.HLS,
           },
         })
@@ -84,21 +84,19 @@ export const InterstitialPage = (props: {
             autoload={props.autoload}
             playsInline={true}
           >
-            {/* <BaseThemeOverlay
-          startButton={!props.autoload && showStartButton}
-          posterUrl={showPoster ? asset?.poster: ''}
-          seekForward={10}
-          seekBackward={-10}
-          menuSelectionOptions={[
-            { type: 'audio', label: 'Language', hideCurrentlyActive:false, hideWhenUnavailable: true },
-            { type: 'text', label: 'Subtitles', hideCurrentlyActive:false, hideWhenUnavailable: true },
-            { type: 'video', label: 'Video', hideCurrentlyActive:false, hideWhenUnavailable: true },
-          ]}
-        /> */}
+            <BaseThemeOverlay
+              startButton={false}
+              // posterUrl={showPoster ? asset?.poster: ''}
+              seekForward={10}
+              seekBackward={-10}
+              menuSelectionOptions={[
+                { type: 'audio', label: 'Language', hideCurrentlyActive:false, hideWhenUnavailable: true },
+                { type: 'text', label: 'Subtitles', hideCurrentlyActive:false, hideWhenUnavailable: true },
+                { type: 'video', label: 'Video', hideCurrentlyActive:false, hideWhenUnavailable: true },
+              ]}
+            />
           </PlayerSurface>
         </div>
-       
-
         <div className={'options'}>
           <button onClick={play}>Play</button>
           {/* <label>

@@ -23,19 +23,22 @@ type ClppEventHandler = (event: Record<string, any>, presto: clpp.Player) => voi
  *  for some reason, presto_ must be passed explicitly
  */
 export function usePrestoCoreEvent(
-  eventName: string, handler: ClppEventHandler, dependencies: unknown[] = [], presto_?: clpp.Player,
+  eventName: string, handler: ClppEventHandler, dependencies: unknown[] = [],
 ) {
-  const presto = useContext(PrestoContext).presto ?? presto_
+  const { player } = useContext(PrestoContext)
 
   useEffect(() => {
-    const handleEvent = (event: Record<string, any>) => {
-      handler(event, presto)
-    }
+    player.presto().then(presto=> {
+      const handleEvent = (event: Record<string, any>) => {
+        handler(event, presto)
+      }
 
-    presto.on(eventName, handleEvent)
-    return () => {
-      presto.off(eventName, handleEvent)
-    }
+      presto.on(eventName, handleEvent)
+    }).catch(() => {})
+
+    // return () => {
+    //   presto.off(eventName, handleEvent)
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventName, ...dependencies])
 }

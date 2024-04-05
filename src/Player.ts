@@ -200,6 +200,11 @@ const isEnabledState = (state: State): boolean => {
  */
 export class Player {
   /**
+   * The interstitial player instance
+   * @private
+   */
+  private ip_: clpp.interstitial.Player | null = null
+  /**
    * The player instance
    * @private
    */
@@ -263,6 +268,8 @@ export class Player {
    * @private
    */
   private _textTrack: Track = getUnavailableTrack('text')
+
+  private _isEnabledState = false
 
   /**
    * All available video tracks
@@ -370,11 +377,47 @@ export class Player {
    * @param element The video element or the ID of the video element
    * @param baseConfig PRESTOplay config to initialize the player with
    */
-  async init(element: HTMLVideoElement | string, baseConfig?: clpp.PlayerConfiguration) {
-    if (this.pp_) {return}
+  async init(anchorId: string) {
+    if (this.ip_) {return}
 
-    this.pp_ = new clpp.Player(element, baseConfig)
+    this.ip_ = new clpp.interstitial.Player({ anchorId })
 
+    // this.ip_.on('interstitial-started', (event) => {
+    //   console.info('Interstitial event interstitial-started', event)
+    // })
+    // this.ip_.on('interstitial-ended', (event) => {
+    //   console.info('Interstitial event interstitial-ended', event)
+    // })
+    // this.ip_.on('interstitial-item-started', (event) => {
+    //   console.info('Interstitial event interstitial-item-started', event)
+    // })
+    // this.ip_.on('primary-player-changed', (event) => {
+    //   console.info('Primary player changed', event)
+    // })
+
+    // @ts-ignore
+    this.ip_.on('item-changed', () => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const item = this.ip_?.getCurrentItem() ?? null
+      if (!item || !item.player) {
+        console.error('Interstitial: item-changed event without item/player')
+        return
+      }
+
+      this.pp_ = item.player
+      this.attachListeners_(item.player)
+    })
+
+    for (let i = 0; i < this._actionQueue_.length; i++) {
+      await this._actionQueue_[i]()
+    }
+    this._actionQueue_ = []
+    if (this._actionQueueResolved) {
+      this._actionQueueResolved()
+    }
+  }
+
+  attachListeners_(player: clpp.Player) {
     const handlePlayerTracksChanged = (type?: TrackType) => {
       return () => {
         const trackManager = this.trackManager
@@ -395,12 +438,12 @@ export class Player {
       }
     }
 
-    this.pp_.on(clpp.events.TRACKS_ADDED, handlePlayerTracksChanged())
-    this.pp_.on(clpp.events.AUDIO_TRACK_CHANGED, handlePlayerTracksChanged('audio'))
-    this.pp_.on(clpp.events.VIDEO_TRACK_CHANGED, handlePlayerTracksChanged('video'))
-    this.pp_.on(clpp.events.TEXT_TRACK_CHANGED, handlePlayerTracksChanged('text'))
+    player.on(clpp.events.TRACKS_ADDED, handlePlayerTracksChanged())
+    player.on(clpp.events.AUDIO_TRACK_CHANGED, handlePlayerTracksChanged('audio'))
+    player.on(clpp.events.VIDEO_TRACK_CHANGED, handlePlayerTracksChanged('video'))
+    player.on(clpp.events.TEXT_TRACK_CHANGED, handlePlayerTracksChanged('text'))
 
-    this.pp_.on(clpp.events.STATE_CHANGED, (event: any) => {
+    player.on(clpp.events.STATE_CHANGED, (event: any) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const e = event
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -417,25 +460,30 @@ export class Player {
         timeSinceLastStateChangeMS: e.detail.timeSinceLastStateChangeMS,
       })
 
-      if (isEnabledState(currentState) !== isEnabledState(previousState)) {
-        this.emitUIEvent('enabled', isEnabledState(currentState))
+      const isInEnabledState = isEnabledState(currentState)
+      if (
+        isInEnabledState !== isEnabledState(previousState)
+        || isInEnabledState !==  this._isEnabledState
+      ) {
+        this._isEnabledState = isInEnabledState
+        this.emitUIEvent('enabled', isInEnabledState)
       }
 
-      if (!isEnabledState(currentState) || currentState === State.Paused) {
+      if (!isInEnabledState || currentState === State.Paused) {
         this._controls.pin()
       } else {
         this._controls.unpin()
       }
     })
 
-    this.pp_.on('timeupdate', () => {
+    player.on('timeupdate', () => {
       const position = this.pp_?.getPosition()
       if (position != null) {
         this.emitUIEvent('position', position)
       }
     })
 
-    this.pp_.on('ratechange', () => {
+    player.on('ratechange', () => {
       const ppRate = this.pp_?.getPlaybackRate()
 
       if (ppRate != null && this.state !== State.Buffering) {
@@ -444,21 +492,21 @@ export class Player {
       }
     })
 
-    this.pp_.on('durationchange', () => {
+    player.on('durationchange', () => {
       const duration = this.pp_?.getDuration()
       if (duration != null) {
         this.emitUIEvent('durationchange', duration)
       }
     })
 
-    this.pp_.on('volumechange', () => {
+    player.on('volumechange', () => {
       this.emitUIEvent('volumechange', {
         volume: this.volume,
         muted: this.muted,
       })
     })
 
-    this.pp_.on(clpp.events.BITRATE_CHANGED, (e: any) => {
+    player.on(clpp.events.BITRATE_CHANGED, (e: any) => {
       const tm = this.trackManager
 
       if (tm) {
@@ -469,17 +517,10 @@ export class Player {
       handlePlayerTracksChanged('video')
     })
 
-    this._rate = this.pp_.getPlaybackRate()
+    this._rate = player.getPlaybackRate()
 
     if (this._initializer) {
-      this._initializer(this.pp_)
-    }
-    for (let i = 0; i < this._actionQueue_.length; i++) {
-      await this._actionQueue_[i]()
-    }
-    this._actionQueue_ = []
-    if (this._actionQueueResolved) {
-      this._actionQueueResolved()
+      this._initializer(player)
     }
   }
 
@@ -606,26 +647,11 @@ export class Player {
     }
   }
 
-  load(config?: clpp.PlayerConfiguration, autoload = false) {
-    if (config) {
-      this._config = config
-      return this.action(async () => {
-        await this.reset_()
-        if (config && autoload) {
-          this._configLoaded = true
-          await this.pp_?.load(config)
-        }
-      })
-    } else {
-      return this.action(async () => {
-        await this.pp_?.release()
-        if (this._config) {
-          this._configLoaded = true
-          await this.pp_?.load(this._config)
+  async load(config?: clpp.PlayerConfiguration) {
+    if (!this.ip_ || !config) {return}
 
-        }
-      })
-    }
+    await this.ip_.load(config)
+    this._configLoaded = true
   }
 
   get config() {
@@ -633,6 +659,7 @@ export class Player {
   }
 
   async release() {
+    this.ip_?.destroy()
     this._config = null
     await this.reset_()
   }
