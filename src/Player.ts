@@ -389,9 +389,7 @@ export class Player {
       this.emitUIEvent('statechanged', {
         currentState,
         previousState,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         reason: e.detail.reason,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         timeSinceLastStateChangeMS: e.detail.timeSinceLastStateChangeMS,
       })
 
