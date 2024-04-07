@@ -79,8 +79,6 @@ const getPositionFromMouseEvent = (e: PressEvent, container: HTMLDivElement | nu
   const width = rect.width
   let x: number
   if (e.type === 'touchmove' || e.type === 'touchstart' || e.type === 'touchend') {
-    // Eslint false alarm
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const touchEvent = e as React.TouchEvent<HTMLDivElement>
     x = touchEvent.changedTouches[touchEvent.changedTouches.length - 1].pageX - rect.left
   } else {
@@ -310,11 +308,13 @@ export const Slider = forwardRef((props: SliderProps, ref) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const className = `pp-ui-slider ${interacting ? 'pp-ui-slider-interacting' : ''} `
+   + `${props.disabled ? 'pp-ui-disabled' : 'pp-ui-enabled'} ${props.className || ''}`
+
   return (
     <div ref={handleContainerRef}
       data-testid="pp-ui-slider"
-      className={`pp-ui-slider ${interacting ? 'pp-ui-slider-interacting' : ''} `
-        + `${props.disabled ? 'pp-ui-disabled' : 'pp-ui-enabled'} ${props.className || ''}`}
+      className={className}
       style={sliderStyles}
       onClick={props.disabled ? noop : mouseClick}
 
@@ -332,7 +332,7 @@ export const Slider = forwardRef((props: SliderProps, ref) => {
     >
       <div ref={barContainer}
         style={rangeStyles}
-        className="pp-ui-slider-range ">
+        className="pp-ui-slider-range">
       </div>
 
       <div className="pp-ui-slider-range pp-ui-slider-range-progress"

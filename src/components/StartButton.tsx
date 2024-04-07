@@ -11,7 +11,7 @@ import type { BasePlayerComponentButtonProps } from './types'
 
 
 export interface StartButtonProps extends BasePlayerComponentButtonProps {
-  onClick?: () => Promise<void>
+  onClick?: () => any | Promise<any>
 }
 
 const isVisibleState = (state: State) => {
