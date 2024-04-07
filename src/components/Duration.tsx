@@ -15,7 +15,7 @@ const toString = (duration: number) => {
   if (duration === Infinity) {
     return 'Live'
   }
-  return timeToString(duration, getMinimalFormat(duration))
+  return timeToString(duration, getMinimalFormat(duration), 0.2)
 }
 
 export interface DurationProps extends BaseComponentProps {
