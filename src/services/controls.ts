@@ -1,4 +1,4 @@
-export type ControlsVisibilityMode = 'auto' | 'always-visible'
+export type ControlsVisibilityMode = 'auto' | 'always-visible' | 'never'
 
 type Callback = (visible: boolean) => void
 
