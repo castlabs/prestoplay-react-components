@@ -28,6 +28,8 @@ export function usePrestoCoreEvent(
   const presto = useContext(PrestoContext).presto ?? presto_
 
   useEffect(() => {
+    if (!presto) {return}
+
     const handleEvent = (event: Record<string, any>) => {
       handler(event, presto)
     }
@@ -37,7 +39,7 @@ export function usePrestoCoreEvent(
       presto.off(eventName, handleEvent)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [eventName, ...dependencies])
+  }, [presto, eventName, ...dependencies])
 }
 
 /**

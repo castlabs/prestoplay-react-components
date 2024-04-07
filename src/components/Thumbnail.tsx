@@ -28,6 +28,7 @@ export interface ThumbnailProps extends BaseComponentProps {
  */
 const usePlugin = () => {
   const { presto } = useContext(PrestoContext)
+  if (!presto) {return null}
   return presto.getPlugin(clpp.thumbnails.ThumbnailsPlugin.Id) as clpp.thumbnails.ThumbnailsPlugin | null
 }
 

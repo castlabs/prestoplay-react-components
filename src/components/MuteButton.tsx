@@ -36,7 +36,7 @@ export const MuteButton = (props: MuteButtonProps) => {
   })
 
   function toggle(e: React.MouseEvent) {
-    if (e.defaultPrevented) {return}
+    if (e.defaultPrevented || !presto) {return}
     presto.setMuted(!presto.isMuted())
   }
 
