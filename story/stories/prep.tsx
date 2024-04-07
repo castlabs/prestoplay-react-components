@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { clpp } from '@castlabs/prestoplay'
 import '@castlabs/prestoplay/cl.dash'
 import '@castlabs/prestoplay/cl.hls'

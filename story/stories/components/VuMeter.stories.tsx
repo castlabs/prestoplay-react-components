@@ -30,7 +30,6 @@ const Component =  () => {
   }, [])
 
   const playerConfig = {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     source: TEST_ASSETS[0].config.source ?? '',
   }
 

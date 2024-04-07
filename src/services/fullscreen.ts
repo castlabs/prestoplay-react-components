@@ -1,5 +1,4 @@
 /* eslint-disable
-  @typescript-eslint/no-unsafe-assignment,
   @typescript-eslint/no-unsafe-return,
   @typescript-eslint/ban-ts-comment
 */
