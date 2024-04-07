@@ -69,6 +69,22 @@ export interface BaseThemeOverlayProps extends BaseComponentProps {
    * Visibility mode of UI controls.
    */
   controlsVisibility?: ControlsVisibilityMode
+  /**
+   * If true, audio controls are displayed. Defaults to true.
+   */
+  hasAudioControls?: boolean
+  /**
+   * If true, a fullscreen button is displayed. Defaults to true.
+   */
+  hasFullScreenButton?: boolean
+  /**
+   * If true, track controls are displayed. Defaults to true.
+   */
+  hasTrackControls?: boolean
+  /**
+   * If true, the top controls bar is displayed. Defaults to true.
+   */
+  hasTopControlsBar?: boolean
 }
 
 /**
@@ -76,6 +92,10 @@ export interface BaseThemeOverlayProps extends BaseComponentProps {
  */
 export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   const selectionOptions = props.menuSelectionOptions ?? DEFAULT_SELECTION_OPTIONS
+  const hasAudioControls = props.hasAudioControls ?? true
+  const hasTrackControls = props.hasTrackControls ?? true
+  const hasFullScreenButton = props.hasFullScreenButton ?? true
+  const hasTopControlsBar = props.hasTopControlsBar ?? true
 
   const renderOptionsMenu = () => {
     if (selectionOptions.length === 0) {return}
@@ -83,21 +103,17 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   }
 
   const renderTopBar = () => {
-    if (selectionOptions.length === 0) {return}
+    if (!hasTopControlsBar || selectionOptions.length === 0) {return}
     return (
-      <HorizontalBar>
+      <HorizontalBar className="pp-ui-top-bar">
         <Spacer/>
-        <div className="pp-ui-margin-horizontal-sm">
-          <MenuSlideinToggleButton />
-        </div>
+        {hasTrackControls ? (
+          <div className="pp-ui-margin-horizontal-sm">
+            <MenuSlideinToggleButton />
+          </div>
+        ) : null}
       </HorizontalBar>
     )
-  }
-
-  // Some component rendering depends on configuration, and
-  // we wrap the rendering code into helpers
-  const renderFullscreenButton = () => {
-    return <FullscreenButton />
   }
 
   const renderPosterImage = () => {
@@ -149,11 +165,11 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
                 <Duration />
               </ForSize>
 
-              <MuteButton />
+              {hasAudioControls ? <MuteButton/>: null}
 
               <ForSize size="medium">
-                <VolumeBar adjustWhileDragging={true}/>
-                {renderFullscreenButton()}  
+                {hasAudioControls ? <VolumeBar adjustWhileDragging={true}/> : null}
+                {hasFullScreenButton ? <FullscreenButton/> : null}
               </ForSize>
             </div>
           </HorizontalBar>

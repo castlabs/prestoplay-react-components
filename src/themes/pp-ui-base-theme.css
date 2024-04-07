@@ -750,6 +750,10 @@
     max-width: 200px;
 }
 
+.pp-ui-basic-theme .pp-ui-top-bar {
+  height: 40px;
+}
+
 .pp-ui-spacer {
     flex-grow: 1;
     flex-shrink: 1;
