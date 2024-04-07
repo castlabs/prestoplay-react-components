@@ -201,152 +201,103 @@ const isEnabledState = (state: State): boolean => {
 export class Player {
   /**
    * The player instance
-   * @private
    */
   private pp_: clpp.Player | null = null
   /**
    * We maintain a queue of actions that will be posted towards the player
    * instance once it is initialized
-   *
-   * @private
    */
   private _actionQueue_: Action[] = []
   /**
    * Function that resolves the player initialization
-   *
-   * @private
    */
   private _actionQueueResolved?: () => void
   /**
    * A promise that resolves once the player is initialized
-   * @private
    */
   private readonly _actionQueuePromise: Promise<void>
   /**
    * The player initializer
-   * @private
    */
   private readonly _initializer?: PlayerInitializer
-
   /**
    * Internal state that indicates that the "controls" are visible
-   *
-   * @private
    */
   private _controlsVisible = false
   /**
    * Internal controls that indicate that the slide in menu is visible
-   * @private
    */
   private _slideInMenuVisible = false
   /**
    * The currently playing video track
-   *
-   * @private
    */
   private _playingVideoTrack: Track | undefined
-
   /**
    * The currently selected video track
-   *
-   * @private
    */
   private _videoTrack: Track = getUnavailableTrack('video')
   /**
    * The currently selected audio track
-   * @private
    */
   private _audioTrack: Track = getUnavailableTrack('audio')
   /**
    * The currently selected text track
-   *
-   * @private
    */
   private _textTrack: Track = getUnavailableTrack('text')
-
   /**
    * All available video tracks
-   *
-   * @private
    */
   private _videoTracks: Track[] = []
   /**
    * All available audio tracks
-   *
-   * @private
    */
   private _audioTracks: Track[] = []
-
   /**
    * All available text tracks
-   *
-   * @private
    */
   private _textTracks: Track[] = []
-
   /**
    * The track sorter
-   *
-   * @private
    */
   private _trackSorter: TrackSorter = defaultTrackSorter
-
   /**
    * The track labeler
-   *
-   * @private
    */
   private _trackLabeler: TrackLabeler = defaultTrackLabel
-
   /**
    * The track labeler options
-   * @private
    */
   private _trackLabelerOptions?: TrackLabelerOptions
-
   /**
    * The event emitter for UI related events
-   *
-   * @private
    */
   private readonly _eventEmitter = new EventEmitter<UIEvents>()
-
   /**
    * This is true while we are waiting for a user initiated seek even to
    * complete
-   *
-   * @private
    */
   private _isUserSeeking = false
-
   /**
    * The target of the last user initiated seek event. We use this in case
    * there were more seek events while we were waiting for the last event
    * to complete
-   *
-   * @private
    */
   private _userSeekingTarget = -1
-
   /**
    * Proxy the playback rate
-   * @private
    */
   private _rate = 1
-
   /**
    * The current player configuration
-   *
-   * @private
    */
   private _config: clpp.PlayerConfiguration | null = null
-
   /**
    * Indicate that the config was loaded
-   * @private
    */
   private _configLoaded = false
-
+  /**
+   * UI control visibility manager
+   */
   private _controls = new Controls()
 
   constructor(initializer?: PlayerInitializer) {

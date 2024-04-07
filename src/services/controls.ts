@@ -4,6 +4,9 @@ type Callback = (visible: boolean) => void
 
 const AUTO_HIDE_DELAY_MS = 3_000
 
+/**
+ * A helper for hiding and showing UI controls.
+ */
 export class Controls {
   public onChange: Callback = () => {}
   public hideDelayMs = AUTO_HIDE_DELAY_MS
