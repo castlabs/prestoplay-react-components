@@ -13,6 +13,7 @@ import {
   TrackType,
 } from './Track'
 import { defaultTrackLabel, defaultTrackSorter, TrackLabeler, TrackLabelerOptions, TrackSorter } from './TrackLabeler'
+import { Disposer } from './types'
 
 /**
  * The player initializer is a function that receives the presto play instance
@@ -299,6 +300,10 @@ export class Player {
    * UI control visibility manager
    */
   private _controls = new Controls()
+  /**
+   * Disposers of listeners on the PRESTOplay player instance
+   */
+  private _prestoDisposers: Disposer[] = []
 
   constructor(initializer?: PlayerInitializer) {
     this._initializer = initializer
@@ -326,7 +331,25 @@ export class Player {
 
     this.pp_ = new clpp.Player(element, baseConfig)
 
-    const handlePlayerTracksChanged = (type?: TrackType) => {
+    this.attachListeners_(this.pp_)
+
+    if (this._initializer) {
+      this._initializer(this.pp_)
+    }
+    for (let i = 0; i < this._actionQueue_.length; i++) {
+      await this._actionQueue_[i]()
+    }
+    this._actionQueue_ = []
+    if (this._actionQueueResolved) {
+      this._actionQueueResolved()
+    }
+  }
+
+  /**
+   * Attach listeners to PRESTOplay events
+   */
+  private attachListeners_(player: clpp.Player) {
+    const createTrackChangeHandler = (type?: TrackType) => {
       return () => {
         const trackManager = this.trackManager
         if (!trackManager) {return}
@@ -346,12 +369,16 @@ export class Player {
       }
     }
 
-    this.pp_.on(clpp.events.TRACKS_ADDED, handlePlayerTracksChanged())
-    this.pp_.on(clpp.events.AUDIO_TRACK_CHANGED, handlePlayerTracksChanged('audio'))
-    this.pp_.on(clpp.events.VIDEO_TRACK_CHANGED, handlePlayerTracksChanged('video'))
-    this.pp_.on(clpp.events.TEXT_TRACK_CHANGED, handlePlayerTracksChanged('text'))
+    const onTracksAdded = createTrackChangeHandler()
+    const onAudioTrackChanged = createTrackChangeHandler('audio')
+    const onVideoTrackChanged = createTrackChangeHandler('video')
+    const onTextTrackChanged = createTrackChangeHandler('text')
+    player.on(clpp.events.TRACKS_ADDED, onTracksAdded)
+    player.on(clpp.events.AUDIO_TRACK_CHANGED, onAudioTrackChanged)
+    player.on(clpp.events.VIDEO_TRACK_CHANGED, onVideoTrackChanged)
+    player.on(clpp.events.TEXT_TRACK_CHANGED, onTextTrackChanged)
 
-    this.pp_.on(clpp.events.STATE_CHANGED, (event: any) => {
+    const onStateChanged = (event: any) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const e = event
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -377,39 +404,45 @@ export class Player {
       } else {
         this._controls.unpin()
       }
-    })
+    }
+    player.on(clpp.events.STATE_CHANGED, onStateChanged)
 
-    this.pp_.on('timeupdate', () => {
-      const position = this.pp_?.getPosition()
+    const onTimeupdate = () => {
+      const position = player.getPosition()
       if (position != null) {
         this.emitUIEvent('position', position)
       }
-    })
+    }
+    player.on('timeupdate', onTimeupdate)
 
-    this.pp_.on('ratechange', () => {
-      const ppRate = this.pp_?.getPlaybackRate()
+    this._rate = player.getPlaybackRate()
+    const onRateChange = () => {
+      const ppRate = player.getPlaybackRate()
 
       if (ppRate != null && this.state !== State.Buffering) {
         this._rate = ppRate
         this.emitUIEvent('ratechange', this.rate)
       }
-    })
+    }
+    player.on('ratechange', onRateChange)
 
-    this.pp_.on('durationchange', () => {
-      const duration = this.pp_?.getDuration()
+    const onDurationChange = () => {
+      const duration = player.getDuration()
       if (duration != null) {
         this.emitUIEvent('durationchange', duration)
       }
-    })
+    }
+    player.on('durationchange', onDurationChange)
 
-    this.pp_.on('volumechange', () => {
+    const onVolumeChange = () => {
       this.emitUIEvent('volumechange', {
         volume: this.volume,
         muted: this.muted,
       })
-    })
+    }
+    player.on('volumechange', onVolumeChange)
 
-    this.pp_.on(clpp.events.BITRATE_CHANGED, (e: any) => {
+    const onBitrateChange = (e: any) => {
       const tm = this.trackManager
 
       if (tm) {
@@ -417,21 +450,29 @@ export class Player {
       } else {
         this.playingVideoTrack = undefined
       }
-      handlePlayerTracksChanged('video')
+    }
+    player.on(clpp.events.BITRATE_CHANGED, onBitrateChange)
+
+    this._prestoDisposers.push(() => {
+      player.on(clpp.events.TRACKS_ADDED, onTracksAdded)
+      player.on(clpp.events.AUDIO_TRACK_CHANGED, onAudioTrackChanged)
+      player.on(clpp.events.VIDEO_TRACK_CHANGED, onVideoTrackChanged)
+      player.on(clpp.events.TEXT_TRACK_CHANGED, onTextTrackChanged)
+      player.on(clpp.events.STATE_CHANGED, onStateChanged)
+      player.on('timeupdate', onTimeupdate)
+      player.on('ratechange', onRateChange)
+      player.on('durationchange', onDurationChange)
+      player.on('volumechange', onVolumeChange)
+      player.on(clpp.events.BITRATE_CHANGED, onBitrateChange)
     })
+  }
 
-    this._rate = this.pp_.getPlaybackRate()
-
-    if (this._initializer) {
-      this._initializer(this.pp_)
-    }
-    for (let i = 0; i < this._actionQueue_.length; i++) {
-      await this._actionQueue_[i]()
-    }
-    this._actionQueue_ = []
-    if (this._actionQueueResolved) {
-      this._actionQueueResolved()
-    }
+  /**
+   * Remove listeners to PRESTOplay events
+   */
+  private removeListeners_ () {
+    this._prestoDisposers.forEach(dispose => dispose())
+    this._prestoDisposers = []
   }
 
   get trackManager() {
@@ -589,6 +630,7 @@ export class Player {
   }
 
   private async reset_() {
+    this.removeListeners_()
     if (this.pp_) {
       await this.pp_.release()
     }
@@ -840,9 +882,9 @@ export class Player {
 const isSameTrack = (a?: Track, b?: Track): boolean => {
   if (a && b) {
     return a.type === b.type &&
-    a.ppTrack === b.ppTrack &&
-    a.selected === b.selected &&
-    a.id === b.id
+      a.ppTrack === b.ppTrack &&
+      a.selected === b.selected &&
+      a.id === b.id
   }
 
   return !a && !b
