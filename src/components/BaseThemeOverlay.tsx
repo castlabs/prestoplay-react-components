@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { ControlsVisibilityMode } from '../services/controls'
+
 import { BufferingIndicator } from './BufferingIndicator'
 import { CurrentTime } from './CurrentTime'
 import { Duration } from './Duration'
@@ -63,6 +65,10 @@ export interface BaseThemeOverlayProps extends BaseComponentProps {
    * seekbar, 'none' hides the seekbar.
    */
   seekBar?: 'enabled' | 'disabled' | 'none'
+  /**
+   * Visibility mode of UI controls.
+   */
+  controlsVisibility?: ControlsVisibilityMode
 }
 
 /**
@@ -106,7 +112,7 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
 
   return (
     <div data-testid="pp-ui-basic-theme" className={'pp-ui pp-ui-overlay pp-ui-basic-theme'} style={props.style}>
-      <PlayerControls>
+      <PlayerControls mode={props.controlsVisibility}>
         <VerticalBar className={'pp-ui-spacer'}>
 
           {/* Top bar */}
