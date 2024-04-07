@@ -20,7 +20,8 @@
     "test:watch": "jest --watch",
     "lint": "npx eslint .",
     "storybook": "storybook dev --port 6006",
-    "build-storybook": "storybook build --output-dir ./dist/storybook"
+    "build-storybook": "storybook build --output-dir ./dist/storybook",
+    "prepack": "npm run build"
   },
   "license": "Apache-2.0",
   "devDependencies": {
