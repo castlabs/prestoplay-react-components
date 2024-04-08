@@ -85,6 +85,18 @@ export interface BaseThemeOverlayProps extends BaseComponentProps {
    * If true, the top controls bar is displayed. Defaults to true.
    */
   hasTopControlsBar?: boolean
+  /**
+   * Render a custom bottom companion component.
+   */
+  renderBottomCompanion?: () => (JSX.Element | null)
+  /**
+   * If true, seek bar cues are shown. Default: true.
+   */
+  showSeekBarCues?: boolean
+  /**
+   * Class name for the seek bar slider component.
+   */
+  seekBarSliderClassName?: string
 }
 
 /**
@@ -96,6 +108,7 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   const hasTrackControls = props.hasTrackControls ?? true
   const hasFullScreenButton = props.hasFullScreenButton ?? true
   const hasTopControlsBar = props.hasTopControlsBar ?? true
+  const showSeekBarCues = props.showSeekBarCues ?? true
 
   const renderOptionsMenu = () => {
     if (selectionOptions.length === 0) {return}
@@ -141,6 +154,8 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
             <Thumbnail moveRelativeToParent={true}/>
           </HorizontalBar>
 
+          {props.renderBottomCompanion?.()}
+
           {/* Bottom bar */}
           <HorizontalBar className="pp-ui-flex-space-between">
             <div className="pp-ui-row pp-ui-margin-horizontal-sm">
@@ -156,6 +171,8 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
               adjustWithKeyboard={true}
               enableThumbnailSlider={false}
               enabled={(props.seekBar ?? 'enabled') === 'enabled'}
+              showCues={showSeekBarCues}
+              sliderClassName={props.seekBarSliderClassName}
             />}
 
             <div className="pp-ui-row pp-ui-margin-horizontal-sm">
