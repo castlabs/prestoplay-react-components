@@ -8,6 +8,7 @@ import { Asset, TestAssets } from './Asset'
 import { BasicOverlayPage } from './BasicOverlayPage'
 import { ComponentsOverviewPage } from './ComponentsOverviewPage'
 import { CustomControlsPage } from './CustomControlsPage'
+import { InterstitialPage } from './InterstitialPage'
 import { YoutubeControlsPage } from './YoutubeControlsPage'
 
 // load app styles
@@ -17,7 +18,7 @@ import '@castlabs/prestoplay/clpp.styles.css'
 // load the theme
 import '../../src/themes/pp-ui-base-theme.css'
 
-type Page = 'basic' | 'custom' | 'components' | 'youtube'
+type Page = 'basic' | 'custom' | 'components' | 'youtube' | 'interstitial'
 
 function getQueryVariable(variable: string) {
   const searchParams = new URLSearchParams(window.location.search)
@@ -60,6 +61,8 @@ export function App() {
       return <ComponentsOverviewPage asset={asset} autoload={autoload}/>
     } else if (pageId === 'youtube') {
       return <YoutubeControlsPage asset={asset} autoload={autoload}/>
+    } else if (pageId === 'interstitial') {
+      return <InterstitialPage />
     }
     return <div>Unknown Page!</div>
   }, [pageId, asset, autoload])
@@ -94,6 +97,7 @@ export function App() {
         <button onClick={selectPage('custom')} className={`${pageId === 'custom' ? 'selected' : ''}`}>Custom Overlay</button>
         <button onClick={selectPage('youtube')} className={`${pageId === 'youtube' ? 'selected' : ''}`}>Youtube Overlay</button>
         <button onClick={selectPage('components')} className={`${pageId === 'components' ? 'selected' : ''}`}>Components</button>
+        <button onClick={selectPage('interstitial')} className={`${pageId === 'interstitial' ? 'selected' : ''}`}>HLS Interstitial</button>
       </nav>
 
       <div>

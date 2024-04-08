@@ -856,3 +856,36 @@
         display: none;
     }
 }
+
+
+/** Styles for interstitial HLS player */
+.pp-ui-hlsi-video-anchor {
+  width: 100%;
+  height: 100%;
+}
+
+.pp-ui-hlsi-companion-label {
+  margin-left: 18px;
+  margin-bottom: 8px;
+  color: white;
+  text-shadow: black 1px 1px 5px;
+}
+
+.pp-ui-hlsi-player {
+  width: 100%;
+  height: 100%;
+}
+
+.pp-ui-countdown {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  background: black;
+}
+
+.pp-ui-countdown-count {
+  font-size: 200px;
+}
+/** END: Styles for interstitial HLS player */

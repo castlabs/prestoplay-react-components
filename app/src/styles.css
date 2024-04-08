@@ -110,3 +110,18 @@ nav button:hover {
     background-color: #b4b4b4;
 }
 
+.in-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.in-container {
+  width: 1000px;
+}
+
+.in-video-container {
+  width: 800px;
+  height: 580px;
+}
