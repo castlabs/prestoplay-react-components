@@ -203,7 +203,7 @@ export class Player {
   /**
    * The player instance
    */
-  private pp_: clpp.Player | null = null
+  protected pp_: clpp.Player | null = null
   /**
    * We maintain a queue of actions that will be posted towards the player
    * instance once it is initialized
@@ -356,7 +356,7 @@ export class Player {
   /**
    * Attach listeners to PRESTOplay events
    */
-  private attachListeners_(player: clpp.Player) {
+  protected attachListeners_(player: clpp.Player) {
     const createTrackChangeHandler = (type?: TrackType) => {
       return () => {
         const trackManager = this.trackManager
@@ -479,6 +479,33 @@ export class Player {
       player.on('durationchange', onDurationChange)
       player.on('volumechange', onVolumeChange)
       player.on(clpp.events.BITRATE_CHANGED, onBitrateChange)
+    })
+  }
+
+  protected refreshPlayerState_ (player: clpp.Player) {
+    const state = toState(player.getState())
+
+    if (isEnabledState(state)) {
+      this.emitUIEvent('enabled', true)
+    }
+
+    this.emitUIEvent('statechanged', {
+      currentState: state,
+      previousState: this._lastPlaybackState,
+      timeSinceLastStateChangeMS: 10,
+    })
+
+    const position = player.getPosition() ?? 0
+    this.emitUIEvent('position', position)
+
+    const duration = player.getDuration()
+    if (duration != null) {
+      this.emitUIEvent('durationchange', duration)
+    }
+
+    this.emitUIEvent('volumechange', {
+      volume: this.volume,
+      muted: this.muted,
     })
   }
 
