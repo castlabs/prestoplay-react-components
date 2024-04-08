@@ -707,7 +707,6 @@ export class Player {
   }
 
   private async reset_() {
-    this.removePrestoListeners_()
     if (this.pp_) {
       await this.pp_.release()
     }
