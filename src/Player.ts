@@ -304,6 +304,10 @@ export class Player {
    * Disposers of listeners on the PRESTOplay player instance
    */
   private _prestoDisposers: Disposer[] = []
+  /**
+   * The last playback state
+   */
+  private _lastPlaybackState: State = State.Unset
 
   constructor(initializer?: PlayerInitializer) {
     this._initializer = initializer
@@ -383,6 +387,7 @@ export class Player {
       const e = event
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const currentState = toState(e.detail.currentState)
+      this._lastPlaybackState = currentState
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const previousState = toState(e.detail.previousState)
 
