@@ -514,7 +514,37 @@
 .pp-ui-seekbar {
     position: relative;
     width: 100%;
+    height: 30px;
 }
+
+.pp-ui-seekbar-layer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.pp-ui-seekbar-layer.cues {
+  pointer-events: none;
+}
+
+.pp-ui-seekbar-cues-margin {
+  margin: var(--pp-ui-slider-margin);
+  height: var(--pp-ui-slider-height);
+}
+
+.pp-ui-seekbar-cues {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.pp-ui-seekbar-cue {
+  background-color: rgba(7, 7, 7, 0.3);
+  height: 130%;
+  position: absolute;
+  top: 16px;
+}
+
 
 .pp-ui-seekbar .pp-ui-thumbnail {
     display: none;

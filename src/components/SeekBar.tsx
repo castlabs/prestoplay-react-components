@@ -1,8 +1,10 @@
 import React, { ForwardedRef, forwardRef, useContext, useState } from 'react'
 
 import { PrestoContext } from '../context/PrestoContext'
+import { useCues } from '../hooks/hooks'
 import { usePrestoEnabledState, usePrestoUiEvent } from '../react'
 
+import { SeekBarCues } from './SeekBarCues'
 import { Slider } from './Slider'
 import { Thumbnail } from './Thumbnail'
 
@@ -16,6 +18,10 @@ export interface SeekBarProps extends BaseComponentProps {
   keyboardSeekBackward?: number
   notFocusable?: boolean
   enabled?: boolean
+  /**
+   * If cues should be shown on the timeline. Default: true.
+   */
+  showCues?: boolean
 }
 
 const useEnabled = (enabled: boolean) => {
@@ -32,14 +38,18 @@ const useEnabled = (enabled: boolean) => {
 export const SeekBar = forwardRef((props: SeekBarProps, ref: ForwardedRef<HTMLDivElement>) => {
   const { player } = useContext(PrestoContext)
   const [progress, setProgress] = useState(0)
+  const [duration, setDuration] = useState(0)
   const [hoverPosition, setHoverPosition] = useState(-1)
   const [hoverValue, setHoverValue] = useState(0)
   const [thumbWidth, setThumbWidth] = useState(0)
   const enabled = useEnabled(props.enabled ?? true)
+  const cues = useCues()
+  const showCues = props.showCues ?? true
 
   function updateFromPlayer(position?: number): number {
     const range = player.seekRange
     const rangeDuration = range.end - range.start
+    setDuration(rangeDuration)
     position = position || player.position
     const positionInRange = position - range.start
     const progress = Math.min(100, Math.max(0, 100.0 * (positionInRange / rangeDuration)))
@@ -113,26 +123,32 @@ export const SeekBar = forwardRef((props: SeekBarProps, ref: ForwardedRef<HTMLDi
       const progress = Math.min(100, Math.max(0, 100.0 * (positionInRange / rangeDuration)))
       setProgress(progress)
     }
-
   }
 
   return (
     <div
       data-testid="pp-ui-seekbar"
       className={`pp-ui-seekbar ${props.className || ''}`} style={props.style}>
-      <Slider
-        ref={ref}
-        hoverMovement={true}
-        value={progress}
-        onKeyDown={props.adjustWithKeyboard ? undefined : onKeyDown}
-        disableKeyboardAdjustments={!props.adjustWithKeyboard}
-        onApplyValue={applyValue}
-        onApplyHoverValue={applyHoverValue}
-        adjustWhileDragging={props.adjustWhileDragging}
-        disabled={!enabled}
-        notFocusable={props.notFocusable}
-      />
+      <div className="pp-ui-seekbar-layer">
+        <Slider
+          ref={ref}
+          hoverMovement={true}
+          value={progress}
+          onKeyDown={props.adjustWithKeyboard ? undefined : onKeyDown}
+          disableKeyboardAdjustments={!props.adjustWithKeyboard}
+          onApplyValue={applyValue}
+          onApplyHoverValue={applyHoverValue}
+          adjustWhileDragging={props.adjustWhileDragging}
+          disabled={!enabled}
+          notFocusable={props.notFocusable}
+        />
+      </div>
       {renderThumbnailSlider()}
+      {showCues && cues.length > 0 ? (
+        <div className='pp-ui-seekbar-layer cues'>
+          <SeekBarCues cues={cues} duration={duration} />
+        </div>
+      ): null}
     </div>
   )
 })
