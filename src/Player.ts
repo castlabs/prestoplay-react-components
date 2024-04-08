@@ -387,7 +387,6 @@ export class Player {
       const e = event
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const currentState = toState(e.detail.currentState)
-      this._lastPlaybackState = currentState
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const previousState = toState(e.detail.previousState)
 
@@ -398,7 +397,10 @@ export class Player {
         timeSinceLastStateChangeMS: e.detail.timeSinceLastStateChangeMS,
       })
 
-      if (isEnabledState(currentState) !== isEnabledState(previousState)) {
+      if (
+        isEnabledState(currentState) !== isEnabledState(previousState)
+        || isEnabledState(currentState) !==  isEnabledState(this._lastPlaybackState)
+      ) {
         this.emitUIEvent('enabled', isEnabledState(currentState))
       }
 
@@ -407,6 +409,8 @@ export class Player {
       } else {
         this._controls.unpin()
       }
+
+      this._lastPlaybackState = currentState
     }
     player.on(clpp.events.STATE_CHANGED, onStateChanged)
 
