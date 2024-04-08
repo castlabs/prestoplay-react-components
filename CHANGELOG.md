@@ -1,3 +1,19 @@
+# 0.8.3 (Beta)
+
+## New Features
+
+* Add option to keep player controls hidden.
+* Make `BaseThemeOverlay` more configurable:
+  * Add option to hide buttons (audio, full screen, track options)
+  * Add option to hide the top bar of player controls
+  * Add option to render a companion component above the bottom bar
+    of player controls
+* Add option to display cues on the seek bar
+
+## Fixes
+
+* Fix rounding of duration.
+
 # 0.7.3 (Beta)
 
 ## Fixes
