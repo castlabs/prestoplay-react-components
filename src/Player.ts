@@ -347,7 +347,7 @@ export class Player {
 
     this.pp_ = new clpp.Player(element, baseConfig)
 
-    this.attachListeners_(this.pp_)
+    this.attachPrestoListeners_(this.pp_)
 
     if (this._initializer) {
       this._initializer(this.pp_)
@@ -379,7 +379,7 @@ export class Player {
   /**
    * Attach listeners to PRESTOplay events
    */
-  protected attachListeners_(player: clpp.Player) {
+  protected attachPrestoListeners_(player: clpp.Player) {
     const createTrackChangeHandler = (type?: TrackType) => {
       return () => {
         const trackManager = this.trackManager
@@ -492,20 +492,20 @@ export class Player {
     player.on(clpp.events.BITRATE_CHANGED, onBitrateChange)
 
     this._prestoDisposers.push(() => {
-      player.on(clpp.events.TRACKS_ADDED, onTracksAdded)
-      player.on(clpp.events.AUDIO_TRACK_CHANGED, onAudioTrackChanged)
-      player.on(clpp.events.VIDEO_TRACK_CHANGED, onVideoTrackChanged)
-      player.on(clpp.events.TEXT_TRACK_CHANGED, onTextTrackChanged)
-      player.on(clpp.events.STATE_CHANGED, onStateChanged)
-      player.on('timeupdate', onTimeupdate)
-      player.on('ratechange', onRateChange)
-      player.on('durationchange', onDurationChange)
-      player.on('volumechange', onVolumeChange)
-      player.on(clpp.events.BITRATE_CHANGED, onBitrateChange)
+      player.off(clpp.events.TRACKS_ADDED, onTracksAdded)
+      player.off(clpp.events.AUDIO_TRACK_CHANGED, onAudioTrackChanged)
+      player.off(clpp.events.VIDEO_TRACK_CHANGED, onVideoTrackChanged)
+      player.off(clpp.events.TEXT_TRACK_CHANGED, onTextTrackChanged)
+      player.off(clpp.events.STATE_CHANGED, onStateChanged)
+      player.off('timeupdate', onTimeupdate)
+      player.off('ratechange', onRateChange)
+      player.off('durationchange', onDurationChange)
+      player.off('volumechange', onVolumeChange)
+      player.off(clpp.events.BITRATE_CHANGED, onBitrateChange)
     })
   }
 
-  protected refreshPlayerState_ (player: clpp.Player) {
+  protected refreshPrestoState_ (player: clpp.Player) {
     const state = toState(player.getState())
 
     if (isEnabledState(state)) {
@@ -535,7 +535,7 @@ export class Player {
   /**
    * Remove listeners to PRESTOplay events
    */
-  private removeListeners_ () {
+  protected removePrestoListeners_ () {
     this._prestoDisposers.forEach(dispose => dispose())
     this._prestoDisposers = []
   }
@@ -707,7 +707,7 @@ export class Player {
   }
 
   private async reset_() {
-    this.removeListeners_()
+    this.removePrestoListeners_()
     if (this.pp_) {
       await this.pp_.release()
     }
