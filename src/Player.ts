@@ -13,6 +13,7 @@ import {
   TrackType,
 } from './Track'
 import { defaultTrackLabel, defaultTrackSorter, TrackLabeler, TrackLabelerOptions, TrackSorter } from './TrackLabeler'
+import { Cue, Disposer } from './types'
 
 /**
  * The player initializer is a function that receives the presto play instance
@@ -182,6 +183,10 @@ export interface UIEvents {
    * Unset, Idle, and Error states.
    */
   enabled: boolean
+  /**
+   * Event triggered when timeline/seek bar cues change.
+   */
+  cuesChanged: Cue[]
 }
 
 /**
@@ -201,153 +206,120 @@ const isEnabledState = (state: State): boolean => {
 export class Player {
   /**
    * The player instance
-   * @private
    */
-  private pp_: clpp.Player | null = null
+  protected pp_: clpp.Player | null = null
   /**
    * We maintain a queue of actions that will be posted towards the player
    * instance once it is initialized
-   *
-   * @private
    */
   private _actionQueue_: Action[] = []
   /**
    * Function that resolves the player initialization
-   *
-   * @private
    */
   private _actionQueueResolved?: () => void
   /**
    * A promise that resolves once the player is initialized
-   * @private
    */
   private readonly _actionQueuePromise: Promise<void>
   /**
    * The player initializer
-   * @private
    */
   private readonly _initializer?: PlayerInitializer
-
   /**
    * Internal state that indicates that the "controls" are visible
-   *
-   * @private
    */
   private _controlsVisible = false
   /**
    * Internal controls that indicate that the slide in menu is visible
-   * @private
    */
   private _slideInMenuVisible = false
   /**
    * The currently playing video track
-   *
-   * @private
    */
   private _playingVideoTrack: Track | undefined
-
   /**
    * The currently selected video track
-   *
-   * @private
    */
   private _videoTrack: Track = getUnavailableTrack('video')
   /**
    * The currently selected audio track
-   * @private
    */
   private _audioTrack: Track = getUnavailableTrack('audio')
   /**
    * The currently selected text track
-   *
-   * @private
    */
   private _textTrack: Track = getUnavailableTrack('text')
-
   /**
    * All available video tracks
-   *
-   * @private
    */
   private _videoTracks: Track[] = []
   /**
    * All available audio tracks
-   *
-   * @private
    */
   private _audioTracks: Track[] = []
-
   /**
    * All available text tracks
-   *
-   * @private
    */
   private _textTracks: Track[] = []
-
   /**
    * The track sorter
-   *
-   * @private
    */
   private _trackSorter: TrackSorter = defaultTrackSorter
-
   /**
    * The track labeler
-   *
-   * @private
    */
   private _trackLabeler: TrackLabeler = defaultTrackLabel
-
   /**
    * The track labeler options
-   * @private
    */
   private _trackLabelerOptions?: TrackLabelerOptions
-
   /**
    * The event emitter for UI related events
-   *
-   * @private
    */
   private readonly _eventEmitter = new EventEmitter<UIEvents>()
-
   /**
    * This is true while we are waiting for a user initiated seek even to
    * complete
-   *
-   * @private
    */
   private _isUserSeeking = false
-
   /**
    * The target of the last user initiated seek event. We use this in case
    * there were more seek events while we were waiting for the last event
    * to complete
-   *
-   * @private
    */
   private _userSeekingTarget = -1
-
   /**
    * Proxy the playback rate
-   * @private
    */
   private _rate = 1
-
   /**
    * The current player configuration
-   *
-   * @private
    */
   private _config: clpp.PlayerConfiguration | null = null
-
   /**
    * Indicate that the config was loaded
-   * @private
    */
   private _configLoaded = false
-
+  /**
+   * UI control visibility manager
+   */
   private _controls = new Controls()
+  /**
+   * Disposers of listeners on the PRESTOplay player instance
+   */
+  private _prestoDisposers: Disposer[] = []
+  /**
+   * The last playback state
+   */
+  private _lastPlaybackState: State = State.Unset
+  /**
+   * If true state changes to "ended" state should be ignored
+   */
+  private _ignoreStateEnded = false
+  /**
+   * Timeline cues
+   */
+  private _cues: Cue[] = []
 
   constructor(initializer?: PlayerInitializer) {
     this._initializer = initializer
@@ -375,7 +347,40 @@ export class Player {
 
     this.pp_ = new clpp.Player(element, baseConfig)
 
-    const handlePlayerTracksChanged = (type?: TrackType) => {
+    this.attachPrestoListeners_(this.pp_)
+
+    if (this._initializer) {
+      this._initializer(this.pp_)
+    }
+    for (let i = 0; i < this._actionQueue_.length; i++) {
+      await this._actionQueue_[i]()
+    }
+    this._actionQueue_ = []
+    if (this._actionQueueResolved) {
+      this._actionQueueResolved()
+    }
+  }
+
+  /**
+   * Set timeline cues
+   */
+  setCues(cues: Cue[]) {
+    this._cues = cues
+    this.emitUIEvent('cuesChanged', cues)
+  }
+
+  /**
+   * Get timeline cues
+   */
+  getCues(): Cue[] {
+    return this._cues
+  }
+
+  /**
+   * Attach listeners to PRESTOplay events
+   */
+  protected attachPrestoListeners_(player: clpp.Player) {
+    const createTrackChangeHandler = (type?: TrackType) => {
       return () => {
         const trackManager = this.trackManager
         if (!trackManager) {return}
@@ -395,12 +400,16 @@ export class Player {
       }
     }
 
-    this.pp_.on(clpp.events.TRACKS_ADDED, handlePlayerTracksChanged())
-    this.pp_.on(clpp.events.AUDIO_TRACK_CHANGED, handlePlayerTracksChanged('audio'))
-    this.pp_.on(clpp.events.VIDEO_TRACK_CHANGED, handlePlayerTracksChanged('video'))
-    this.pp_.on(clpp.events.TEXT_TRACK_CHANGED, handlePlayerTracksChanged('text'))
+    const onTracksAdded = createTrackChangeHandler()
+    const onAudioTrackChanged = createTrackChangeHandler('audio')
+    const onVideoTrackChanged = createTrackChangeHandler('video')
+    const onTextTrackChanged = createTrackChangeHandler('text')
+    player.on(clpp.events.TRACKS_ADDED, onTracksAdded)
+    player.on(clpp.events.AUDIO_TRACK_CHANGED, onAudioTrackChanged)
+    player.on(clpp.events.VIDEO_TRACK_CHANGED, onVideoTrackChanged)
+    player.on(clpp.events.TEXT_TRACK_CHANGED, onTextTrackChanged)
 
-    this.pp_.on(clpp.events.STATE_CHANGED, (event: any) => {
+    const onStateChanged = (event: any) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const e = event
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -408,16 +417,21 @@ export class Player {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const previousState = toState(e.detail.previousState)
 
+      if (this._ignoreStateEnded && currentState === State.Ended) {
+        return
+      }
+
       this.emitUIEvent('statechanged', {
         currentState,
         previousState,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         reason: e.detail.reason,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         timeSinceLastStateChangeMS: e.detail.timeSinceLastStateChangeMS,
       })
 
-      if (isEnabledState(currentState) !== isEnabledState(previousState)) {
+      if (
+        isEnabledState(currentState) !== isEnabledState(previousState)
+        || isEnabledState(currentState) !==  isEnabledState(this._lastPlaybackState)
+      ) {
         this.emitUIEvent('enabled', isEnabledState(currentState))
       }
 
@@ -426,39 +440,47 @@ export class Player {
       } else {
         this._controls.unpin()
       }
-    })
 
-    this.pp_.on('timeupdate', () => {
-      const position = this.pp_?.getPosition()
+      this._lastPlaybackState = currentState
+    }
+    player.on(clpp.events.STATE_CHANGED, onStateChanged)
+
+    const onTimeupdate = () => {
+      const position = player.getPosition()
       if (position != null) {
         this.emitUIEvent('position', position)
       }
-    })
+    }
+    player.on('timeupdate', onTimeupdate)
 
-    this.pp_.on('ratechange', () => {
-      const ppRate = this.pp_?.getPlaybackRate()
+    this._rate = player.getPlaybackRate()
+    const onRateChange = () => {
+      const ppRate = player.getPlaybackRate()
 
       if (ppRate != null && this.state !== State.Buffering) {
         this._rate = ppRate
         this.emitUIEvent('ratechange', this.rate)
       }
-    })
+    }
+    player.on('ratechange', onRateChange)
 
-    this.pp_.on('durationchange', () => {
-      const duration = this.pp_?.getDuration()
+    const onDurationChange = () => {
+      const duration = player.getDuration()
       if (duration != null) {
         this.emitUIEvent('durationchange', duration)
       }
-    })
+    }
+    player.on('durationchange', onDurationChange)
 
-    this.pp_.on('volumechange', () => {
+    const onVolumeChange = () => {
       this.emitUIEvent('volumechange', {
         volume: this.volume,
         muted: this.muted,
       })
-    })
+    }
+    player.on('volumechange', onVolumeChange)
 
-    this.pp_.on(clpp.events.BITRATE_CHANGED, (e: any) => {
+    const onBitrateChange = (e: any) => {
       const tm = this.trackManager
 
       if (tm) {
@@ -466,25 +488,72 @@ export class Player {
       } else {
         this.playingVideoTrack = undefined
       }
-      handlePlayerTracksChanged('video')
+    }
+    player.on(clpp.events.BITRATE_CHANGED, onBitrateChange)
+
+    this._prestoDisposers.push(() => {
+      player.off(clpp.events.TRACKS_ADDED, onTracksAdded)
+      player.off(clpp.events.AUDIO_TRACK_CHANGED, onAudioTrackChanged)
+      player.off(clpp.events.VIDEO_TRACK_CHANGED, onVideoTrackChanged)
+      player.off(clpp.events.TEXT_TRACK_CHANGED, onTextTrackChanged)
+      player.off(clpp.events.STATE_CHANGED, onStateChanged)
+      player.off('timeupdate', onTimeupdate)
+      player.off('ratechange', onRateChange)
+      player.off('durationchange', onDurationChange)
+      player.off('volumechange', onVolumeChange)
+      player.off(clpp.events.BITRATE_CHANGED, onBitrateChange)
+    })
+  }
+
+  protected refreshPrestoState_ (player: clpp.Player) {
+    const state = toState(player.getState())
+
+    if (isEnabledState(state)) {
+      this.emitUIEvent('enabled', true)
+    }
+
+    this.emitUIEvent('statechanged', {
+      currentState: state,
+      previousState: this._lastPlaybackState,
+      timeSinceLastStateChangeMS: 10,
     })
 
-    this._rate = this.pp_.getPlaybackRate()
+    const position = player.getPosition() ?? 0
+    this.emitUIEvent('position', position)
 
-    if (this._initializer) {
-      this._initializer(this.pp_)
+    const duration = player.getDuration()
+    if (duration != null) {
+      this.emitUIEvent('durationchange', duration)
     }
-    for (let i = 0; i < this._actionQueue_.length; i++) {
-      await this._actionQueue_[i]()
-    }
-    this._actionQueue_ = []
-    if (this._actionQueueResolved) {
-      this._actionQueueResolved()
-    }
+
+    this.emitUIEvent('volumechange', {
+      volume: this.volume,
+      muted: this.muted,
+    })
+  }
+
+  /**
+   * Remove listeners to PRESTOplay events
+   */
+  protected removePrestoListeners_ () {
+    this._prestoDisposers.forEach(dispose => dispose())
+    this._prestoDisposers = []
   }
 
   get trackManager() {
     return this.pp_?.getTrackManager() ?? null
+  }
+
+  /**
+   * Configure the player to ignore the "ended" state change. This is useful
+   * for situations where RESTOplay goes to the "ended" state prematurely, which
+   * sometimes happens (e.g. state changes to ended, but the video still plays
+   * another 800 ms or so and timeupdates are triggered).
+   * Not sure if this is a bug in PRESTOplay or a problem with the asset, but
+   * it happens.
+   */
+  set ignoreStateEnded(value: boolean) {
+    this._ignoreStateEnded = value
   }
 
   /**
@@ -638,6 +707,7 @@ export class Player {
   }
 
   private async reset_() {
+    this.removePrestoListeners_()
     if (this.pp_) {
       await this.pp_.release()
     }
@@ -889,9 +959,9 @@ export class Player {
 const isSameTrack = (a?: Track, b?: Track): boolean => {
   if (a && b) {
     return a.type === b.type &&
-    a.ppTrack === b.ppTrack &&
-    a.selected === b.selected &&
-    a.id === b.id
+      a.ppTrack === b.ppTrack &&
+      a.selected === b.selected &&
+      a.id === b.id
   }
 
   return !a && !b

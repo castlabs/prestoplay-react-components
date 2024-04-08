@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { ControlsVisibilityMode } from '../services/controls'
+
 import { BufferingIndicator } from './BufferingIndicator'
 import { CurrentTime } from './CurrentTime'
 import { Duration } from './Duration'
@@ -63,6 +65,38 @@ export interface BaseThemeOverlayProps extends BaseComponentProps {
    * seekbar, 'none' hides the seekbar.
    */
   seekBar?: 'enabled' | 'disabled' | 'none'
+  /**
+   * Visibility mode of UI controls.
+   */
+  controlsVisibility?: ControlsVisibilityMode
+  /**
+   * If true, audio controls are displayed. Defaults to true.
+   */
+  hasAudioControls?: boolean
+  /**
+   * If true, a fullscreen button is displayed. Defaults to true.
+   */
+  hasFullScreenButton?: boolean
+  /**
+   * If true, track controls are displayed. Defaults to true.
+   */
+  hasTrackControls?: boolean
+  /**
+   * If true, the top controls bar is displayed. Defaults to true.
+   */
+  hasTopControlsBar?: boolean
+  /**
+   * Render a custom bottom companion component.
+   */
+  renderBottomCompanion?: () => (JSX.Element | null)
+  /**
+   * If true, seek bar cues are shown. Default: true.
+   */
+  showSeekBarCues?: boolean
+  /**
+   * Class name for the seek bar slider component.
+   */
+  seekBarSliderClassName?: string
 }
 
 /**
@@ -70,6 +104,11 @@ export interface BaseThemeOverlayProps extends BaseComponentProps {
  */
 export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   const selectionOptions = props.menuSelectionOptions ?? DEFAULT_SELECTION_OPTIONS
+  const hasAudioControls = props.hasAudioControls ?? true
+  const hasTrackControls = props.hasTrackControls ?? true
+  const hasFullScreenButton = props.hasFullScreenButton ?? true
+  const hasTopControlsBar = props.hasTopControlsBar ?? true
+  const showSeekBarCues = props.showSeekBarCues ?? true
 
   const renderOptionsMenu = () => {
     if (selectionOptions.length === 0) {return}
@@ -77,21 +116,17 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   }
 
   const renderTopBar = () => {
-    if (selectionOptions.length === 0) {return}
+    if (!hasTopControlsBar || selectionOptions.length === 0) {return}
     return (
-      <HorizontalBar>
+      <HorizontalBar className="pp-ui-top-bar">
         <Spacer/>
-        <div className="pp-ui-margin-horizontal-sm">
-          <MenuSlideinToggleButton />
-        </div>
+        {hasTrackControls ? (
+          <div className="pp-ui-margin-horizontal-sm">
+            <MenuSlideinToggleButton />
+          </div>
+        ) : null}
       </HorizontalBar>
     )
-  }
-
-  // Some component rendering depends on configuration, and
-  // we wrap the rendering code into helpers
-  const renderFullscreenButton = () => {
-    return <FullscreenButton />
   }
 
   const renderPosterImage = () => {
@@ -106,7 +141,7 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
 
   return (
     <div data-testid="pp-ui-basic-theme" className={'pp-ui pp-ui-overlay pp-ui-basic-theme'} style={props.style}>
-      <PlayerControls>
+      <PlayerControls mode={props.controlsVisibility}>
         <VerticalBar className={'pp-ui-spacer'}>
 
           {/* Top bar */}
@@ -118,6 +153,8 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
           <HorizontalBar className={'pp-ui-transparent'}>
             <Thumbnail moveRelativeToParent={true}/>
           </HorizontalBar>
+
+          {props.renderBottomCompanion?.()}
 
           {/* Bottom bar */}
           <HorizontalBar className="pp-ui-flex-space-between">
@@ -134,6 +171,8 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
               adjustWithKeyboard={true}
               enableThumbnailSlider={false}
               enabled={(props.seekBar ?? 'enabled') === 'enabled'}
+              showCues={showSeekBarCues}
+              sliderClassName={props.seekBarSliderClassName}
             />}
 
             <div className="pp-ui-row pp-ui-margin-horizontal-sm">
@@ -143,11 +182,11 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
                 <Duration />
               </ForSize>
 
-              <MuteButton />
+              {hasAudioControls ? <MuteButton/>: null}
 
               <ForSize size="medium">
-                <VolumeBar adjustWhileDragging={true}/>
-                {renderFullscreenButton()}  
+                {hasAudioControls ? <VolumeBar adjustWhileDragging={true}/> : null}
+                {hasFullScreenButton ? <FullscreenButton/> : null}
               </ForSize>
             </div>
           </HorizontalBar>

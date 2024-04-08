@@ -1,5 +1,7 @@
 import { clpp } from '@castlabs/prestoplay'
 
+import type { Disposer } from '../types'
+
 type GradientColorStop = {
   stop: number
   color: string
@@ -64,7 +66,7 @@ export class VolumeMeterService {
   private audioSource: AudioNode | null = null
   private canvas: HTMLCanvasElement | null = null
   private config: ConfigInternal = DEFAULT_CONFIG
-  private disposers: (() => void)[] = []
+  private disposers: Disposer[] = []
   private enabled = false
   private mediaElementToSourceNodeMap: Map<Element, AudioNode> = new Map()
   private log = new clpp.log.Logger('clpp.services.VuMeter')

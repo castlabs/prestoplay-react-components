@@ -35,16 +35,22 @@ export function classNames(classes: Record<string, boolean>, classNames?: string
  *
  * @param {number} timeInSeconds The duration in seconds
  * @param {string} [opt_format] The output format
+ * @param {number} [roundingMargin] this margin allows for smarter rounding.
+ *   For example, if we use precision of seconds and the `timeInSeconds` value
+ *   is 6.99, it would be rounded to 6. This can be ameliorated by setting a
+ *   `roundingMargin` which is added to `timeInSeconds` before rounding in order
+ *   to produce a more accurate result of 7.
  * @returns {string} The formatted duration as a string
  * @export
  */
-export function timeToString(timeInSeconds: number, opt_format = '%hh:%mm:%ss') {
+export function timeToString(timeInSeconds: number, opt_format = '%hh:%mm:%ss', roundingMargin = 0.0) {
   if (timeInSeconds === null || timeInSeconds === undefined) {
     timeInSeconds = 0
   }
   if (opt_format === null || opt_format === undefined) {
     opt_format = '%h:%mm:%ss'
   }
+  timeInSeconds = timeInSeconds + roundingMargin
   const hours = Math.floor(timeInSeconds / 3600)
   const minutes = Math.floor((timeInSeconds - (hours * 3600)) / 60)
   const seconds = Math.floor(timeInSeconds - (hours * 3600) - (minutes * 60))

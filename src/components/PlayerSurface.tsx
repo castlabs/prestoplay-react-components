@@ -51,8 +51,10 @@ export interface PlayerProps extends BaseComponentProps {
 }
 
 const getContext = (nullableContext: Partial<PrestoContextType>) => {
-  return Object.values(nullableContext)
-    .every(value => value != null) ? nullableContext as PrestoContextType : null
+  if (!nullableContext.playerSurface || !nullableContext.player) {
+    return null
+  }
+  return nullableContext as PrestoContextType
 }
 
 /**

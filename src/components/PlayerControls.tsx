@@ -45,7 +45,7 @@ export interface PlayerControlsProps extends BaseComponentProps {
 export const PlayerControls = (props: PlayerControlsProps) => {
   const [lastFocusIndex, setLastFocusIndex] = useState(-1)
   const { player } = useContext(PrestoContext)
-  const controlsVisible = useControlsVisible()
+  const controlsVisible = useControlsVisible() && props.mode !== 'never'
 
   useEffect(() => {
     if (props.hideDelay) {

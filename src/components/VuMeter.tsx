@@ -11,23 +11,49 @@ export type Props = BaseComponentProps & {
   height: number
 }
 
+
+const mount = (service: VolumeMeterService, canvas: HTMLCanvasElement, config: VuMeterConfig) => {
+  service.configure(canvas, config)
+  service.mount()
+}
+
 /**
  * Volume Unit Meter
  */
 export const VuMeter = (props: Props) => {
-  const ctx = useContext(PrestoContext)
-  const serviceRef = useRef(new VolumeMeterService(ctx.presto))
+  const { presto } = useContext(PrestoContext)
+  const canvasRef = useRef<HTMLCanvasElement|null>(null)
+  const serviceRef = useRef<VolumeMeterService|null>(null)
+  const config = props.config ?? {}
+
+  useEffect(() => {
+    if (presto) {
+      serviceRef.current = new VolumeMeterService(presto)
+      if (canvasRef.current) {
+        mount(serviceRef.current, canvasRef.current, config)
+      }
+    }
+  }, [presto])
+
 
   const onRef = useCallback((canvas: HTMLCanvasElement) => {
-    serviceRef.current.configure(canvas, props.config ?? {})
-    serviceRef.current.mount()
+    canvasRef.current = canvas
+    if (serviceRef.current) {
+      mount(serviceRef.current, canvas, config)
+    }
   }, [])
 
   useEffect(() => {
     return () => {
-      serviceRef.current.unmount()
+      if (serviceRef.current) {
+        serviceRef.current.unmount()
+        serviceRef.current = null
+        canvasRef.current = null
+      }
     }
   }, [])
 
-  return <canvas ref={onRef} style={props.style} className={props.className} width={props.width} height={props.height}/>
+  return <canvas
+    ref={onRef} style={props.style} className={props.className}
+    width={props.width} height={props.height}/>
 }
