@@ -22,6 +22,10 @@ export interface SeekBarProps extends BaseComponentProps {
    * If cues should be shown on the timeline. Default: true.
    */
   showCues?: boolean
+  /**
+   * Class name passed to <Slider /> sub-component.
+   */
+  sliderClassName?: string
 }
 
 const useEnabled = (enabled: boolean) => {
@@ -131,6 +135,7 @@ export const SeekBar = forwardRef((props: SeekBarProps, ref: ForwardedRef<HTMLDi
       className={`pp-ui-seekbar ${props.className || ''}`} style={props.style}>
       <div className="pp-ui-seekbar-layer">
         <Slider
+          className={props.sliderClassName}
           ref={ref}
           hoverMovement={true}
           value={progress}
