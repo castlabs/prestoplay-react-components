@@ -13,7 +13,7 @@ import {
   TrackType,
 } from './Track'
 import { defaultTrackLabel, defaultTrackSorter, TrackLabeler, TrackLabelerOptions, TrackSorter } from './TrackLabeler'
-import { Disposer } from './types'
+import { Cue, Disposer } from './types'
 
 /**
  * The player initializer is a function that receives the presto play instance
@@ -183,6 +183,10 @@ export interface UIEvents {
    * Unset, Idle, and Error states.
    */
   enabled: boolean
+  /**
+   * Event triggered when timeline/seek bar cues change.
+   */
+  cuesChanged: Cue[]
 }
 
 /**
@@ -312,6 +316,10 @@ export class Player {
    * If true state changes to "ended" state should be ignored
    */
   private _ignoreStateEnded = false
+  /**
+   * Timeline cues
+   */
+  private _cues: Cue[] = []
 
   constructor(initializer?: PlayerInitializer) {
     this._initializer = initializer
@@ -351,6 +359,21 @@ export class Player {
     if (this._actionQueueResolved) {
       this._actionQueueResolved()
     }
+  }
+
+  /**
+   * Set timeline cues
+   */
+  setCues(cues: Cue[]) {
+    this._cues = cues
+    this.emitUIEvent('cuesChanged', cues)
+  }
+
+  /**
+   * Get timeline cues
+   */
+  getCues(): Cue[] {
+    return this._cues
   }
 
   /**

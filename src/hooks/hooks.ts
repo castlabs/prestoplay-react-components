@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
+import { PrestoContext } from '../context/PrestoContext'
 import { usePrestoUiEvent } from '../react'
 import { Cue } from '../types'
 
@@ -21,5 +22,8 @@ export const useHoverPercent = () => {
  * @returns Timeline / seekBar cues
  */
 export const useCues = (): Cue[] => {
-  return []
+  const { player } = useContext(PrestoContext)
+  const [cues, setCues] = useState<Cue[]>(player.getCues())
+  usePrestoUiEvent('cuesChanged', setCues)
+  return cues
 }
