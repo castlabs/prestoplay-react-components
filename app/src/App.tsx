@@ -34,7 +34,7 @@ function setQueryParam(key: string, value: string) {
 export function App() {
   // We track the configuration here to make sure we can dynamically change it
   const [assetId, setAssetId] = useState<number>(Number(getQueryVariable('asset') || 0))
-  const [pageId, setPageId] = useState<Page>(getQueryVariable('page') ?? 'basic')
+  const [pageId, setPageId] = useState<Page>(getQueryVariable('page') ?? 'interstitial')
   const [asset, setAsset] = useState<Asset|undefined>(TestAssets[assetId])
   const [autoload, setAutoload] = useState<boolean>(false)
   const [navVisible, setNavVisible] = useState<boolean>(false)

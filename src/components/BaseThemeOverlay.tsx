@@ -6,7 +6,7 @@ import { BufferingIndicator } from './BufferingIndicator'
 import { CurrentTime } from './CurrentTime'
 import { Duration } from './Duration'
 import { ForSize } from './ForSize'
-import { FullscreenButton } from './FullscreenButton'
+import { FullscreenButton, useIsPlayerFullScreen } from './FullscreenButton'
 import { HorizontalBar } from './HorizontalBar'
 import { Label } from './Label'
 import {
@@ -82,13 +82,25 @@ export interface BaseThemeOverlayProps extends BaseComponentProps {
    */
   hasTrackControls?: boolean
   /**
+   * If true, the play/pause button is displayed. Defaults to true.
+   */
+  hasPauseButton?: boolean
+  /**
    * If true, the top controls bar is displayed. Defaults to true.
    */
   hasTopControlsBar?: boolean
   /**
+   * If true, the time is displayed. Defaults to true.
+   */
+  hasTime?: boolean
+  /**
    * Render a custom bottom companion component.
    */
-  renderBottomCompanion?: () => (JSX.Element | null)
+  renderBottomCompanion?: (isFullScreen: boolean) => (JSX.Element | null)
+  /**
+   * Render a custom top companion component.
+   */
+  renderTopCompanion?: (isFullScreen: boolean) => (JSX.Element | null)
   /**
    * If true, seek bar cues are shown. Default: true.
    */
@@ -109,6 +121,10 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   const hasFullScreenButton = props.hasFullScreenButton ?? true
   const hasTopControlsBar = props.hasTopControlsBar ?? true
   const showSeekBarCues = props.showSeekBarCues ?? true
+  const hasPauseButton = props.hasPauseButton ?? true
+  const hasTime = props.hasTime ?? true
+
+  const isFullScreen = useIsPlayerFullScreen()
 
   const renderOptionsMenu = () => {
     if (selectionOptions.length === 0) {return}
@@ -139,6 +155,8 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
     return <StartButton onClick={typeof props.startButton === 'object' ? props.startButton.onClick : undefined}/>
   }
 
+  const topCompanion = props.renderTopCompanion?.(isFullScreen)
+
   return (
     <div data-testid="pp-ui-basic-theme" className={'pp-ui pp-ui-overlay pp-ui-basic-theme'} style={props.style}>
       <PlayerControls mode={props.controlsVisibility}>
@@ -146,6 +164,11 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
 
           {/* Top bar */}
           {renderTopBar()}
+          {topCompanion ? (
+            <div className="pp-ui pp-ui-row pp-ui-top-bar">
+              {topCompanion}
+            </div>
+          ): null}
 
           <Spacer/>
 
@@ -154,12 +177,12 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
             <Thumbnail moveRelativeToParent={true}/>
           </HorizontalBar>
 
-          {props.renderBottomCompanion?.()}
+          {props.renderBottomCompanion?.(isFullScreen)}
 
           {/* Bottom bar */}
           <HorizontalBar className="pp-ui-flex-space-between">
             <div className="pp-ui-row pp-ui-margin-horizontal-sm">
-              <PlayPauseButton resetRate={true}/>
+              {hasPauseButton ? <PlayPauseButton resetRate={true}/> : null}
               <ForSize size="small">
                 <SeekButton seconds={props.seekBackward ?? -10}/>
                 <SeekButton seconds={props.seekForward ?? 10}/>
@@ -176,11 +199,13 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
             />}
 
             <div className="pp-ui-row pp-ui-margin-horizontal-sm">
-              <ForSize size="small">
-                <CurrentTime />
-                <Label label={'/'}/>
-                <Duration />
-              </ForSize>
+              {hasTime ? (
+                <ForSize size="small">
+                  <CurrentTime />
+                  <Label label={'/'}/>
+                  <Duration />
+                </ForSize>
+              ): null}
 
               {hasAudioControls ? <MuteButton/>: null}
 

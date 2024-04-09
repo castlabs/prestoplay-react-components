@@ -299,7 +299,7 @@ export class Player {
   /**
    * Indicate that the config was loaded
    */
-  private _configLoaded = false
+  protected _configLoaded = false
   /**
    * UI control visibility manager
    */

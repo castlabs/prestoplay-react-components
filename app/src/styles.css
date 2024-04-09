@@ -123,5 +123,18 @@ nav button:hover {
 
 .in-video-container {
   width: 800px;
-  height: 580px;
+  height: 400px;
+}
+
+.in-logo-container {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  padding: 10px;
+  position: relative;
+  top: 10px;
+}
+
+.in-logo {
+  width: 200px;
 }

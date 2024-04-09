@@ -8,7 +8,7 @@ import { ControlsVisibilityMode } from '../services/controls'
 import { InterstitialOverlay } from './components/OverlayHlsi'
 import { PlayerSurfaceHlsi } from './components/PlayerSurfaceHlsi'
 import { PlayerHlsi } from './PlayerHlsi'
-import { HlsInterstitial } from './types'
+import { HlsInterstitial, InterstitialControls } from './types'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -41,6 +41,10 @@ export type InterstitialPlayerProps = {
    * Callback called when one loop cycle ended (if loop is `true`)
    */
   onLoopEnded?: () => any
+  /**
+   * Callback called when intermission ended
+   */
+  onIntermissionEnded?: () => any
   /**
    * Interstitial label text renderer. Default: `Interstitial ${podOrder} of ${podCount}`
    */
@@ -75,6 +79,10 @@ export type InterstitialPlayerProps = {
    */
   hasTrackControls?: boolean
   /**
+   * If true, the top controls bar is displayed. Defaults to true.
+   */
+  hasTopControlsBar?: boolean
+  /**
    * Callback called when the player of multi-controller changes.
    */
   onPlayerChanged?: (p: clpp.Player) => any
@@ -94,6 +102,18 @@ export type InterstitialPlayerProps = {
    * If true, the player will ignore all state changes to state "ended".
    */
   patchIgnoreStateEnded?: boolean
+  /**
+   * Render a custom top companion component.
+   */
+  renderTopCompanion?: (isFullScreen: boolean) => (JSX.Element | null)
+  /**
+   * Player controls to shown during interstitial playback.
+   */
+  interstitialControls?: InterstitialControls
+  /**
+   * Callback to get the instance of the HLS interstitial player
+   */
+  onHlsiPlayerReady?: (player: clpp.interstitial.Player) => void
 }
 
 /**
@@ -103,7 +123,7 @@ export type InterstitialPlayerProps = {
  * intermission in between.
  */
 export const InterstitialPlayer = React.memo((props: InterstitialPlayerProps) => {
-  const playerRef = useRef(new PlayerHlsi())
+  const playerRef = useRef(new PlayerHlsi(props.onHlsiPlayerReady))
 
   useEffect(() => {
     if (props.patchIgnoreStateEnded) {
@@ -161,6 +181,7 @@ export const InterstitialPlayer = React.memo((props: InterstitialPlayerProps) =>
             await load()
           }}
           onIntermissionEnded={async () => {
+            props.onIntermissionEnded?.()
             await playerRef.current.unpause()
           }}
         />
