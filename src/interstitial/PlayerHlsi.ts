@@ -98,6 +98,8 @@ export class PlayerHlsi extends Player {
   async loadHlsi(config?: clpp.PlayerConfiguration) {
     if (!this._ip || !config) {return}
     await this._ip.loadPaused(config)
+    // To enabled play/pause button
+    this._configLoaded = true
   }
 
   /**
