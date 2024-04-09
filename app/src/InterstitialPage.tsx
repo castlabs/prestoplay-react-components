@@ -40,6 +40,12 @@ export const InterstitialPage = () => {
               // Start resolving X-ASSET-LIST 15 seconds or less before
               // the cue is scheduled
                 resolutionOffsetSec: 15,
+                interstitialAssetConverter: (asset: clpp.interstitial.PlayerItem) => {
+                  asset.config.htmlcue = {
+                    enableResizeObserver: false,
+                  }
+                  return asset
+                },
               }}
               renderTopCompanion={(isFullScreen) => {
                 if (!isFullScreen) {return null}
@@ -74,11 +80,17 @@ export const InterstitialPage = () => {
                   console.info('EEEEvent: interstitial-ended', event.detail)
                 })
 
+                hp.on('primary-started', (event) => {
+                  console.info('EEEEvent: primary-started', event.detail)
+                })
+
+                hp.on('playback-started', (event) => {
+                  console.info('EEEEvent: playback-started (primary or preroll)', event.detail)
+                })
+
                 hp.on('primary-ended', (event) => {
                   console.info('EEEEvent: primary-ended', event.detail)
                 })
-
-                // Note: Unfortunately we do not have an event for "primary-started"
               }}
             // onPlayerChanged={p => {
             //   // @ts-ignore
