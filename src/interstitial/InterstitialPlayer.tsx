@@ -75,6 +75,10 @@ export type InterstitialPlayerProps = {
    */
   hasTrackControls?: boolean
   /**
+   * If true, the top controls bar is displayed. Defaults to true.
+   */
+  hasTopControlsBar?: boolean
+  /**
    * Callback called when the player of multi-controller changes.
    */
   onPlayerChanged?: (p: clpp.Player) => any

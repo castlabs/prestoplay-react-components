@@ -76,6 +76,10 @@ export type Props = {
    */
   hasTrackControls?: boolean
   /**
+   * If true, the top controls bar is displayed. Defaults to true.
+   */
+  hasTopControlsBar?: boolean
+  /**
    * Custom class name for the player container.
    */
   className?: string
@@ -166,6 +170,7 @@ export const InterstitialOverlay = React.memo((props: Props) => {
     seekBarSliderClassName={interstitial ? 'pp-ui-color-gold' : undefined}
     showSeekBarCues={props.showInterstitialMarkers}
     renderBottomCompanion={renderInterstitialInfo}
+    hasTopControlsBar={props.hasTopControlsBar ?? true}
   />
 })
 
