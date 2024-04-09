@@ -6,7 +6,7 @@ import { HorizontalBar } from '../../components/HorizontalBar'
 import { StartButton } from '../../components/StartButton'
 import { ControlsVisibilityMode } from '../../services/controls'
 import { useHlsInterstitial, usePrestoUiEventHlsi } from '../hooks'
-import { HlsInterstitial } from '../types'
+import { HlsInterstitial, InterstitialControls } from '../types'
 
 import { CountDown } from './Countdown'
 
@@ -91,6 +91,10 @@ export type Props = {
    * Custom style for the player container.
    */
   style?: React.CSSProperties
+  /**
+   * Player controls to shown during interstitial playback.
+   */
+  interstitialControls?: InterstitialControls
 }
 
 /**
@@ -101,7 +105,21 @@ export const InterstitialOverlay = React.memo((props: Props) => {
   const [intermission, setIntermission] = useState(true)
   const interstitial = useHlsInterstitial()
   const loop = props.loop ?? true
-  const seekStep = props.seekStep ?? 10
+
+  let seekStep = props.seekStep ?? 10
+  let hasFullScreenButton = props.hasFullScreenButton ?? true
+  let hasAudioControls = props.hasAudioControls ?? false
+  let hasTime = true
+  let hasPauseButton = true
+  if (props.interstitialControls && interstitial) {
+    if (props.interstitialControls.seekButtons === false) {
+      seekStep = 0
+    }
+    hasFullScreenButton = props.interstitialControls.fullScreen
+    hasAudioControls = props.interstitialControls.audio
+    hasTime = props.interstitialControls.time
+    hasPauseButton = props.interstitialControls.pause
+  }
 
   const endIntermission = useCallback(() => {
     setIntermission(false)
@@ -167,11 +185,13 @@ export const InterstitialOverlay = React.memo((props: Props) => {
     startButton={false}
     seekForward={seekStep}
     seekBackward={-seekStep}
-    hasAudioControls={props.hasAudioControls ?? false}
-    hasFullScreenButton={props.hasFullScreenButton ?? true}
+    hasAudioControls={hasAudioControls}
+    hasFullScreenButton={hasFullScreenButton}
     hasTrackControls={props.hasTrackControls ?? false}
     controlsVisibility={props.controlsVisibility ?? 'always-visible'}
     seekBarSliderClassName={interstitial ? 'pp-ui-color-gold' : undefined}
+    hasPauseButton={hasPauseButton}
+    hasTime={hasTime}
     showSeekBarCues={props.showInterstitialMarkers}
     renderBottomCompanion={renderInterstitialInfo}
     hasTopControlsBar={props.hasTopControlsBar ?? true}

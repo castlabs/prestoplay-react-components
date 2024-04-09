@@ -8,7 +8,7 @@ import { ControlsVisibilityMode } from '../services/controls'
 import { InterstitialOverlay } from './components/OverlayHlsi'
 import { PlayerSurfaceHlsi } from './components/PlayerSurfaceHlsi'
 import { PlayerHlsi } from './PlayerHlsi'
-import { HlsInterstitial } from './types'
+import { HlsInterstitial, InterstitialControls } from './types'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -102,6 +102,10 @@ export type InterstitialPlayerProps = {
    * Render a custom top companion component.
    */
   renderTopCompanion?: (isFullScreen: boolean) => (JSX.Element | null)
+  /**
+   * Player controls to shown during interstitial playback.
+   */
+  interstitialControls?: InterstitialControls
 }
 
 /**

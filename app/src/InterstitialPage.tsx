@@ -24,9 +24,9 @@ export const InterstitialPage = () => {
             <InterstitialPlayer
               asset={{
                 source: {
-                // url: 'http://localhost:3000/vod-fixed.m3u8',
-                  // url: 'http://localhost:3000/vod-preroll.m3u8',
-                  url: 'https://9457688946fc45ac9a3b526e93b06bf7.us-west-2.alpha.mediatailor.aws.a2z.com/v1/master/5d22c610440c419b9290f9233dc99fe61adb77ab/mt-dev-vod/index.m3u8?aws.insertionMode=GUIDED',
+                  // url: 'http://localhost:3000/vod-fixed.m3u8',
+                  url: 'http://localhost:3000/vod-preroll.m3u8',
+                  // url: 'https://9457688946fc45ac9a3b526e93b06bf7.us-west-2.alpha.mediatailor.aws.a2z.com/v1/master/5d22c610440c419b9290f9233dc99fe61adb77ab/mt-dev-vod/index.m3u8?aws.insertionMode=GUIDED',
                   type: clpp.Type.HLS,
                 },
               }}
@@ -44,6 +44,13 @@ export const InterstitialPage = () => {
               renderTopCompanion={(isFullScreen) => {
                 if (!isFullScreen) {return null}
                 return <div className="in-logo-container"><img className="in-logo" src="./logo.png"/></div>
+              }}
+              interstitialControls={{
+                pause: true,
+                seekButtons: false,
+                time: false,
+                fullScreen: true,
+                audio: false,
               }}
             // onPlayerChanged={p => {
             //   // @ts-ignore

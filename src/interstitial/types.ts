@@ -8,3 +8,14 @@ export type HlsInterstitial = {
    */
   podCount: number
 }
+
+/**
+ * Player Controls visible during playback of HLS interstitial assets.
+ */
+export type InterstitialControls = {
+  audio: boolean
+  fullScreen: boolean
+  pause: boolean
+  seekButtons: boolean
+  time: boolean
+}

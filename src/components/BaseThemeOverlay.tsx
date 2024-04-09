@@ -82,9 +82,17 @@ export interface BaseThemeOverlayProps extends BaseComponentProps {
    */
   hasTrackControls?: boolean
   /**
+   * If true, the play/pause button is displayed. Defaults to true.
+   */
+  hasPauseButton?: boolean
+  /**
    * If true, the top controls bar is displayed. Defaults to true.
    */
   hasTopControlsBar?: boolean
+  /**
+   * If true, the time is displayed. Defaults to true.
+   */
+  hasTime?: boolean
   /**
    * Render a custom bottom companion component.
    */
@@ -113,6 +121,9 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   const hasFullScreenButton = props.hasFullScreenButton ?? true
   const hasTopControlsBar = props.hasTopControlsBar ?? true
   const showSeekBarCues = props.showSeekBarCues ?? true
+  const hasPauseButton = props.hasPauseButton ?? true
+  const hasTime = props.hasTime ?? true
+
   const isFullScreen = useIsPlayerFullScreen()
 
   const renderOptionsMenu = () => {
@@ -171,7 +182,7 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
           {/* Bottom bar */}
           <HorizontalBar className="pp-ui-flex-space-between">
             <div className="pp-ui-row pp-ui-margin-horizontal-sm">
-              <PlayPauseButton resetRate={true}/>
+              {hasPauseButton ? <PlayPauseButton resetRate={true}/> : null}
               <ForSize size="small">
                 <SeekButton seconds={props.seekBackward ?? -10}/>
                 <SeekButton seconds={props.seekForward ?? 10}/>
@@ -188,11 +199,13 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
             />}
 
             <div className="pp-ui-row pp-ui-margin-horizontal-sm">
-              <ForSize size="small">
-                <CurrentTime />
-                <Label label={'/'}/>
-                <Duration />
-              </ForSize>
+              {hasTime ? (
+                <ForSize size="small">
+                  <CurrentTime />
+                  <Label label={'/'}/>
+                  <Duration />
+                </ForSize>
+              ): null}
 
               {hasAudioControls ? <MuteButton/>: null}
 
