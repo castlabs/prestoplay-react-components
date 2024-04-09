@@ -74,7 +74,7 @@ const getVideoChild = (element: HTMLElement) => {
  * This hook will return whether the element of its descendant video 
  * element is currently in fullscreen mode.
  */
-const useIsFullscreen = (playerSurface: HTMLElement | null) => {
+export const useIsFullscreen = (playerSurface: HTMLElement | null) => {
   const [is, setIs] = useState(fullscreen.isInFullscreen())
 
   const listener = () => {
@@ -98,6 +98,15 @@ const useIsFullscreen = (playerSurface: HTMLElement | null) => {
   }, [playerSurface])
 
   return is
+}
+
+/**
+ * This hooks returns true if the player is in fullscreen mode, false otherwise.
+ */
+export const useIsPlayerFullScreen = () => {
+  const { playerSurface } = useContext(PrestoContext)
+  const isFullscreen = useIsFullscreen(playerSurface)
+  return isFullscreen
 }
 
 /**

@@ -6,7 +6,7 @@ import { BufferingIndicator } from './BufferingIndicator'
 import { CurrentTime } from './CurrentTime'
 import { Duration } from './Duration'
 import { ForSize } from './ForSize'
-import { FullscreenButton } from './FullscreenButton'
+import { FullscreenButton, useIsPlayerFullScreen } from './FullscreenButton'
 import { HorizontalBar } from './HorizontalBar'
 import { Label } from './Label'
 import {
@@ -88,7 +88,11 @@ export interface BaseThemeOverlayProps extends BaseComponentProps {
   /**
    * Render a custom bottom companion component.
    */
-  renderBottomCompanion?: () => (JSX.Element | null)
+  renderBottomCompanion?: (isFullScreen: boolean) => (JSX.Element | null)
+  /**
+   * Render a custom top companion component.
+   */
+  renderTopCompanion?: (isFullScreen: boolean) => (JSX.Element | null)
   /**
    * If true, seek bar cues are shown. Default: true.
    */
@@ -109,6 +113,7 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   const hasFullScreenButton = props.hasFullScreenButton ?? true
   const hasTopControlsBar = props.hasTopControlsBar ?? true
   const showSeekBarCues = props.showSeekBarCues ?? true
+  const isFullScreen = useIsPlayerFullScreen()
 
   const renderOptionsMenu = () => {
     if (selectionOptions.length === 0) {return}
@@ -139,6 +144,8 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
     return <StartButton onClick={typeof props.startButton === 'object' ? props.startButton.onClick : undefined}/>
   }
 
+  const topCompanion = props.renderTopCompanion?.(isFullScreen)
+
   return (
     <div data-testid="pp-ui-basic-theme" className={'pp-ui pp-ui-overlay pp-ui-basic-theme'} style={props.style}>
       <PlayerControls mode={props.controlsVisibility}>
@@ -146,6 +153,11 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
 
           {/* Top bar */}
           {renderTopBar()}
+          {topCompanion ? (
+            <div className="pp-ui pp-ui-row pp-ui-top-bar">
+              {topCompanion}
+            </div>
+          ): null}
 
           <Spacer/>
 
@@ -154,7 +166,7 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
             <Thumbnail moveRelativeToParent={true}/>
           </HorizontalBar>
 
-          {props.renderBottomCompanion?.()}
+          {props.renderBottomCompanion?.(isFullScreen)}
 
           {/* Bottom bar */}
           <HorizontalBar className="pp-ui-flex-space-between">

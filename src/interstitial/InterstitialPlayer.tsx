@@ -98,6 +98,10 @@ export type InterstitialPlayerProps = {
    * If true, the player will ignore all state changes to state "ended".
    */
   patchIgnoreStateEnded?: boolean
+  /**
+   * Render a custom top companion component.
+   */
+  renderTopCompanion?: (isFullScreen: boolean) => (JSX.Element | null)
 }
 
 /**

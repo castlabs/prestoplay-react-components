@@ -80,6 +80,10 @@ export type Props = {
    */
   hasTopControlsBar?: boolean
   /**
+   * Render a custom top companion component.
+   */
+  renderTopCompanion?: (isFullScreen: boolean) => (JSX.Element | null)
+  /**
    * Custom class name for the player container.
    */
   className?: string
@@ -171,6 +175,7 @@ export const InterstitialOverlay = React.memo((props: Props) => {
     showSeekBarCues={props.showInterstitialMarkers}
     renderBottomCompanion={renderInterstitialInfo}
     hasTopControlsBar={props.hasTopControlsBar ?? true}
+    renderTopCompanion={props.renderTopCompanion}
   />
 })
 

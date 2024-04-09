@@ -25,7 +25,8 @@ export const InterstitialPage = () => {
               asset={{
                 source: {
                 // url: 'http://localhost:3000/vod-fixed.m3u8',
-                  url: 'http://localhost:3000/vod-preroll.m3u8',
+                  // url: 'http://localhost:3000/vod-preroll.m3u8',
+                  url: 'https://9457688946fc45ac9a3b526e93b06bf7.us-west-2.alpha.mediatailor.aws.a2z.com/v1/master/5d22c610440c419b9290f9233dc99fe61adb77ab/mt-dev-vod/index.m3u8?aws.insertionMode=GUIDED',
                   type: clpp.Type.HLS,
                 },
               }}
@@ -34,10 +35,15 @@ export const InterstitialPage = () => {
               // continues playing for another cca 800ms. This would obviously cause a glitch
               // in the UI so configure the player to ignore all ended states changes
               patchIgnoreStateEnded={true}
+              hasTopControlsBar={false}
               interstitialOptions={{
               // Start resolving X-ASSET-LIST 15 seconds or less before
               // the cue is scheduled
                 resolutionOffsetSec: 15,
+              }}
+              renderTopCompanion={(isFullScreen) => {
+                if (!isFullScreen) {return null}
+                return <div className="in-logo-container"><img className="in-logo" src="./logo.png"/></div>
               }}
             // onPlayerChanged={p => {
             //   // @ts-ignore
