@@ -550,9 +550,9 @@
 
 .pp-ui-seekbar-cue {
   background-color: rgba(7, 7, 7, 0.3);
-  height: 130%;
+  height: 100%;
   position: absolute;
-  top: 16px;
+  top: 14px;
 }
 
 
