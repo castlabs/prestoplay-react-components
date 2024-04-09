@@ -42,6 +42,10 @@ export type InterstitialPlayerProps = {
    */
   onLoopEnded?: () => any
   /**
+   * Callback called when intermission ended
+   */
+  onIntermissionEnded?: () => any
+  /**
    * Interstitial label text renderer. Default: `Interstitial ${podOrder} of ${podCount}`
    */
   interstitialLabel?: (i: HlsInterstitial) => string
@@ -106,6 +110,10 @@ export type InterstitialPlayerProps = {
    * Player controls to shown during interstitial playback.
    */
   interstitialControls?: InterstitialControls
+  /**
+   * Callback to get the instance of the HLS interstitial player
+   */
+  onHlsiPlayerReady?: (player: clpp.interstitial.Player) => void
 }
 
 /**
@@ -115,7 +123,7 @@ export type InterstitialPlayerProps = {
  * intermission in between.
  */
 export const InterstitialPlayer = React.memo((props: InterstitialPlayerProps) => {
-  const playerRef = useRef(new PlayerHlsi())
+  const playerRef = useRef(new PlayerHlsi(props.onHlsiPlayerReady))
 
   useEffect(() => {
     if (props.patchIgnoreStateEnded) {
@@ -173,6 +181,7 @@ export const InterstitialPlayer = React.memo((props: InterstitialPlayerProps) =>
             await load()
           }}
           onIntermissionEnded={async () => {
+            props.onIntermissionEnded?.()
             await playerRef.current.unpause()
           }}
         />

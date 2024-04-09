@@ -43,6 +43,12 @@ export class PlayerHlsi extends Player {
   private _isPlayingInterstitial = false
   private _disposers: Disposer[] = []
 
+  constructor(
+    private _onReady?: (p: clpp.interstitial.Player) => void,
+  ) {
+    super()
+  }
+
   /**
    * Initialize the HLS Interstitial player
    */
@@ -53,6 +59,7 @@ export class PlayerHlsi extends Player {
 
     this._options = options
     this._ip = new clpp.interstitial.Player(options)
+    this._onReady?.(this._ip)
 
     this.on('interstitial-item-started', (event) => {
       this.emitUIEvent('hlsInterstitial', {

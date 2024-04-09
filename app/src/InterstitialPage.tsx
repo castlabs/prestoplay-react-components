@@ -52,6 +52,34 @@ export const InterstitialPage = () => {
                 fullScreen: true,
                 audio: false,
               }}
+              onIntermissionEnded={() => {
+                console.info('EEEEvent: intermission-ended playback or primary or preroll started')
+              }}
+              onHlsiPlayerReady={hp => {
+                hp.on('cues-changed', (event) => {
+                  const cues = hp.getCues()
+                  console.info('EEEEvent: cues-changed', event.detail, 'cues via api call', cues)
+                })
+
+                hp.on('interstitial-started', (event) => {
+                  console.info('EEEEvent: interstitial-started', event.detail)
+                })
+
+                hp.on('interstitial-item-started', (event) => {
+                  // There are multiple items in one interstitial
+                  console.info('EEEEvent: interstitial-item-started', event.detail)
+                })
+
+                hp.on('interstitial-ended', (event) => {
+                  console.info('EEEEvent: interstitial-ended', event.detail)
+                })
+
+                hp.on('primary-ended', (event) => {
+                  console.info('EEEEvent: primary-ended', event.detail)
+                })
+
+                // Note: Unfortunately we do not have an event for "primary-started"
+              }}
             // onPlayerChanged={p => {
             //   // @ts-ignore
             //   window.player = p
