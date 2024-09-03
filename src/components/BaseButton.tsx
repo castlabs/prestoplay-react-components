@@ -9,7 +9,7 @@ export interface BaseButtonProps extends BaseComponentProps {
   /**
    * The click callback
    */
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => unknown
+  onClick?: (e: React.UIEvent) => unknown
   /**
    * By default, the base button has an icon. If no icon is set, for instance
    * through the css style, use this property to disable icon rendering and
@@ -35,7 +35,7 @@ export const BaseButton = forwardRef((props: BaseButtonProps, ref: ForwardedRef<
   const generateIcon = () => props.disableIcon ? undefined :
     <i className={'pp-ui pp-ui-icon'}/>
 
-  const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onClick = (e: React.UIEvent) => {
     if (props.disabled) {
       return
     }
@@ -46,15 +46,18 @@ export const BaseButton = forwardRef((props: BaseButtonProps, ref: ForwardedRef<
     }
   }
 
+  const className = `pp-ui pp-ui-button ${props.disableIcon ? 'pp-ui-button-no-icon': ''} `
+      +`${props.disabled ? 'pp-ui-disabled' : 'pp-ui-enabled'} ${props.className ?? ''}`
+
   return (
     <button
       type="button" ref={ref}
       data-testid={props.testId}
       tabIndex={props.disabled ? -1 : 0}
       style={props.style}
-      className={`pp-ui pp-ui-button ${props.disableIcon ? 'pp-ui-button-no-icon': ''} `
-              +`${props.disabled ? 'pp-ui-disabled' : 'pp-ui-enabled'} ${props.className ?? ''}`}
-      onClick={onClick}>
+      className={className}
+      onClick={onClick}
+      onTouchEnd={onClick}>
       {generateIcon()}
       {props.children}
     </button>

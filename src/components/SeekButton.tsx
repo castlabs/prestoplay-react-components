@@ -31,7 +31,9 @@ export const SeekButton = (props: SeekButtonProps) => {
   return (
     <BaseButton
       testId="pp-ui-seek-button"
-      onClick={seek} disableIcon={props.disableIcon} disabled={!enabled}
+      onClick={seek}
+      disableIcon={props.disableIcon}
+      disabled={!enabled}
       className={`pp-ui-seek pp-ui-seek-${props.seconds < 0 ? 'back' : 'forward'} ${props.className || ''}`}
       style={props.style}
     >

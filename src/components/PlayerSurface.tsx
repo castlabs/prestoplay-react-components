@@ -145,7 +145,7 @@ export const PlayerSurface = (props: PlayerProps) => {
     }
   }
 
-  const mouseClick = (e: React.MouseEvent) => {
+  const mouseClick = (e: React.UIEvent) => {
     if (!e.defaultPrevented) {
       if (props.player.slideInMenuVisible) {
         props.player.slideInMenuVisible = false
@@ -255,7 +255,9 @@ export const PlayerSurface = (props: PlayerProps) => {
       className={`pp-ui pp-ui-surface ${isIpadOS() ? 'pp-ui-ipad' : ''} ${props.className || ''}`}
       style={props.style}
       onClick={mouseClick}
+      onTouchEnd={mouseClick}
       onMouseMove={mouseMove}
+      onTouchMove={mouseMove}
       onKeyDown={onKeyDown}
       tabIndex={0}
     >

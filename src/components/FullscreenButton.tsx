@@ -148,7 +148,7 @@ export const FullscreenButton = (props: FullscreenButtonProps) => {
       disableIcon={props.disableIcon}
       disabled={!enabled}
       className={`pp-ui-fullscreen pp-ui-fullscreen-${isFullscreen ? 'enabled' : 'disabled'} ${props.className || ''}`}
-      style={props.style}  
+      style={props.style}
     >
       {props.children}
     </BaseButton>

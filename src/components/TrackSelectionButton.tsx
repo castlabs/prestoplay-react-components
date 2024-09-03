@@ -20,7 +20,7 @@ export interface TrackSelectionButtonProps extends BaseComponentProps {
  */
 export const TrackSelectionButton = memo((props: TrackSelectionButtonProps) => {
   const { player } = useContext(PrestoContext)
-  
+
   const selectTrack = () => {
     player.selectTrack(props.track)
   }
@@ -29,14 +29,16 @@ export const TrackSelectionButton = memo((props: TrackSelectionButtonProps) => {
     return player.getTrackLabel(props.track, props.trackLabel)
   }
 
+  const className = classNames({
+    'pp-ui': true,
+    'pp-ui-track-selection-button': true,
+  }, props.className)
+
   return (
     <BaseButton
       testId="pp-ui-track-selection-button"
       style={props.style}
-      className={classNames({
-        'pp-ui': true,
-        'pp-ui-track-selection-button': true,
-      }, props.className)}
+      className={className}
       onClick={selectTrack}
       disableIcon={true}>
       <TrackLabel label={label()} selected={props.track.selected}/>

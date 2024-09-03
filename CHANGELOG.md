@@ -13,6 +13,7 @@
 ## Fixes
 
 * Fix rounding of duration.
+* Fix UI interaction on mobile platforms.
 
 # 0.7.3 (Beta)
 

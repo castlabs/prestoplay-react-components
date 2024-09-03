@@ -66,7 +66,9 @@ export const StartButton = (props: StartButtonProps) => {
     <div
       data-testid="pp-ui-start-button"
       className={`pp-ui-start-button-container ${props.className ?? ''}`} style={props.style}>
-      <BaseButton onClick={start} ref={ref}
+      <BaseButton
+        onClick={start}
+        ref={ref}
         disableIcon={false}
         style={props.style}
         className="pp-ui pp-ui-start-button" />

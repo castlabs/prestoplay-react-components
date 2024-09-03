@@ -12,7 +12,7 @@ export interface MuteButtonProps extends BasePlayerComponentButtonProps {
   children?: React.ReactNode
   /**
    * Whether audio is muted or not.
-   * 
+   *
    * By default you should leave this `undefined` and let the component
    * display the real mute state of the player.
    */
@@ -35,7 +35,7 @@ export const MuteButton = (props: MuteButtonProps) => {
     setMuted(presto.isMuted() ?? false)
   })
 
-  function toggle(e: React.MouseEvent) {
+  function toggle(e: React.UIEvent) {
     if (e.defaultPrevented || !presto) {return}
     presto.setMuted(!presto.isMuted())
   }
