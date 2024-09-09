@@ -38,7 +38,9 @@ export const PlayerSurfaceHlsi = (props: PlayerProps) => {
 
   const onAnchorRef = useCallback((anchor: HTMLDivElement) => {
     if (!anchor) {return}
-    props.player.initHlsi({ ...(props.interstitialOptions ?? {}), anchorEl: anchor })
+    const options = (props.interstitialOptions ?? { config: {} })
+    const config = options.config ?? {}
+    props.player.initHlsi({ ...options, config, anchorEl: anchor })
   }, [])
 
   useEffect(() => {
