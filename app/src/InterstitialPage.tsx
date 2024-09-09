@@ -30,11 +30,6 @@ export const InterstitialPage = () => {
                   type: clpp.Type.HLS,
                 },
               }}
-              // Possibly it's something wrong with the AIP stream http://localhost:3000/vod-preroll.m3u8
-              // but unfortunately what happens is that we get state "Ended" and then the video
-              // continues playing for another cca 800ms. This would obviously cause a glitch
-              // in the UI so configure the player to ignore all ended states changes
-              patchIgnoreStateEnded={true}
               hasTopControlsBar={false}
               interstitialOptions={{
                 config: {

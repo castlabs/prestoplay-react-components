@@ -313,10 +313,6 @@ export class Player {
    */
   private _lastPlaybackState: State = State.Unset
   /**
-   * If true state changes to "ended" state should be ignored
-   */
-  private _ignoreStateEnded = false
-  /**
    * Timeline cues
    */
   private _cues: Cue[] = []
@@ -417,7 +413,7 @@ export class Player {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const previousState = toState(e.detail.previousState)
 
-      if (this._ignoreStateEnded && currentState === State.Ended) {
+      if (currentState === State.Ended) {
         return
       }
 
@@ -542,18 +538,6 @@ export class Player {
 
   get trackManager() {
     return this.pp_?.getTrackManager() ?? null
-  }
-
-  /**
-   * Configure the player to ignore the "ended" state change. This is useful
-   * for situations where RESTOplay goes to the "ended" state prematurely, which
-   * sometimes happens (e.g. state changes to ended, but the video still plays
-   * another 800 ms or so and timeupdates are triggered).
-   * Not sure if this is a bug in PRESTOplay or a problem with the asset, but
-   * it happens.
-   */
-  set ignoreStateEnded(value: boolean) {
-    this._ignoreStateEnded = value
   }
 
   /**

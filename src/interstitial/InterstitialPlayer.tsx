@@ -100,10 +100,6 @@ export type InterstitialPlayerProps = {
    */
   style?: React.CSSProperties
   /**
-   * If true, the player will ignore all state changes to state "ended".
-   */
-  patchIgnoreStateEnded?: boolean
-  /**
    * Render a custom top companion component.
    */
   renderTopCompanion?: (isFullScreen: boolean) => (JSX.Element | null)
@@ -133,12 +129,6 @@ export const InterstitialPlayer = React.memo((props: InterstitialPlayerProps) =>
   useEffect(() => {
     enableFocus(props.enableFocus ?? true)
   }, [props.enableFocus])
-
-  useEffect(() => {
-    if (props.patchIgnoreStateEnded) {
-      playerRef.current.ignoreStateEnded = true
-    }
-  }, [props.patchIgnoreStateEnded])
 
   const load = async () => {
     try {
