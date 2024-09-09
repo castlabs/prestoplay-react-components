@@ -120,8 +120,17 @@ export function focusPreviousElement(items: HTMLElement[]) {
 }
 
 let focusElementTimerId_: ReturnType<typeof setTimeout> | null = null
+let focusEnabled = true
+
+export function enableFocus(enabled: boolean) {
+  focusEnabled = enabled
+}
 
 export function focusElement(item: HTMLElement) {
+  if (!focusEnabled) {
+    return
+  }
+
   if (focusElementTimerId_) {
     clearTimeout(focusElementTimerId_)
     focusElementTimerId_= null

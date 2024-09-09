@@ -4,6 +4,7 @@ import '@castlabs/prestoplay/cl.hls'
 import React, { useEffect, useRef } from 'react'
 
 import { ControlsVisibilityMode } from '../services/controls'
+import { enableFocus } from '../utils'
 
 import { InterstitialOverlay } from './components/OverlayHlsi'
 import { PlayerSurfaceHlsi } from './components/PlayerSurfaceHlsi'
@@ -114,6 +115,10 @@ export type InterstitialPlayerProps = {
    * Callback to get the instance of the HLS interstitial player
    */
   onHlsiPlayerReady?: (player: clpp.interstitial.Player) => void
+  /**
+   * Enable focus-based keyboard interactivity. Default: true.
+   */
+  enableFocus?: boolean
 }
 
 /**
@@ -124,6 +129,10 @@ export type InterstitialPlayerProps = {
  */
 export const InterstitialPlayer = React.memo((props: InterstitialPlayerProps) => {
   const playerRef = useRef(new PlayerHlsi(props.onHlsiPlayerReady))
+
+  useEffect(() => {
+    enableFocus(props.enableFocus ?? true)
+  }, [props.enableFocus])
 
   useEffect(() => {
     if (props.patchIgnoreStateEnded) {

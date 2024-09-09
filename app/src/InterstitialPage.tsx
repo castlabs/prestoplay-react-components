@@ -22,11 +22,11 @@ export const InterstitialPage = () => {
         {mounted ? (
           <div className="in-video-container">
             <InterstitialPlayer
+              enableFocus={false}
               asset={{
                 source: {
-                  // url: 'http://localhost:3000/vod-fixed.m3u8',
-                  url: 'http://localhost:3000/vod-preroll.m3u8',
-                  // url: 'https://9457688946fc45ac9a3b526e93b06bf7.us-west-2.alpha.mediatailor.aws.a2z.com/v1/master/5d22c610440c419b9290f9233dc99fe61adb77ab/mt-dev-vod/index.m3u8?aws.insertionMode=GUIDED',
+                  url: 'https://content.players.castlabs.com/api-interstitials-v3/vod-fixed.m3u8',
+                  // url: 'https://content.players.castlabs.com/api-interstitials-v3/vod-preroll.m3u8',
                   type: clpp.Type.HLS,
                 },
               }}
@@ -37,8 +37,11 @@ export const InterstitialPage = () => {
               patchIgnoreStateEnded={true}
               hasTopControlsBar={false}
               interstitialOptions={{
-              // Start resolving X-ASSET-LIST 15 seconds or less before
-              // the cue is scheduled
+                config: {
+                  // license: '',
+                },
+                // Start resolving X-ASSET-LIST 15 seconds or less before
+                // the cue is scheduled
                 resolutionOffsetSec: 15,
                 interstitialAssetConverter: (asset: clpp.interstitial.PlayerItem) => {
                   asset.config.htmlcue = {
