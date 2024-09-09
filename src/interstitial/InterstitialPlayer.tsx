@@ -99,10 +99,6 @@ export type InterstitialPlayerProps = {
    */
   style?: React.CSSProperties
   /**
-   * If true, the player will ignore all state changes to state "ended".
-   */
-  patchIgnoreStateEnded?: boolean
-  /**
    * Render a custom top companion component.
    */
   renderTopCompanion?: (isFullScreen: boolean) => (JSX.Element | null)
@@ -124,12 +120,6 @@ export type InterstitialPlayerProps = {
  */
 export const InterstitialPlayer = React.memo((props: InterstitialPlayerProps) => {
   const playerRef = useRef(new PlayerHlsi(props.onHlsiPlayerReady))
-
-  useEffect(() => {
-    if (props.patchIgnoreStateEnded) {
-      playerRef.current.ignoreStateEnded = true
-    }
-  }, [props.patchIgnoreStateEnded])
 
   const load = async () => {
     try {
