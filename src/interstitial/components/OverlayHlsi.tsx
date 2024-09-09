@@ -20,6 +20,7 @@ export type Props = {
   loop?: boolean
   /**
    * Intermission duration in seconds, defaults to 3.
+   * Set to `null` to disable the intermission.
    */
   intermissionDuration?: number | null
   /**
@@ -102,7 +103,7 @@ export type Props = {
  */
 export const InterstitialOverlay = React.memo((props: Props) => {
   const [hadInteraction, setHadInteraction] = useState(false)
-  const [intermission, setIntermission] = useState(true)
+  const [intermission, setIntermission] = useState(props.intermissionDuration !== null)
   const interstitial = useHlsInterstitial()
   const loop = props.loop ?? true
 
@@ -121,10 +122,12 @@ export const InterstitialOverlay = React.memo((props: Props) => {
     hasPauseButton = props.interstitialControls.pause
   }
 
-  const endIntermission = useCallback(() => {
-    setIntermission(false)
-    props.onIntermissionEnded?.()
-  }, [props.onIntermissionEnded])
+  const onCountdownEnded = useCallback(() => {
+    if (props.intermissionDuration !== null) {
+      setIntermission(false)
+      props.onIntermissionEnded?.()
+    }
+  }, [props.onIntermissionEnded, props.intermissionDuration])
 
   const onStartClick = useCallback(() => {
     setHadInteraction(true)
@@ -134,7 +137,9 @@ export const InterstitialOverlay = React.memo((props: Props) => {
   usePrestoUiEventHlsi('ended', () => {
     if (loop) {
       props.onLoopEnded?.()
-      setIntermission(true)
+      if (props.intermissionDuration !== null) {
+        setIntermission(true)
+      }
     } else {
       props.onEnded?.()
     }
@@ -177,7 +182,7 @@ export const InterstitialOverlay = React.memo((props: Props) => {
     return <CountDown
       render={props.renderIntermission}
       seconds={duration}
-      onDone={endIntermission}
+      onDone={onCountdownEnded}
     />
   }
 
