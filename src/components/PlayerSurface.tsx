@@ -5,6 +5,7 @@ import { PrestoContext, PrestoContextType } from '../context/PrestoContext'
 import { Player } from '../Player'
 import { usePrestoUiEvent } from '../react'
 import {
+  enableFocus,
   focusElement,
   focusNextElement, focusPreviousElement,
   getFocusableElements, isIpadOS,
@@ -43,6 +44,10 @@ export interface PlayerProps extends BaseComponentProps {
    * player will go to full-screen mode and no overlay will be possible.
    */
   playsInline?: boolean
+  /**
+   * Enable focus-based keyboard interactivity. Default: true.
+   */
+  enableFocus?: boolean
   children?: React.ReactNode
   /**
    * @private
@@ -80,6 +85,10 @@ export const PlayerSurface = (props: PlayerProps) => {
     presto: undefined,
   })
   const context = getContext(nullableContext)
+
+  useEffect(() => {
+    enableFocus(props.enableFocus ?? true)
+  }, [props.enableFocus])
 
   useEffect(() => {
     context && props.onContext?.(context)
