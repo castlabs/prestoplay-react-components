@@ -24,7 +24,7 @@ export const MenuSlideinToggleButton = (props: MenuSlideinToggleProps) => {
   const enabled = usePrestoEnabledState()
   const ref = useRef<HTMLButtonElement>(null)
 
-  function toggle(event: React.MouseEvent) {
+  function toggle(event: React.UIEvent) {
     setVisible(!isVisible)
     player.slideInMenuVisible = !isVisible
     event.stopPropagation()
@@ -39,8 +39,11 @@ export const MenuSlideinToggleButton = (props: MenuSlideinToggleProps) => {
 
   return (
     <BaseButton
+      ref={ref}
       testId="pp-ui-slideinmenu-toggle"
-      onClick={toggle} disableIcon={false} disabled={!enabled} ref={ref}
+      onClick={toggle}
+      disableIcon={false}
+      disabled={!enabled}
       className={`pp-ui-slideinmenu-toggle ${props.className || ''}`}
       style={props.style}
     >

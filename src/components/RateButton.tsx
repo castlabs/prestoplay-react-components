@@ -11,21 +11,21 @@ import type { BasePlayerComponentButtonProps } from './types'
 export interface RateButtonProps extends BasePlayerComponentButtonProps {
   /**
    * Playback rate/speed factor.
-   * 
+   *
    * e.g. 2 to play twice as fast, or 0.5 to play half as fast.
-   * 
+   *
    * Defaults to 2.
    */
   factor?: number
   /**
    * Maximum allowed playback rate.
-   * 
+   *
    * Defaults to 64.
    */
   max?: number
   /**
    * Minimum allowed playback rate.
-   * 
+   *
    * Defaults to 0.5.
    */
   min?: number
@@ -52,7 +52,9 @@ export const RateButton = (props: RateButtonProps) => {
   return (
     <BaseButton
       testId="pp-ui-rate-button"
-      onClick={adjustRate} disableIcon={props.disableIcon} disabled={!enabled}
+      onClick={adjustRate}
+      disableIcon={props.disableIcon}
+      disabled={!enabled}
       className={`pp-ui-rate pp-ui-rate-${factor < 1 ? 'fr' : 'ff'} ${props.className || ''}`}
       style={props.style}
     >

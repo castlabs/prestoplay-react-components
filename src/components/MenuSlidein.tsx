@@ -72,7 +72,7 @@ export const MenuSlidein = (props: MenuSlideinProps) => {
     }
 
     ref.current?.addEventListener('transitionend', handleTransitionEnd)
-    
+
     return () => {
       ref.current?.removeEventListener('transitionend', handleTransitionEnd)
     }

@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useContext, useState } from 'react'
+import React, { UIEventHandler, useContext, useState } from 'react'
 
 import { PrestoContext } from '../context/PrestoContext'
 import { usePrestoEnabledState, usePrestoUiEvent } from '../react'
@@ -22,7 +22,7 @@ export interface TrackGroupButtonProps extends BaseComponentProps {
   hideCurrentlyActive?: boolean
   hideWhenUnavailable?: boolean
   trackLabel?: TrackLabeler
-  onClick?: MouseEventHandler | undefined
+  onClick?: UIEventHandler | undefined
   usePlayingRenditionInAbrLabel?: boolean
 }
 
@@ -64,6 +64,12 @@ export const TrackGroupButton = (props: TrackGroupButtonProps) => {
       } as DefaultTrackLabelerOptions)}/>
   }
 
+  const className = classNames({
+    'pp-ui': true,
+    'pp-ui-track-group-button': true,
+    'pp-ui-hide': !!props.hideWhenUnavailable && !hasTracks(),
+  }, props.className)
+
   return (
     <BaseButton
       testId="pp-ui-track-group-button"
@@ -71,11 +77,7 @@ export const TrackGroupButton = (props: TrackGroupButtonProps) => {
       style={props.style}
       onClick={props.onClick}
       disabled={!enabled}
-      className={classNames({
-        'pp-ui': true,
-        'pp-ui-track-group-button': true,
-        'pp-ui-hide': !!props.hideWhenUnavailable && !hasTracks(),
-      }, props.className)}>
+      className={className}>
       <Label label={props.label} className={'pp-ui-label-title'}/>
       {renderActiveTrackLabel()}
     </BaseButton>

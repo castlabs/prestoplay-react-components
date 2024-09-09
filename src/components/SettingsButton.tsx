@@ -29,7 +29,7 @@ export const SettingsButton = forwardRef((props: SettingsButtonProps) => {
   const enabled = usePrestoEnabledState()
   const ref = useRef<HTMLButtonElement>(null)
 
-  function toggle(event: React.MouseEvent) {
+  function toggle(event: React.UIEvent) {
     setVisible(!isVisible)
     player.slideInMenuVisible = !isVisible
 
@@ -46,9 +46,12 @@ export const SettingsButton = forwardRef((props: SettingsButtonProps) => {
   })
 
   return (
-    <BaseButton ref={ref}
+    <BaseButton
+      ref={ref}
       testId="pp-ui-settings-button"
-      onClick={toggle} disableIcon={false} disabled={!enabled}
+      onClick={toggle}
+      disableIcon={false}
+      disabled={!enabled}
       className={`pp-ui-settings-button ${props.className || ''}`}
       style={props.style}
     >
