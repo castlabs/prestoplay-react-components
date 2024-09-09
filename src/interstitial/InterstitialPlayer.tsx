@@ -174,11 +174,17 @@ export const InterstitialPlayer = React.memo((props: InterstitialPlayerProps) =>
           {...props}
           onStartClick={async () => {
             await load()
+            if (props.intermissionDuration === null) {
+              await playerRef.current.unpause()
+            }
           }}
           onLoopEnded={async () => {
             props.onLoopEnded?.()
             await playerRef.current.reset()
             await load()
+            if (props.intermissionDuration === null) {
+              await playerRef.current.unpause()
+            }
           }}
           onIntermissionEnded={async () => {
             props.onIntermissionEnded?.()
