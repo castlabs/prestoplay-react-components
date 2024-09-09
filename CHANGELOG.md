@@ -2,13 +2,14 @@
 
 ## New Features
 
+* Add option to disable focus-based keyboard interactivity.
 * Add option to keep player controls hidden.
 * Make `BaseThemeOverlay` more configurable:
-  * Add option to hide buttons (audio, full screen, track options)
-  * Add option to hide the top bar of player controls
+  * Add option to hide buttons (audio, full screen, track options).
+  * Add option to hide the top bar of player controls.
   * Add option to render a companion component above the bottom bar
-    of player controls
-* Add option to display cues on the seek bar
+    of player controls.
+* Add option to display cues on the seek bar.
 
 ## Fixes
 
