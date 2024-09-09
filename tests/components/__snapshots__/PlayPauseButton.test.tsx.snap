@@ -5,6 +5,7 @@ exports[`<PlayPauseButton /> should match snapshot 1`] = `
   className="pp-ui pp-ui-button  pp-ui-enabled pp-ui-playpause-toggle pp-ui-playpause-toggle-play "
   data-testid="pp-ui-playpause-toggle"
   onClick={[Function]}
+  onTouchEnd={[Function]}
   tabIndex={0}
   type="button"
 >
