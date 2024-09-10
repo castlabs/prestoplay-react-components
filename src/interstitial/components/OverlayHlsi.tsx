@@ -96,6 +96,11 @@ export type Props = {
    * Player controls to shown during interstitial playback.
    */
   interstitialControls?: InterstitialControls
+  /**
+   * If true, the start button is shown which has to be clicked
+   * for playback/countdown to begin.
+   */
+  hasStartButton: boolean
 }
 
 /**
@@ -112,6 +117,7 @@ export const InterstitialOverlay = React.memo((props: Props) => {
   let hasAudioControls = props.hasAudioControls ?? false
   let hasTime = true
   let hasPauseButton = true
+  const hasStartButton = props.hasStartButton ?? true
   if (props.interstitialControls && interstitial) {
     if (props.interstitialControls.seekButtons === false) {
       seekStep = 0
@@ -173,7 +179,7 @@ export const InterstitialOverlay = React.memo((props: Props) => {
     )
   }
 
-  if (!hadInteraction) {
+  if (!hadInteraction && hasStartButton) {
     return <StartButton onClick={onStartClick}/>
   }
 

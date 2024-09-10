@@ -115,6 +115,11 @@ export type InterstitialPlayerProps = {
    * Enable focus-based keyboard interactivity. Default: true.
    */
   enableFocus?: boolean
+  /**
+   * If true, the start button is shown which has to be clicked
+   * for playback/countdown to begin. Default: true.
+   */
+  hasStartButton?: boolean
 }
 
 /**
@@ -133,10 +138,19 @@ export const InterstitialPlayer = React.memo((props: InterstitialPlayerProps) =>
   const load = async () => {
     try {
       await playerRef.current.loadHlsi(props.asset)
+      if (props.asset.autoplay) {
+        await playerRef.current.unpause()
+      }
     } catch (e) {
       console.error('Interstitial player Failed to load asset', e)
     }
   }
+
+  useEffect(() => {
+    if (props.asset && props.asset.autoplay) {
+      void load()
+    }
+  }, [])
 
   useEffect(() => {
     if (props.onPlayerChanged) {
@@ -189,6 +203,7 @@ export const InterstitialPlayer = React.memo((props: InterstitialPlayerProps) =>
             props.onIntermissionEnded?.()
             await playerRef.current.unpause()
           }}
+          hasStartButton={props.hasStartButton ?? true}
         />
       </PlayerSurfaceHlsi>
     </div>
