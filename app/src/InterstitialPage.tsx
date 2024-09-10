@@ -7,7 +7,7 @@ import { InterstitialPlayer } from '../../src'
  * A page featuring the HLS interstitial player.
  */
 export const InterstitialPage = () => {
-  const [mounted, setMounted] = useState(true)
+  const [mounted, setMounted] = useState(false)
 
   const toggleMounted = () => {
     setMounted(m => !m)
@@ -29,7 +29,10 @@ export const InterstitialPage = () => {
                   // url: 'https://content.players.castlabs.com/api-interstitials-v3/vod-preroll.m3u8',
                   type: clpp.Type.HLS,
                 },
+                autoplay: true,
               }}
+              hasStartButton={false}
+              intermissionDuration={null}
               hasTopControlsBar={false}
               interstitialOptions={{
                 config: {
