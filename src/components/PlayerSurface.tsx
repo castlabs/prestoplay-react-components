@@ -45,7 +45,7 @@ export interface PlayerProps extends BaseComponentProps {
    */
   playsInline?: boolean
   /**
-   * Enable focus-based keyboard interactivity. Default: true.
+   * Enable focus-based keyboard interactivity. Default: false.
    */
   enableFocus?: boolean
   children?: React.ReactNode
@@ -87,7 +87,7 @@ export const PlayerSurface = (props: PlayerProps) => {
   const context = getContext(nullableContext)
 
   useEffect(() => {
-    enableFocus(props.enableFocus ?? true)
+    enableFocus(props.enableFocus ?? false)
   }, [props.enableFocus])
 
   useEffect(() => {

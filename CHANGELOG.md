@@ -1,3 +1,9 @@
+# 0.8.1 (Beta)
+
+## Fixes
+
+* Disable focus-based interactivity by default.
+
 # 0.8.0 (Beta)
 
 ## New Features

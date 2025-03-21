@@ -112,7 +112,7 @@ export type InterstitialPlayerProps = {
    */
   onHlsiPlayerReady?: (player: clpp.interstitial.Player) => void
   /**
-   * Enable focus-based keyboard interactivity. Default: true.
+   * Enable focus-based keyboard interactivity. Default: false.
    */
   enableFocus?: boolean
   /**
@@ -132,7 +132,7 @@ export const InterstitialPlayer = React.memo((props: InterstitialPlayerProps) =>
   const playerRef = useRef(new PlayerHlsi(props.onHlsiPlayerReady))
 
   useEffect(() => {
-    enableFocus(props.enableFocus ?? true)
+    enableFocus(props.enableFocus ?? false)
   }, [props.enableFocus])
 
   const load = async () => {
