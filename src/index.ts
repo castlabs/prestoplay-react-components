@@ -40,6 +40,4 @@ export * from './components/VolumeBar'
 export * from './components/PlayPauseIndicator'
 export * from './components/VuMeter'
 
-export * from './interstitial/InterstitialPlayer'
-
 export * from './context/PrestoContext'

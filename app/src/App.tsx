@@ -8,7 +8,6 @@ import { Asset, TestAssets } from './Asset'
 import { BasicOverlayPage } from './BasicOverlayPage'
 import { ComponentsOverviewPage } from './ComponentsOverviewPage'
 import { CustomControlsPage } from './CustomControlsPage'
-import { InterstitialPage } from './InterstitialPage'
 import { YoutubeControlsPage } from './YoutubeControlsPage'
 
 // load app styles
@@ -34,7 +33,7 @@ function setQueryParam(key: string, value: string) {
 export function App() {
   // We track the configuration here to make sure we can dynamically change it
   const [assetId, setAssetId] = useState<number>(Number(getQueryVariable('asset') || 0))
-  const [pageId, setPageId] = useState<Page>(getQueryVariable('page') ?? 'interstitial')
+  const [pageId, setPageId] = useState<Page>(getQueryVariable('page') ?? 'basic')
   const [asset, setAsset] = useState<Asset|undefined>(TestAssets[assetId])
   const [autoload, setAutoload] = useState<boolean>(false)
   const [navVisible, setNavVisible] = useState<boolean>(false)
@@ -61,8 +60,6 @@ export function App() {
       return <ComponentsOverviewPage asset={asset} autoload={autoload}/>
     } else if (pageId === 'youtube') {
       return <YoutubeControlsPage asset={asset} autoload={autoload}/>
-    } else if (pageId === 'interstitial') {
-      return <InterstitialPage />
     }
     return <div>Unknown Page!</div>
   }, [pageId, asset, autoload])

@@ -1,3 +1,10 @@
+# 0.9.0 (Beta)
+
+## Breaking changes
+
+* Removed `InterstitialPlayer` component. Support for HLS interstitials is
+  now integrated into the standard player.
+
 # 0.8.1 (Beta)
 
 ## Fixes
