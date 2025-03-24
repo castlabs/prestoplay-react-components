@@ -8,6 +8,7 @@ import { Asset, TestAssets } from './Asset'
 import { BasicOverlayPage } from './BasicOverlayPage'
 import { ComponentsOverviewPage } from './ComponentsOverviewPage'
 import { CustomControlsPage } from './CustomControlsPage'
+import { PageProps } from './types'
 import { YoutubeControlsPage } from './YoutubeControlsPage'
 
 // load app styles
@@ -16,6 +17,22 @@ import './styles.css'
 import '@castlabs/prestoplay/clpp.styles.css'
 // load the theme
 import '../../src/themes/pp-ui-base-theme.css'
+
+import { clpp } from '@castlabs/prestoplay'
+import '@castlabs/prestoplay/cl.mse'
+import '@castlabs/prestoplay/cl.dash'
+import '@castlabs/prestoplay/cl.hls'
+import '@castlabs/prestoplay/cl.htmlcue'
+import '@castlabs/prestoplay/cl.ttml'
+import '@castlabs/prestoplay/cl.vtt'
+
+import { Player } from '../../src'
+
+clpp.install(clpp.dash.DashComponent)
+clpp.install(clpp.hls.HlsComponent)
+clpp.install(clpp.htmlcue.HtmlCueComponent)
+clpp.install(clpp.ttml.TtmlComponent)
+clpp.install(clpp.vtt.VttComponent)
 
 type Page = 'basic' | 'custom' | 'components' | 'youtube' | 'interstitial'
 
@@ -38,12 +55,15 @@ export function App() {
   const [autoload, setAutoload] = useState<boolean>(false)
   const [navVisible, setNavVisible] = useState<boolean>(false)
 
+  const player = useMemo(() => new Player(), [])
+
   const navRef = createRef<HTMLElement>()
 
   const selectAsset = (id: number) => () => {
     setAssetId(id)
     setAsset(TestAssets[id])
     setQueryParam('asset', `${id}`)
+    setNavVisible(false)
   }
   const selectPage = (pageId: Page) => () => {
     setPageId(pageId)
@@ -52,14 +72,20 @@ export function App() {
   }
 
   const page = useMemo(() => {
+    const props: PageProps = {
+      player,
+      asset,
+      autoload,
+    }
+
     if (pageId === 'basic') {
-      return <BasicOverlayPage asset={asset} autoload={autoload}/>
+      return <BasicOverlayPage {...props}/>
     } else if (pageId === 'custom') {
-      return <CustomControlsPage asset={asset} autoload={autoload}/>
+      return <CustomControlsPage {...props}/>
     } else if (pageId === 'components') {
-      return <ComponentsOverviewPage asset={asset} autoload={autoload}/>
+      return <ComponentsOverviewPage {...props}/>
     } else if (pageId === 'youtube') {
-      return <YoutubeControlsPage asset={asset} autoload={autoload}/>
+      return <YoutubeControlsPage {...props}/>
     }
     return <div>Unknown Page!</div>
   }, [pageId, asset, autoload])
@@ -67,6 +93,12 @@ export function App() {
   const toggleNav = (event: React.MouseEvent) => {
     setNavVisible(visible => !visible)
     event.stopPropagation()
+  }
+
+  const reload = () => {
+    if (asset) {
+      setAsset({ ...asset })
+    }
   }
 
   return (
@@ -97,9 +129,14 @@ export function App() {
         <button onClick={selectPage('interstitial')} className={`${pageId === 'interstitial' ? 'selected' : ''}`}>HLS Interstitial</button>
       </nav>
 
-      <div>
-        {page}
-      </div>
+      <main>
+        <div>
+          {page}
+          <div className='in-controls'>
+            <button onClick={reload}>Reload</button>
+          </div>
+        </div>
+      </main>
     </div>
   )
 }

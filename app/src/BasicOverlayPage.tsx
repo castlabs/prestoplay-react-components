@@ -1,36 +1,24 @@
-import { clpp } from '@castlabs/prestoplay'
-import '@castlabs/prestoplay/cl.mse'
-import '@castlabs/prestoplay/cl.dash'
-import '@castlabs/prestoplay/cl.hls'
-import '@castlabs/prestoplay/cl.htmlcue'
-import '@castlabs/prestoplay/cl.ttml'
-import '@castlabs/prestoplay/cl.vtt'
-import React, { useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { DefaultTrackLabelerOptions, Player, BaseThemeOverlay, PlayerSurface } from '../../src'
+import { DefaultTrackLabelerOptions, BaseThemeOverlay, PlayerSurface } from '../../src'
 
-import { Asset } from './Asset'
-
+import { PageProps } from './types'
 
 /**
  * A player skin that we ship as `BaseThemeOverlay` component.
  */
-export const BasicOverlayPage = (props: {
-  asset?: Asset
-  autoload?: boolean
-}) => {
+export const BasicOverlayPage = (props: PageProps) => {
   const asset = props.asset
-  const playerConfig = asset?.config
+  const [playerConfig, setPlayerConfig] = useState(asset?.config)
+  const player = props.player
 
-  const player = useMemo(() => {
-    return new Player(pp => {
-      pp.use(clpp.dash.DashComponent)
-      pp.use(clpp.hls.HlsComponent)
-      pp.use(clpp.htmlcue.HtmlCueComponent)
-      pp.use(clpp.ttml.TtmlComponent)
-      pp.use(clpp.vtt.VttComponent)
-    })
-  }, [])
+  useEffect(() => {
+    if (props.asset?.config) {
+      setPlayerConfig({ ...props.asset.config })
+    } else {
+      setPlayerConfig(undefined)
+    }
+  }, [props.asset])
 
   // set options for the default track labeler
   player.trackLabelerOptions = {
@@ -50,7 +38,7 @@ export const BasicOverlayPage = (props: {
       playsInline={true}
       style={{ resize: 'both', overflow: 'auto', width: 900, height: 340 }}
     >
-      <BaseThemeOverlay/>
+      <BaseThemeOverlay version={2}/>
     </PlayerSurface>
   )
 }

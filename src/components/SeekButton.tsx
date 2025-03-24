@@ -15,6 +15,7 @@ export interface SeekButtonProps extends BasePlayerComponentButtonProps {
    */
   seconds: number
   children?: React.ReactNode
+  enabled?: boolean
 }
 
 /**
@@ -33,7 +34,7 @@ export const SeekButton = (props: SeekButtonProps) => {
       testId="pp-ui-seek-button"
       onClick={seek}
       disableIcon={props.disableIcon}
-      disabled={!enabled}
+      disabled={props.enabled === false || !enabled}
       className={`pp-ui-seek pp-ui-seek-${props.seconds < 0 ? 'back' : 'forward'} ${props.className || ''}`}
       style={props.style}
     >

@@ -13,7 +13,7 @@ import {
   TrackType,
 } from './Track'
 import { defaultTrackLabel, defaultTrackSorter, TrackLabeler, TrackLabelerOptions, TrackSorter } from './TrackLabeler'
-import { Cue, Disposer } from './types'
+import { Ad, Cue, Disposer } from './types'
 
 /**
  * The player initializer is a function that receives the presto play instance
@@ -98,7 +98,16 @@ const toState = (state: number): State => {
   }
 }
 
+export type HoverPosition = {
+  position: number
+  percent: number
+}
+
 export interface UIEvents {
+  /**
+   * Triggered when advertisement state changes.
+   */
+  adChanged: Ad | null
   /**
    * Triggered when the slide in menu state changes
    */
@@ -148,7 +157,7 @@ export interface UIEvents {
   /**
    * Triggered when the hover position changes
    */
-  hoverPosition: { position: number; percent: number }
+  hoverPosition: HoverPosition | null
   /**
    * Position changes are posted using this event. The event posts the current
    * position. This event is emitted when the underlying video element emits a
@@ -316,6 +325,10 @@ export class Player {
    * Timeline cues
    */
   private _cues: Cue[] = []
+  /**
+   * Advertisement related metadata.
+   */
+  private _ad: Ad | null = null
 
   constructor(initializer?: PlayerInitializer) {
     this._initializer = initializer
@@ -404,6 +417,53 @@ export class Player {
     player.on(clpp.events.AUDIO_TRACK_CHANGED, onAudioTrackChanged)
     player.on(clpp.events.VIDEO_TRACK_CHANGED, onVideoTrackChanged)
     player.on(clpp.events.TEXT_TRACK_CHANGED, onTextTrackChanged)
+
+    const onAdStarted = (event: any) => {
+      this._ad = {
+        progress: 0,
+        remainingSec: event.ad.getDuration(),
+        canSkip: true,
+        podCount: event.ad.getSequenceLength(),
+        podOrder: event.ad.getPositionInSequence(),
+        playing: true,
+      }
+      this.emitUIEvent('adChanged', this._ad)
+    }
+    const onAdProgress = (event: any) => {
+      if (!this._ad) {return}
+      const position = event.ad.getPosition()
+      const duration = event.ad.getDuration()
+      this._ad.progress = (position / duration) * 100
+      this._ad.remainingSec = Math.ceil(duration - position)
+      this._ad.playing = true
+      this.emitUIEvent('adChanged', this._ad)
+    }
+    const onAdCompleted = () => {
+      if (!this._ad) {return}
+      this._ad.progress = 100
+      this._ad.remainingSec = 0
+      this.emitUIEvent('adChanged', this._ad)
+    }
+    const onAdBreakStopped = () => {
+      this._ad = null
+      this.emitUIEvent('adChanged', this._ad)
+    }
+    const onAdPaused = () => {
+      if (!this._ad) {return}
+      this._ad.playing = false
+      this.emitUIEvent('adChanged', this._ad)
+    }
+    const onAdPlaying = () => {
+      if (!this._ad) {return}
+      this._ad.playing = true
+      this.emitUIEvent('adChanged', this._ad)
+    }
+    player.on(clpp.events.AD_STARTED, onAdStarted)
+    player.on(clpp.events.AD_PROGRESS, onAdProgress)
+    player.on(clpp.events.AD_COMPLETED, onAdCompleted)
+    player.on(clpp.events.AD_BREAK_STOPPED, onAdBreakStopped)
+    player.on(clpp.events.AD_PAUSED, onAdPaused)
+    player.on(clpp.events.AD_RESUMED, onAdPlaying)
 
     const onStateChanged = (event: any) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -498,6 +558,12 @@ export class Player {
       player.off('durationchange', onDurationChange)
       player.off('volumechange', onVolumeChange)
       player.off(clpp.events.BITRATE_CHANGED, onBitrateChange)
+      player.off(clpp.events.AD_STARTED, onAdStarted)
+      player.off(clpp.events.AD_PROGRESS, onAdProgress)
+      player.off(clpp.events.AD_COMPLETED, onAdCompleted)
+      player.off(clpp.events.AD_BREAK_STOPPED, onAdBreakStopped)
+      player.off(clpp.events.AD_PAUSED, onAdPaused)
+      player.off(clpp.events.AD_RESUMED, onAdPlaying)
     })
   }
 
@@ -641,12 +707,24 @@ export class Player {
 
   get playing() {
     if (!this.pp_) {return false}
+    if (this._ad) {
+      return this._ad.playing
+    }
     if (this.state === State.Idle) {return false}
     return !this.pp_.isPaused()
   }
 
-  set playing(value: boolean) {
+  set playing(value: boolean) { // here
     if (this.pp_) {
+      if (this._ad) {
+        const adManager = this.pp_.getAdsManager()
+        if (!adManager) {return }
+        if (value) {
+          adManager.resume()
+        } else {
+          adManager.pause()
+        }
+      }
       if (!this._configLoaded && value) {
         this.load().then(() => {
           value ? this.pp_?.play() : this.pp_?.pause()
@@ -705,12 +783,13 @@ export class Player {
     this.textTrack = getDisabledTrack('text', true)
   }
 
-  setHoverPosition(position: number, percent: number) {
-    this.emitUIEvent('hoverPosition', {
-      position, percent,
-    })
+  setHoverPosition(position: HoverPosition | null) {
+    this.emitUIEvent('hoverPosition', position)
   }
 
+  get ad(): Ad | null {
+    return this._ad
+  }
 
   get controlsVisible(): boolean {
     return this._controls.visible

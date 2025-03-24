@@ -99,8 +99,13 @@ export const Thumbnail = (props: ThumbnailProps) => {
 
   usePrestoUiEvent('hoverPosition', (event) => {
     if (props.listenToHover === false) {return}
-    setHoverPosition(event.position)
-    setHoverValue(event.percent)
+    if (event) {
+      setHoverPosition(event.position)
+      setHoverValue(event.percent)
+    } else {
+      setHoverPosition(null)
+      setHoverValue(0)
+    }
   }, [props.listenToHover])
 
   useLayoutEffect(() => {

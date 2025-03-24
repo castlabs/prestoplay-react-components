@@ -17,6 +17,7 @@
 
     /* Slider */
     --pp-ui-slider-height: .25rem;
+    --pp-ui-slider-height-ad: .4rem;
     --pp-ui-slider-height-interaction: .5rem;
     --pp-ui-slider-range-bg-gold: #675f40;
     --pp-ui-slider-range-progress-gold: #ffe206;
@@ -889,3 +890,133 @@
   font-size: 200px;
 }
 /** END: Styles for interstitial HLS player */
+
+
+
+
+/**
+ * Styles for seek bar version 2.
+ */
+.pp-ui-seekbar-2 {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  user-select: none;
+  touch-action: none;
+
+  .pp-ui-mouse-area {
+    height: 22px;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    .pp-ui-valley {
+      position: relative;
+      width: 100%;
+      height: var(--pp-ui-slider-height);
+      border-radius: var(--pp-ui-slider-border-radius);
+      background-color: #b4b4b48c;
+      transition: height 200ms;
+
+      .pp-ui-progress-outline {
+        position: absolute;
+        border-radius: var(--pp-ui-slider-border-radius);
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+
+        .pp-ui-progress {
+          position: absolute;
+          background-color: var(--pp-ui-slider-range-progress);
+          height: 100%;
+          width: 0%;
+        }
+      }
+
+      .pp-ui-cursor {
+        position: absolute;
+        height: 16px;
+        width: 16px;
+        background-color: var(--pp-ui-slider-range-thumb-bg);
+        border-radius: 50%;
+        transform: translateX(-50%);
+        visibility: hidden;
+        top: -4px;
+        pointer-events: none;
+      }
+
+      .pp-ui-cues {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: var(--pp-ui-slider-border-radius);
+        overflow: hidden;
+
+        .pp-ui-cue {
+          position: absolute;
+          height: 100%;
+          background-color: #f443367d;
+        }
+      }
+    }
+
+    &:hover .pp-ui-valley {
+      height: var(--pp-ui-slider-height-interaction);
+    }
+  }
+
+  &.ad {
+    .pp-ui-cues {
+      display: none;
+    }
+    .pp-ui-mouse-area {
+      cursor: default;
+      .pp-ui-valley {
+        background-color: var(--pp-ui-slider-range-bg-gold);
+        height: var(--pp-ui-slider-height-ad);
+        .pp-ui-progress-outline {
+          .pp-ui-progress {
+            background-color: var(--pp-ui-slider-range-progress-gold);
+            transition: width 250ms linear;
+            &.low {
+              /**
+                Disable animation to avoid lag when transitioning from one
+                ad to another in a pod.
+              */
+              transition: width 0ms linear;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.pp-ui-ad-label {
+  display: flex;
+  flex-direction: row;
+  .pp-ui-circle {
+    background: white;
+    height: 3px;
+    width: 3px;
+    border-radius: 3px;
+    margin: 5px;
+    margin-left: 8px;
+    margin-top: 8px;
+  }
+}
+
+.pp-ui-ad-countdown-label {
+  margin-left: 0px;
+  margin-right: 50px;
+  width: 40px;
+  text-align: center;
+}
+
+.pp-ui-w-100 {
+  width: 100%;
+}

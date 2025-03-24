@@ -2,20 +2,20 @@ import { useContext, useState } from 'react'
 
 import { PrestoContext } from '../context/PrestoContext'
 import { usePrestoUiEvent } from '../react'
-import { Cue } from '../types'
+import { Ad, Cue } from '../types'
 
 /**
  * @returns The current hover position as a percentage
  *   or null when not hovering.
  */
 export const useHoverPercent = () => {
-  const [percent, setPercent] = useState<number>(-1)
+  const [percent, setPercent] = useState<number|null>(null)
 
   usePrestoUiEvent('hoverPosition', (event) => {
-    setPercent(event.percent)
+    setPercent(event?.percent ?? null)
   }, [])
 
-  return percent < 0 ? null : percent
+  return percent
 }
 
 /**
@@ -26,4 +26,17 @@ export const useCues = (): Cue[] => {
   const [cues, setCues] = useState<Cue[]>(player.getCues())
   usePrestoUiEvent('cuesChanged', setCues)
   return cues
+}
+
+export const useAd = (): Ad | null => {
+  const [ad, setAd] = useState<Ad|null>(null)
+  usePrestoUiEvent('adChanged', setAd)
+  return ad
+}
+
+export const useAdCountdown = (): number | null => {
+  const { player } = useContext(PrestoContext)
+  const [time, setTime] = useState<number|null>(player.ad?.remainingSec ?? null)
+  usePrestoUiEvent('adChanged', ad => setTime(ad?.remainingSec ?? null))
+  return time
 }

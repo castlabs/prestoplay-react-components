@@ -1,13 +1,5 @@
-import { clpp } from '@castlabs/prestoplay'
-import '@castlabs/prestoplay/cl.mse'
-import '@castlabs/prestoplay/cl.dash'
-import '@castlabs/prestoplay/cl.hls'
-import '@castlabs/prestoplay/cl.htmlcue'
-import '@castlabs/prestoplay/cl.ttml'
-import '@castlabs/prestoplay/cl.vtt'
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 
-import { Player } from '../../src'
 import { CurrentTime } from '../../src/components/CurrentTime'
 import { FullscreenButton } from '../../src/components/FullscreenButton'
 import { HorizontalBar } from '../../src/components/HorizontalBar'
@@ -23,30 +15,19 @@ import { TimeLeft } from '../../src/components/TimeLeft'
 import { VerticalBar } from '../../src/components/VerticalBar'
 
 import { Asset } from './Asset'
+import { PageProps } from './types'
 
 /**
  * A custom player skin assembled from our UI components.
  */
-export const CustomControlsPage = (props: {
-  asset?: Asset
-  autoload?: boolean
-}) => {
-  // Create the player as state of this component
-  const [player] = useState(new Player((pp: clpp.Player) => {
-    pp.use(clpp.dash.DashComponent)
-    pp.use(clpp.hls.HlsComponent)
-    pp.use(clpp.htmlcue.HtmlCueComponent)
-    pp.use(clpp.ttml.TtmlComponent)
-    pp.use(clpp.vtt.VttComponent)
-  }))
-
+export const CustomControlsPage = (props: PageProps) => {
   const asset = props.asset
   const playerConfig = asset?.config
 
   return (
     <div>
       <PlayerSurface
-        player={player}
+        player={props.player}
         config={playerConfig}
         playsInline={true}
         autoload={props.autoload}

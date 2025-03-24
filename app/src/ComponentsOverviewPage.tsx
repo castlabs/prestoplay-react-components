@@ -1,13 +1,5 @@
-import { clpp } from '@castlabs/prestoplay'
 import React, { useState } from 'react'
 
-import { Player } from '../../src'
-import '@castlabs/prestoplay/cl.mse'
-import '@castlabs/prestoplay/cl.dash'
-import '@castlabs/prestoplay/cl.hls'
-import '@castlabs/prestoplay/cl.htmlcue'
-import '@castlabs/prestoplay/cl.ttml'
-import '@castlabs/prestoplay/cl.vtt'
 import { BufferingIndicator } from '../../src/components/BufferingIndicator'
 import { CurrentTime } from '../../src/components/CurrentTime'
 import { Duration } from '../../src/components/Duration'
@@ -26,29 +18,17 @@ import { TrackSelectionList } from '../../src/components/TrackSelectionList'
 import { VolumeBar } from '../../src/components/VolumeBar'
 import { PrestoContext, PrestoContextType } from '../../src/context/PrestoContext'
 
-import { Asset } from './Asset'
-
+import { PageProps } from './types'
 
 /**
  * An overview of available UI components that can be
  * assembled to create a skin.
  */
-export const ComponentsOverviewPage = (props: {
-  asset?: Asset
-  autoload?: boolean
-}) => {
+export const ComponentsOverviewPage = (props: PageProps) => {
   // We track the thumb position to showcase how we can manually load thumbs
   const [thumbPosition, setThumbPosition] = useState<number | undefined>()
   const [context, setContext] = useState<PrestoContextType|null>(null)
-
-  // Create the player as state of this component
-  const [player] = useState(new Player((pp: clpp.Player) => {
-    pp.use(clpp.dash.DashComponent)
-    pp.use(clpp.hls.HlsComponent)
-    pp.use(clpp.htmlcue.HtmlCueComponent)
-    pp.use(clpp.ttml.TtmlComponent)
-    pp.use(clpp.vtt.VttComponent)
-  }))
+  const player = props.player
 
   function manuallyLoadThumb() {
     setThumbPosition(player.position)

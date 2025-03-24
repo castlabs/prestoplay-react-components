@@ -51,15 +51,14 @@ export const CurrentTime = (props: CurrentTimeProps) => {
   })
 
   usePrestoUiEvent('hoverPosition', (event) => {
-    const hoverPosition = event.position
-    if (hoverPosition < 0 || props.disableHoveringDisplay) {
+    if (!event || props.disableHoveringDisplay) {
       setHovering(false)
       setTime(player.position)
     } else {
       setHovering(true)
-      setTime(hoverPosition)
+      setTime(event.position)
     }
-  }, [props.disableHoveringDisplay]) 
+  }, [props.disableHoveringDisplay])
 
   return (
     <Label

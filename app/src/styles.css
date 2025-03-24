@@ -137,3 +137,18 @@ nav button:hover {
 .in-logo {
   width: 200px;
 }
+
+.in-controls button {
+  margin: 10px;
+  border-radius: 3px;
+  padding: 6px;
+  cursor: pointer;
+  border: 1px solid #b3b3b3;
+  background: white;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
