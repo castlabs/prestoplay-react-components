@@ -185,11 +185,14 @@ function isPlayingState(config: Config): boolean {
 }
 
 /**
+ * TODO compare with Player.ts player.playing
+ * 
  * @returns whether player state is paused or playing
  */
 export const useIsPlaying = (resetRate = false): boolean => {
   const { player } = useContext(PrestoContext)
   const [isPlaying, setIsPlaying] = useState(isPlayingState({ state: player.state, player, resetRate }))
+  const [isAdPlaying, setIsAdPlaying] = useState<boolean|null>(null)
 
   usePrestoUiEvent('ratechange', () => {
     setIsPlaying(isPlayingState({ state: player.state, player, resetRate }))
@@ -199,7 +202,16 @@ export const useIsPlaying = (resetRate = false): boolean => {
     setIsPlaying(isPlayingState({ state: currentState, player, resetRate, reason }))
   })
 
-  useDebugValue(isPlaying ? 'playing' : 'not playing')
+  usePrestoUiEvent('adChanged', ad => {
+    if (ad) {
+      setIsAdPlaying(ad.playing)
+    } else {
+      setIsAdPlaying(null)
+    }
+  })
 
-  return isPlaying
+  const result = isAdPlaying ?? isPlaying
+  useDebugValue(result ? 'playing' : 'not playing')
+
+  return result
 }

@@ -43,7 +43,7 @@ export const TimeLeft = (props: TimeLeftProps) => {
   })
 
   usePrestoUiEvent('hoverPosition', event => {
-    if (event.position < 0 || props.disableHoveringDisplay) {
+    if (!event || props.disableHoveringDisplay) {
       setHovering(false)
       setPositionFromPlayer(player.position)
     } else {

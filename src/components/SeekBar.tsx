@@ -75,7 +75,7 @@ export const SeekBar = forwardRef((props: SeekBarProps, ref: ForwardedRef<HTMLDi
 
   function applyHoverValue(hoverValue: number) {
     if (hoverValue <= 0) {
-      player.setHoverPosition(hoverValue, hoverValue)
+      player.setHoverPosition(null)
       setHoverPosition(hoverValue)
       setHoverValue(0)
       return
@@ -86,7 +86,7 @@ export const SeekBar = forwardRef((props: SeekBarProps, ref: ForwardedRef<HTMLDi
     const seekRange = player.seekRange
     const range = seekRange.end - seekRange.start
     const hoverPosition = seekRange.start + (range * (hoverValue / 100.0))
-    player.setHoverPosition(hoverPosition, hoverValue)
+    player.setHoverPosition({ position: hoverPosition, percent: hoverValue })
     setHoverValue(hoverValue)
     setHoverPosition(hoverPosition)
   }

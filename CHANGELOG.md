@@ -1,3 +1,20 @@
+# 0.9.0 (Beta)
+
+## Breaking changes
+
+* Removed `InterstitialPlayer` component. Support for HLS interstitials is
+  now integrated into the standard player.
+
+## New Features
+
+* Add ad-related UI and styling to existing components.
+
+# 0.8.1 (Beta)
+
+## Fixes
+
+* Disable focus-based interactivity by default.
+
 # 0.8.0 (Beta)
 
 ## New Features

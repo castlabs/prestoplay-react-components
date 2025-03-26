@@ -1,7 +1,10 @@
 import React from 'react'
 
+import { useAd } from '../hooks/hooks'
 import { ControlsVisibilityMode } from '../services/controls'
 
+import { AdCountdown } from './AdCountdown'
+import { AdLabel } from './AdLabel'
 import { BufferingIndicator } from './BufferingIndicator'
 import { CurrentTime } from './CurrentTime'
 import { Duration } from './Duration'
@@ -20,6 +23,7 @@ import { PlayerControls } from './PlayerControls'
 import { PlayPauseButton } from './PlayPauseButton'
 import { PosterImage } from './PosterImage'
 import { SeekBar } from './SeekBar'
+import { SeekBar2 } from './seekbar/SeekBar2'
 import { SeekButton } from './SeekButton'
 import { Spacer } from './Spacer'
 import { StartButton } from './StartButton'
@@ -109,6 +113,10 @@ export interface BaseThemeOverlayProps extends BaseComponentProps {
    * Class name for the seek bar slider component.
    */
   seekBarSliderClassName?: string
+  /**
+   * Version - 1 of 2. Default: 1.
+   */
+  version?: number
 }
 
 /**
@@ -123,6 +131,7 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   const showSeekBarCues = props.showSeekBarCues ?? true
   const hasPauseButton = props.hasPauseButton ?? true
   const hasTime = props.hasTime ?? true
+  const ad = useAd()
 
   const isFullScreen = useIsPlayerFullScreen()
 
@@ -136,6 +145,7 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
     return (
       <HorizontalBar className="pp-ui-top-bar">
         <Spacer/>
+        <AdLabel/>
         {hasTrackControls ? (
           <div className="pp-ui-margin-horizontal-sm">
             <MenuSlideinToggleButton />
@@ -153,6 +163,28 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   const renderStartButton = () => {
     if (!props.startButton) {return}
     return <StartButton onClick={typeof props.startButton === 'object' ? props.startButton.onClick : undefined}/>
+  }
+
+  const renderSeekBar = () => {
+    if (props.seekBar === 'none') {
+      return null
+    }
+
+    if (props.version === 2) {
+      return <SeekBar2/>
+    }
+
+    // Seek bar version 1
+    return (
+      <SeekBar
+        adjustWhileDragging={true}
+        adjustWithKeyboard={true}
+        enableThumbnailSlider={false}
+        enabled={(props.seekBar ?? 'enabled') === 'enabled'}
+        showCues={showSeekBarCues}
+        sliderClassName={props.seekBarSliderClassName}
+      />
+    )
   }
 
   const topCompanion = props.renderTopCompanion?.(isFullScreen)
@@ -184,22 +216,18 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
             <div className="pp-ui-row pp-ui-margin-horizontal-sm">
               {hasPauseButton ? <PlayPauseButton resetRate={true}/> : null}
               <ForSize size="small">
-                <SeekButton seconds={props.seekBackward ?? -10}/>
-                <SeekButton seconds={props.seekForward ?? 10}/>
+                <SeekButton enabled={!ad} seconds={props.seekBackward ?? -10}/>
+                <SeekButton enabled={!ad} seconds={props.seekForward ?? 10}/>
               </ForSize>
             </div>
 
-            {props.seekBar === 'none' ? null : <SeekBar
-              adjustWhileDragging={true}
-              adjustWithKeyboard={true}
-              enableThumbnailSlider={false}
-              enabled={(props.seekBar ?? 'enabled') === 'enabled'}
-              showCues={showSeekBarCues}
-              sliderClassName={props.seekBarSliderClassName}
-            />}
+            {renderSeekBar()}
 
             <div className="pp-ui-row pp-ui-margin-horizontal-sm">
-              {hasTime ? (
+              {ad ? (
+                <ForSize size="small"><AdCountdown /></ForSize>
+              ): null}
+              {(hasTime && !ad) ? (
                 <ForSize size="small">
                   <CurrentTime />
                   <Label label={'/'}/>
