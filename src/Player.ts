@@ -421,7 +421,7 @@ export class Player {
     const onAdStarted = (event: any) => {
       this._ad = {
         progress: 0,
-        remainingSec: event.ad.getDuration(),
+        remainingSec: Math.ceil(event.ad.getDuration()),
         canSkip: true,
         podCount: event.ad.getSequenceLength(),
         podOrder: event.ad.getPositionInSequence(),
