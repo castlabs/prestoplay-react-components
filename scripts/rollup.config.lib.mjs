@@ -126,7 +126,10 @@ const options = [
     plugins: [
       postcss({
         extract: true,
-        minimize: true,
+        // Something is wrong this sometimes breaks styles (I noticed this with
+        // styles for .pp-ui-seekbar-2 and .pp-ui-ad-label.
+        // Disabling until we figure out what is going on.
+        // minimize: true,
       }),
       // Copy icons over to dist.
       copy({
