@@ -297,6 +297,7 @@ class CueEL extends El {
     cueEl.classList.add('pp-ui-cue')
     this.appendChild(this.parent, cueEl)
 
+    cueEl.style.minWidth = '2px'
     cueEl.style.left = `${this.cue.start}%`
     if (this.cue.isPoint) {
       cueEl.style.width = '4px'
