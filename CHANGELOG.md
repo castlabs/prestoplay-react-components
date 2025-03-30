@@ -1,5 +1,9 @@
 # 0.9.1 (Beta)
 
+## New Features
+
+* Support X-TIMELINE-OCCUPIES in HLS interstitials.
+
 ## Fixes
 
 * Fix ad UI.

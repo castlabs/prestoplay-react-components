@@ -81,7 +81,7 @@ export function getUiCues (player: clpp.Player): Cue[] {
       return {
         start: positionToPercent(cue.startTime, range),
         end: positionToPercent(cue.endTime, range),
-        isPoint: cue.endTime - cue.startTime < 2,
+        isPoint: cue.customAttributes?.['X-TIMELINE-OCCUPIES'] === 'POINT',
       }
     })
 }
