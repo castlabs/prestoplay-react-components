@@ -97,6 +97,11 @@ class SeekBarEl extends El {
     }
     const onTimeupdate = () => {
       state.set({ progress: playerPositionPercent(this.player) })
+      if (this.player.isLive()) {
+        // Recalculate cues because the live seek range is moving (in case
+        // of moving window live) so we need to redraw the cues.
+        state.set({ cues: getUiCues(this.player) })
+      }
     }
     const onCues = () => {
       state.set({ cues: getUiCues(this.player) })

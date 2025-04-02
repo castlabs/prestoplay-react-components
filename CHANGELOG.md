@@ -8,6 +8,7 @@
 
 * Fix ad UI.
 * Do not show controls until video is loaded.
+* Fix rendering of cues in live in `BaseThemeOverlay` v2.
 
 # 0.9.0 (Beta)
 
