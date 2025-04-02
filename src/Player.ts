@@ -330,6 +330,8 @@ export class Player {
    */
   private _ad: Ad | null = null
 
+  private _loaded = false
+
   constructor(initializer?: PlayerInitializer) {
     this._initializer = initializer
     this._actionQueuePromise = new Promise<void>((resolve) => {
@@ -745,6 +747,7 @@ export class Player {
         if (config && autoload) {
           this._configLoaded = true
           await this.pp_?.load(config)
+          this._loaded = true
         }
       })
     } else {
@@ -753,7 +756,7 @@ export class Player {
         if (this._config) {
           this._configLoaded = true
           await this.pp_?.load(this._config)
-
+          this._loaded = true
         }
       })
     }
@@ -827,6 +830,8 @@ export class Player {
    * if no interaction was registered.
    */
   surfaceInteraction() {
+    if (!this._loaded) {return }
+
     this.emitUIEvent('surfaceInteraction', undefined)
 
     if (!this.slideInMenuVisible) {
