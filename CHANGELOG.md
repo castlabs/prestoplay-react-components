@@ -7,6 +7,7 @@
 ## Fixes
 
 * Fix ad UI.
+* Do not show controls until video is loaded.
 
 # 0.9.0 (Beta)
 
