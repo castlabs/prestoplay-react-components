@@ -1,4 +1,4 @@
-# 0.9.1 (Beta)
+# 0.9.2 (Beta)
 
 ## New Features
 
@@ -6,9 +6,12 @@
 
 ## Fixes
 
-* Fix ad UI.
 * Do not show controls until video is loaded.
 * Fix rendering of cues in live in `BaseThemeOverlay` v2.
+
+# 0.9.1 (Beta)
+
+* Fix ad UI.
 
 # 0.9.0 (Beta)
 
