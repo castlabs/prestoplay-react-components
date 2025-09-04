@@ -8,6 +8,8 @@
 
 * Do not show controls until video is loaded.
 * Fix rendering of cues in live in `BaseThemeOverlay` v2.
+* Support for displaying all timeline cues (except pre and post) is now added.
+  The cues don't need to have `schemeIdUri` set to `com.apple.hls.interstitial` anymore.
 
 # 0.9.1 (Beta)
 
