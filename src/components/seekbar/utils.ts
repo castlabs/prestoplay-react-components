@@ -66,6 +66,7 @@ export async function seekToPercent(player: clpp.Player, percent: number) {
 function isPreOrPostCue (cue: clpp.TimelineCue): boolean {
   const cueAttribute = cue.customAttributes?.CUE
   if (!cueAttribute) {return false}
+  if (cue.schemeIdUri !== 'com.apple.hls.interstitial') {return false}
   if (cueAttribute.includes('PRE') || cueAttribute.includes('POST')) {
     return true
   }
@@ -75,7 +76,6 @@ function isPreOrPostCue (cue: clpp.TimelineCue): boolean {
 export function getUiCues (player: clpp.Player): Cue[] {
   const range = player.getSeekRange() as SeekRange
   return player.getTimelineCues()
-    .filter(cue => cue.schemeIdUri === 'com.apple.hls.interstitial')
     .filter(cue => !isPreOrPostCue(cue))
     .map(cue => {
       return {

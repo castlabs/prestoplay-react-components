@@ -8,6 +8,7 @@
 
 * Do not show controls until video is loaded.
 * Fix rendering of cues in live in `BaseThemeOverlay` v2.
+* Display all timeline cues except preroll and postroll.
 
 # 0.9.1 (Beta)
 
