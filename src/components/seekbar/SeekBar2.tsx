@@ -115,14 +115,23 @@ class SeekBarEl extends El {
         state.set({ adProgress: null })
       }
     }
+    const onReleasing = () => {
+      state.set({
+        cues: [],
+        progress: 0,
+      })
+    }
+
     this.player.on('timeupdate', onTimeupdate)
     this.player.on(clpp.events.TIMELINE_CUES_CHANGED, onCues)
+    this.player.on(clpp.events.RELEASING, onReleasing)
     this.playerState.onUIEvent('adChanged', onAdChanged)
     state.onHoverPositionChange(onHoverChange)
     this.disposers.push(() => {
       this.player.off('timeupdate', onTimeupdate)
       this.player.off(clpp.events.TIMELINE_CUES_CHANGED, onCues)
       this.playerState.offUIEvent('adChanged', onAdChanged)
+      this.player.off(clpp.events.RELEASING, onReleasing)
       state.offHoverPositionChange(onHoverChange)
     })
 

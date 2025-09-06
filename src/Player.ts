@@ -549,6 +549,12 @@ export class Player {
     }
     player.on(clpp.events.BITRATE_CHANGED, onBitrateChange)
 
+    const onReleasing = () => {
+      this._ad = null
+      this.emitUIEvent('adChanged', null)
+    }
+    player.on(clpp.events.RELEASING, onReleasing)
+
     this._prestoDisposers.push(() => {
       player.off(clpp.events.TRACKS_ADDED, onTracksAdded)
       player.off(clpp.events.AUDIO_TRACK_CHANGED, onAudioTrackChanged)
@@ -566,6 +572,7 @@ export class Player {
       player.off(clpp.events.AD_BREAK_STOPPED, onAdBreakStopped)
       player.off(clpp.events.AD_PAUSED, onAdPaused)
       player.off(clpp.events.AD_RESUMED, onAdPlaying)
+      player.off(clpp.events.RELEASING, onReleasing)
     })
   }
 
