@@ -53,6 +53,10 @@ export interface PlayerProps extends BaseComponentProps {
    * @private
    */
   onContext?: (context: PrestoContextType) => void
+  /**
+   * Callback called when an error occurs.
+   */
+  onError?: (error: clpp.Error) => void
 }
 
 const getContext = (nullableContext: Partial<PrestoContextType>) => {
@@ -103,6 +107,10 @@ export const PlayerSurface = (props: PlayerProps) => {
     await props.player.init(video, props.baseConfig)
     const presto = await props.player.presto()
 
+    presto.on(clpp.events.ERROR, (err) => {
+      props.onError?.(err as clpp.Error)
+    })
+
     setPrestoContext(context => ({
       ...context,
       presto,
@@ -112,7 +120,10 @@ export const PlayerSurface = (props: PlayerProps) => {
   useEffect(() => {
     return () => {
       props.player.release()
-        .catch(err => console.error('Failed to release the player', err))
+        .catch(err => {
+          props.onError?.(err as clpp.Error)
+          console.error('Failed to release the player', err)
+        })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -121,7 +132,10 @@ export const PlayerSurface = (props: PlayerProps) => {
     if (!props.config) {return}
 
     props.player.load(props.config, props.autoload)
-      .catch(err => console.error('Failed to load source', props.config, err))
+      .catch(err => {
+        props.onError?.(err as clpp.Error)
+        console.error('Failed to load source', props.config, err)
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.config, props.player])
 
