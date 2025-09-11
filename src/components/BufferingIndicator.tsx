@@ -1,6 +1,7 @@
 import React, { useContext, useDebugValue, useState } from 'react'
 
 import { PrestoContext } from '../context/PrestoContext'
+import { useAd } from '../hooks/hooks'
 import { State } from '../Player'
 import { usePrestoUiEvent } from '../react'
 
@@ -24,6 +25,7 @@ const isBufferingState = (state: State): boolean => {
 const useIsBuffering = (): boolean => {
   const { player } = useContext(PrestoContext)
   const [buffering, setBuffering] = useState(isBufferingState(player?.state ?? State.Idle))
+  const ad = useAd()
 
   usePrestoUiEvent('statechanged', (event) => {
     setBuffering(isBufferingState(event.currentState))
@@ -31,7 +33,7 @@ const useIsBuffering = (): boolean => {
 
   useDebugValue(buffering ? 'buffering' : 'not buffering')
 
-  return buffering
+  return buffering && !ad
 }
 
 /**
