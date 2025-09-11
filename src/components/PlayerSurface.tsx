@@ -108,7 +108,7 @@ export const PlayerSurface = (props: PlayerProps) => {
     const presto = await props.player.presto()
 
     presto.on(clpp.events.ERROR, (err) => {
-      props.onError?.(err as clpp.Error)
+      props.onError?.(err.detail as clpp.Error)
     })
 
     setPrestoContext(context => ({
@@ -121,7 +121,7 @@ export const PlayerSurface = (props: PlayerProps) => {
     return () => {
       props.player.release()
         .catch(err => {
-          props.onError?.(err.detail as clpp.Error)
+          props.onError?.(err as clpp.Error)
           console.error('Failed to release the player', err)
         })
     }
