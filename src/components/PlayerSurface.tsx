@@ -121,7 +121,7 @@ export const PlayerSurface = (props: PlayerProps) => {
     return () => {
       props.player.release()
         .catch(err => {
-          props.onError?.(err as clpp.Error)
+          props.onError?.(err.detail as clpp.Error)
           console.error('Failed to release the player', err)
         })
     }

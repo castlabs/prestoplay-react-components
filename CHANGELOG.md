@@ -1,8 +1,12 @@
 # 0.9.3 (Beta)
 
+## New Features
+
+* Add `onError` prop.
+
 ## Fixes
 
-* Display all timeline cues except preroll and postroll.
+* Display all timeline cues except interstitial preroll and postroll.
 
 # 0.9.2 (Beta)
 
