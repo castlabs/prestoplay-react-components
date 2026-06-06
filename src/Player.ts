@@ -353,10 +353,12 @@ export class Player {
    * @param element The video element or the ID of the video element
    * @param baseConfig PRESTOplay config to initialize the player with
    */
-  async init(element: HTMLVideoElement | string, baseConfig?: clpp.PlayerConfiguration) {
+  async init(element: HTMLVideoElement, baseConfig?: clpp.PlayerConfiguration) {
     if (this.pp_) {return}
 
-    this.pp_ = new clpp.Player(element, baseConfig)
+    const containerEl = element.parentElement
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    this.pp_ = new clpp.Player(element, baseConfig, { containerEl } as any)
 
     this.attachPrestoListeners_(this.pp_)
 

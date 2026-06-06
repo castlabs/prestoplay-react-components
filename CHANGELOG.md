@@ -7,6 +7,12 @@
 ## Fixes
 
 * Display all timeline cues except interstitial preroll and postroll.
+* Changes to base theme:
+  * Hide any controls when start button is visible.
+  * Animate volume bar.
+  * Toggle pause by clicking video surface.
+* Fix button highlight.
+* Toggle pause by clicking player surface.
 
 # 0.9.2 (Beta)
 
