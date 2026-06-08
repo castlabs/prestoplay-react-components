@@ -122,7 +122,7 @@ export interface BaseThemeOverlayProps extends BaseComponentProps {
   version?: number
 }
 
-function useIdleState (): boolean {
+function useIsIdleState (): boolean {
   const { player } = useContext(PrestoContext)
   const [isIdle, setIdle] = useState(player.state === State.Idle)
   usePrestoUiEvent('statechanged', () => {
@@ -145,7 +145,7 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   const hasTime = props.hasTime ?? true
   const { player } = useContext(PrestoContext)
   const ad = useAd()
-  const isIdle = useIdleState()
+  const isIdle = useIsIdleState()
   const isStartButtonVisible = props.startButton && isIdle
 
   const isFullScreen = useIsPlayerFullScreen()
