@@ -124,11 +124,9 @@ export interface BaseThemeOverlayProps extends BaseComponentProps {
 
 function useIdleState (): boolean {
   const { player } = useContext(PrestoContext)
-  const [isIdle, setIdle] = useState(
-    player.state === State.Idle || player.state === State.Unset,
-  )
+  const [isIdle, setIdle] = useState(player.state === State.Idle)
   usePrestoUiEvent('statechanged', () => {
-    setIdle(player.state === State.Idle || player.state === State.Unset)
+    setIdle(player.state === State.Idle)
   })
   return isIdle
 }

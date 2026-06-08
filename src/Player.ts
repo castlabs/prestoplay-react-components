@@ -69,10 +69,6 @@ export enum State {
    * 6 - when player encounters an error
    */
   Error = clpp.Player.State.ERROR,
-  /**
-   * 7 - Used exclusively to indicate previous state, when it has no state yet
-   */
-  Unset = clpp.Player.State.UNSET,
 }
 
 const toState = (state: number): State => {
@@ -91,10 +87,8 @@ const toState = (state: number): State => {
       return State.Ended
     case clpp.Player.State.ERROR:
       return State.Error
-    case clpp.Player.State.UNSET:
-      return State.Unset
     default:
-      return State.Unset
+      return State.Idle
   }
 }
 
@@ -189,7 +183,7 @@ export interface UIEvents {
   /**
    * Helper event that is triggered when the player enters (or leaves) a state
    * where controls should be enabled. The player is considered disabled in
-   * Unset, Idle, and Error states.
+   * Idle and Error states.
    */
   enabled: boolean
   /**
@@ -204,7 +198,7 @@ export interface UIEvents {
  * @param state
  */
 const isEnabledState = (state: State): boolean => {
-  return state !== State.Idle && state !== State.Unset && state !== State.Error
+  return state !== State.Idle && state !== State.Error
 }
 
 /**
@@ -320,7 +314,7 @@ export class Player {
   /**
    * The last playback state
    */
-  private _lastPlaybackState: State = State.Unset
+  private _lastPlaybackState: State = State.Idle
   /**
    * Timeline cues
    */
@@ -698,7 +692,7 @@ export class Player {
   }
 
   get state(): State {
-    return this.pp_ ? toState(this.pp_.getState()) : State.Unset
+    return this.pp_ ? toState(this.pp_.getState()) : State.Idle
   }
 
   get rate() {
