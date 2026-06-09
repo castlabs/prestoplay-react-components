@@ -284,11 +284,13 @@ export const PlayerSurface = (props: PlayerProps) => {
       onKeyDown={onKeyDown}
       tabIndex={0}
     >
-      <video className={'pp-ui pp-ui-video'}
-        ref={createVideo}
-        tabIndex={-1}
-        playsInline={props.playsInline}>
-      </video>
+      <div>
+        <video className={'pp-ui pp-ui-video'}
+          ref={createVideo}
+          tabIndex={-1}
+          playsInline={props.playsInline}>
+        </video>
+      </div>
       {context &&
         <PrestoContext.Provider value={context}>
           <div className={`pp-ui pp-ui-overlay ${isIpadOS() ? 'pp-ui-ipad' : ''}`}>

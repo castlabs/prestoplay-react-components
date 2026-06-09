@@ -5,6 +5,7 @@ import type { BaseComponentProps } from './types'
 export interface HorizontalBarProps extends BaseComponentProps{
   style?: CSSProperties
   children?: React.ReactNode
+  onClick?: () => void
 }
 
 /**
@@ -13,6 +14,8 @@ export interface HorizontalBarProps extends BaseComponentProps{
 export const HorizontalBar = (props: HorizontalBarProps) => {
   return (
     <div
+      onClick={props.onClick}
+      onTouchEnd={props.onClick}
       data-testid="pp-ui-horizontal-bar" 
       className={`pp-ui pp-ui-row pp-ui-horizontal-bar ${props.className || ''}`} style={props.style}
     >

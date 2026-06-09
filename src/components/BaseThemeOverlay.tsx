@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 
+import { PrestoContext } from '../context/PrestoContext'
 import { useAd } from '../hooks/hooks'
+import { State } from '../Player'
+import { usePrestoUiEvent } from '../react'
 import { ControlsVisibilityMode } from '../services/controls'
 
 import { AdCountdown } from './AdCountdown'
@@ -119,6 +122,15 @@ export interface BaseThemeOverlayProps extends BaseComponentProps {
   version?: number
 }
 
+function useIsIdleState (): boolean {
+  const { player } = useContext(PrestoContext)
+  const [isIdle, setIdle] = useState(player.state === State.Idle)
+  usePrestoUiEvent('statechanged', () => {
+    setIdle(player.state === State.Idle)
+  })
+  return isIdle
+}
+
 /**
  * Base theme overlay.
  */
@@ -131,7 +143,10 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
   const showSeekBarCues = props.showSeekBarCues ?? true
   const hasPauseButton = props.hasPauseButton ?? true
   const hasTime = props.hasTime ?? true
+  const { player } = useContext(PrestoContext)
   const ad = useAd()
+  const isIdle = useIsIdleState()
+  const isStartButtonVisible = props.startButton && isIdle
 
   const isFullScreen = useIsPlayerFullScreen()
 
@@ -189,9 +204,13 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
 
   const topCompanion = props.renderTopCompanion?.(isFullScreen)
 
+  const onClickFreeSpace = () => {
+    player.playing = !player.playing
+  }
+
   return (
     <div data-testid="pp-ui-basic-theme" className={'pp-ui pp-ui-overlay pp-ui-basic-theme'} style={props.style}>
-      <PlayerControls mode={props.controlsVisibility}>
+      <PlayerControls mode={isStartButtonVisible ? 'never' : props.controlsVisibility}>
         <VerticalBar className={'pp-ui-spacer'}>
 
           {/* Top bar */}
@@ -202,10 +221,10 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
             </div>
           ): null}
 
-          <Spacer/>
+          <Spacer onClick={onClickFreeSpace}/>
 
           {/* Thumbnails */}
-          <HorizontalBar className={'pp-ui-transparent'}>
+          <HorizontalBar className={'pp-ui-transparent'} onClick={onClickFreeSpace}>
             <Thumbnail moveRelativeToParent={true}/>
           </HorizontalBar>
 
@@ -235,10 +254,13 @@ export const BaseThemeOverlay = (props: BaseThemeOverlayProps) => {
                 </ForSize>
               ): null}
 
-              {hasAudioControls ? <MuteButton/>: null}
-
+              <div className="pp-ui-volume-group">
+                {hasAudioControls ? <MuteButton/> : null}
+                <ForSize size="medium">
+                  {hasAudioControls ? <VolumeBar adjustWhileDragging={true}/> : null}
+                </ForSize>
+              </div>
               <ForSize size="medium">
-                {hasAudioControls ? <VolumeBar adjustWhileDragging={true}/> : null}
                 {hasFullScreenButton ? <FullscreenButton/> : null}
               </ForSize>
             </div>

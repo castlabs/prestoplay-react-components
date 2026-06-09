@@ -15,7 +15,7 @@ export interface StartButtonProps extends BasePlayerComponentButtonProps {
 }
 
 const isVisibleState = (state: State) => {
-  return state === State.Idle || state === State.Unset
+  return state === State.Idle
 }
 
 const useVisibility = (player: Player) => {

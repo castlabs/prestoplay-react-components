@@ -1,73 +1,79 @@
 .pp-ui {
-    /* Colors */
-    --pp-bg-color: rgba(0, 0, 0, 0.5);
-    --pp-fg-color: #e5e5e5;
-    --pp-fg-disabled-color: rgb(100, 100, 100);
-    --pp-fg-dim-color: #b7b7b7;
-    --pp-hover-color: #ffffff;
-    --pp-scrollbar-fg-color: var(--pp-fg-dim-color);
-    --pp-scrollbar-bg-color: rgb(100, 100, 100);
-    --pp-side-menu-hover-bg-color: rgba(255, 255, 255, 0.15);
-    --pp-ui-overlay-menu-width: 250px;
-    --pp-ui-poster-image-bg: rgb(0, 0, 0);
-    --pp-ui-surface-bg: rgb(0, 0, 0);
+  /* Colors */
+  --pp-bg-color: rgba(0, 0, 0, 0.5);
+  --pp-fg-color: #e5e5e5;
+  --pp-fg-disabled-color: rgb(100, 100, 100);
+  --pp-fg-dim-color: #b7b7b7;
+  --pp-hover-color: #ffffff;
+  --pp-scrollbar-fg-color: var(--pp-fg-dim-color);
+  --pp-scrollbar-bg-color: rgb(100, 100, 100);
+  --pp-side-menu-hover-bg-color: rgba(255, 255, 255, 0.15);
+  --pp-ui-overlay-menu-width: 250px;
+  --pp-ui-poster-image-bg: rgb(0, 0, 0);
+  --pp-ui-surface-bg: rgb(0, 0, 0);
 
-    --pp-horizontal-bar-bg-color: var(--pp-bg-color);
-    --pp-vertical-bar-bg-color: transparent;
+  --pp-horizontal-bar-bg-color: var(--pp-bg-color);
+  --pp-vertical-bar-bg-color: transparent;
 
-    /* Slider */
-    --pp-ui-slider-height: .25rem;
-    --pp-ui-slider-height-ad: .4rem;
-    --pp-ui-slider-height-interaction: .5rem;
-    --pp-ui-slider-range-bg-gold: #675f40;
-    --pp-ui-slider-range-progress-gold: #ffe206;
-    --pp-ui-slider-range-bg: #b4b4b4;
-    --pp-ui-slider-range-progress: #ffffff;
-    --pp-ui-slider-range-thumb-bg: #ffffff;
-    --pp-ui-slider-border-radius: .625rem;
-    --pp-ui-slider-size: 2rem;
-    --pp-ui-slider-margin: auto .75rem;
-    --pp-ui-slider-thumb-transform: translateX(-50%) scale(2);
+  /* Slider */
+  --pp-ui-slider-height: 0.25rem;
+  --pp-ui-slider-height-ad: 0.4rem;
+  --pp-ui-slider-height-interaction: 0.5rem;
+  --pp-ui-slider-range-bg-gold: #675f40;
+  --pp-ui-slider-range-progress-gold: #ffe206;
+  --pp-ui-slider-range-bg: #b4b4b4;
+  --pp-ui-slider-range-progress: #ffffff;
+  --pp-ui-slider-range-thumb-bg: #ffffff;
+  --pp-ui-slider-border-radius: 0.625rem;
+  --pp-ui-slider-size: 2rem;
+  --pp-ui-slider-margin: auto 0.75rem;
+  --pp-ui-slider-thumb-transform: translateX(-50%) scale(2);
 
-    /* Icons */
-    --pp-ui-icon-playpause-toggle-center-pause: url("resources/pause-circle.svg") no-repeat 50% 50%;
-    --pp-ui-icon-playpause-toggle-center-play: url("resources/play-circle.svg") no-repeat 50% 50%;
-    --pp-ui-icon-start-button: var(--pp-ui-icon-playpause-toggle-center-play);
-    --pp-ui-icon-playpause-toggle-pause: url("resources/pause.svg") no-repeat 50% 50%;
-    --pp-ui-icon-playpause-toggle-play: url("resources/play.svg") no-repeat 50% 50%;
-    --pp-ui-icon-seek-back: url("resources/seek-back.svg") no-repeat 50% 50%;
-    --pp-ui-icon-seek-forward: url("resources/seek-forward.svg") no-repeat 50% 50%;
-    --pp-ui-icon-ff: url("resources/fast-forward.svg") no-repeat 50% 50%;
-    --pp-ui-icon-fr: url("resources/fast-rewind.svg") no-repeat 50% 50%;
-    --pp-ui-icon-muted: url("resources/muted.svg") no-repeat 50% 50%;
-    --pp-ui-icon-unmuted: url("resources/unmuted.svg") no-repeat 50% 50%;
-    --pp-ui-icon-spinner: url("resources/spinner.svg") no-repeat 50% 50%;
-    --pp-ui-icon-options: url("resources/options.svg") no-repeat 50% 50%;
-    --pp-ui-icon-settings: url("resources/settings.svg") no-repeat 50% 50%;
-    --pp-ui-icon-fullscreen-enter: url("resources/fullscreen.svg") no-repeat 50% 50%;
-    --pp-ui-icon-fullscreen-exit: url("resources/fullscreen_exit.svg") no-repeat 50% 50%;
+  /* Icons */
+  --pp-ui-icon-playpause-toggle-center-pause: url("resources/pause-circle.svg")
+    no-repeat 50% 50%;
+  --pp-ui-icon-playpause-toggle-center-play: url("resources/play-circle.svg")
+    no-repeat 50% 50%;
+  --pp-ui-icon-start-button: var(--pp-ui-icon-playpause-toggle-center-play);
+  --pp-ui-icon-playpause-toggle-pause: url("resources/pause.svg") no-repeat 50%
+    50%;
+  --pp-ui-icon-playpause-toggle-play: url("resources/play.svg") no-repeat 50%
+    50%;
+  --pp-ui-icon-seek-back: url("resources/seek-back.svg") no-repeat 50% 50%;
+  --pp-ui-icon-seek-forward: url("resources/seek-forward.svg") no-repeat 50% 50%;
+  --pp-ui-icon-ff: url("resources/fast-forward.svg") no-repeat 50% 50%;
+  --pp-ui-icon-fr: url("resources/fast-rewind.svg") no-repeat 50% 50%;
+  --pp-ui-icon-muted: url("resources/muted.svg") no-repeat 50% 50%;
+  --pp-ui-icon-unmuted: url("resources/unmuted.svg") no-repeat 50% 50%;
+  --pp-ui-icon-spinner: url("resources/spinner.svg") no-repeat 50% 50%;
+  --pp-ui-icon-options: url("resources/options.svg") no-repeat 50% 50%;
+  --pp-ui-icon-settings: url("resources/settings.svg") no-repeat 50% 50%;
+  --pp-ui-icon-fullscreen-enter: url("resources/fullscreen.svg") no-repeat 50%
+    50%;
+  --pp-ui-icon-fullscreen-exit: url("resources/fullscreen_exit.svg") no-repeat
+    50% 50%;
 
-    /* Margins, paddings */
-    --pp-ui-margin-sm: 0.5em;
+  /* Margins, paddings */
+  --pp-ui-margin-sm: 0.5em;
 
-    /* Component-specific styles */
-    --pp-ui-button-size: 2rem;
-    --pp-ui-spinner-size: 4rem;
-    --pp-ui-label-font-size: 1.25rem;
-    --pp-ui-label-subtitle-font-size: 0.875rem;
-    --pp-ui-thumbnail-height: 180px;
-    --pp-ui-bar-gap: 0px;
-    --pp-ui-start-button-size: 6rem;
+  /* Component-specific styles */
+  --pp-ui-button-size: 2rem;
+  --pp-ui-spinner-size: 4rem;
+  --pp-ui-label-font-size: 1.25rem;
+  --pp-ui-label-subtitle-font-size: 0.875rem;
+  --pp-ui-thumbnail-height: 180px;
+  --pp-ui-bar-gap: 0px;
+  --pp-ui-start-button-size: 6rem;
 
-    --pp-ui-overlay-offset-fullscreen: 1.5rem;
+  --pp-ui-overlay-offset-fullscreen: 1.5rem;
 
-    /* Component-specific animations */
-    --pp-ui-controls-animation-time: 250ms;
-    --pp-ui-overlay-menu-animation-time: 250ms;
+  /* Component-specific animations */
+  --pp-ui-controls-animation-time: 250ms;
+  --pp-ui-overlay-menu-animation-time: 250ms;
 
-    /* Global styles */
-    color: var(--pp-fg-color);
-    font-family: sans-serif;
+  /* Global styles */
+  color: var(--pp-fg-color);
+  font-family: sans-serif;
 }
 
 .pp-ui-margin-horizontal-sm {
@@ -89,92 +95,93 @@
 }
 
 .pp-ui-horizontal-bar {
-    background-color: var(--pp-horizontal-bar-bg-color);
-    padding: 0;
+  background-color: var(--pp-horizontal-bar-bg-color);
+  padding: 0;
 }
 
 .pp-ui-vertical-bar {
-    background-color: var(--pp-vertical-bar-bg-color);
-    padding: 0;
+  background-color: var(--pp-vertical-bar-bg-color);
+  padding: 0;
 
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: stretch;
-    row-gap: var(--pp-ui-bar-gap);
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+  row-gap: var(--pp-ui-bar-gap);
 }
 
-
 .pp-ui-button {
-    display: inline-block;
-    background-color: transparent;
+  display: inline-block;
+  background-color: transparent;
 
-    cursor: pointer;
+  cursor: pointer;
 
-    border: none;
-    border-radius: 50%;
+  border: none;
+  border-radius: 50%;
 
-    box-sizing: border-box;
-    text-decoration: none;
-    font-weight: 300;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-weight: 300;
 
-    text-align: center;
+  text-align: center;
 
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 
-    transition: color 250ms, background-color 250ms;
+  transition: color 250ms, background-color 250ms;
 }
 
 .pp-ui-button-no-icon {
-    display: block;
-    border: none;
-    text-align: left;
+  display: block;
+  border: none;
+  text-align: left;
 
-    width: auto;
-    height: auto;
-    min-width: auto;
-    min-height: auto;
-    max-width: initial;
-    max-height: initial;
+  width: auto;
+  height: auto;
+  min-width: auto;
+  min-height: auto;
+  max-width: initial;
+  max-height: initial;
 
-    border-radius: 0;
+  border-radius: 0;
 }
 
 .pp-ui-button:focus {
-    outline: none;
-    transition: color 0s, background-color 0s;
-    color: var(--pp-hover-color);
-    background-color: var(--pp-side-menu-hover-bg-color);
+  outline: none;
+  transition: color 0s, background-color 0s;
+  color: var(--pp-hover-color);
+  /* background-color: var(--pp-side-menu-hover-bg-color); */
 }
 
 .pp-ui-button:hover {
-    color: var(--pp-hover-color);
-    background-color: var(--pp-side-menu-hover-bg-color);
-    border-radius: 50%;
+  color: var(--pp-hover-color);
+  background-color: var(--pp-side-menu-hover-bg-color);
+  border-radius: 50%;
 }
 
-.pp-ui-button-no-icon:hover, .pp-ui-button-no-icon:focus {
-    border-radius: 0;
+.pp-ui-button-no-icon:hover,
+.pp-ui-button-no-icon:focus {
+  border-radius: 0;
 }
 
 .pp-ui-icon {
-    -webkit-mask-size: cover;
-    mask-size: cover;
-    clip-path: padding-box;
-    display: block;
+  -webkit-mask-size: cover;
+  mask-size: cover;
+  clip-path: padding-box;
+  display: block;
 }
 
-.pp-ui-button .pp-ui-icon, .pp-ui-icon-white .pp-ui-icon {
-    background-color: var(--pp-fg-color);
-    min-width: var(--pp-ui-button-size);
-    min-height: var(--pp-ui-button-size);
+.pp-ui-button .pp-ui-icon,
+.pp-ui-icon-white .pp-ui-icon {
+  background-color: var(--pp-fg-color);
+  min-width: var(--pp-ui-button-size);
+  min-height: var(--pp-ui-button-size);
 }
 
 .pp-ui-icon-white .pp-ui-icon {
@@ -183,35 +190,35 @@
   min-height: var(--pp-ui-button-size);
 }
 
-.pp-ui-button:hover .pp-ui-icon, .pp-ui-button:focus .pp-ui-icon {
-    background-color: var(--pp-hover-color);
+.pp-ui-button:hover .pp-ui-icon,
+.pp-ui-button:focus .pp-ui-icon {
+  background-color: var(--pp-hover-color);
 }
 
 .pp-ui-settings-button {
-    -webkit-mask: var(--pp-ui-icon-settings);
-    mask: var(--pp-ui-icon-settings);
+  -webkit-mask: var(--pp-ui-icon-settings);
+  mask: var(--pp-ui-icon-settings);
 }
 
 .pp-ui-playpause-toggle {
 }
 
 .pp-ui-playpause-toggle .pp-ui-icon {
-    -webkit-mask: var(--pp-ui-icon-playpause-toggle-play);
-    mask: var(--pp-ui-icon-playpause-toggle-play);
+  -webkit-mask: var(--pp-ui-icon-playpause-toggle-play);
+  mask: var(--pp-ui-icon-playpause-toggle-play);
 }
 
 .pp-ui-playpause-toggle-pause .pp-ui-icon {
-    -webkit-mask: var(--pp-ui-icon-playpause-toggle-pause);
-    mask: var(--pp-ui-icon-playpause-toggle-pause);
-    /*This one is needed for safari, otherwise transitioning the mask will flicker*/
-    mask-size: contain;
+  -webkit-mask: var(--pp-ui-icon-playpause-toggle-pause);
+  mask: var(--pp-ui-icon-playpause-toggle-pause);
+  /*This one is needed for safari, otherwise transitioning the mask will flicker*/
+  mask-size: contain;
 }
-
 
 @keyframes ppAnimationFadeout {
   from {
     opacity: 1;
-    scale: .75;
+    scale: 0.75;
   }
   to {
     opacity: 0;
@@ -226,7 +233,7 @@
 @keyframes ppAnimationFadeout2 {
   from {
     opacity: 1;
-    scale: .75;
+    scale: 0.75;
   }
   to {
     opacity: 0;
@@ -234,53 +241,52 @@
   }
 }
 
-
 .pp-ui-state-play .pp-ui-icon {
-    -webkit-mask: var(--pp-ui-icon-playpause-toggle-play);
-    mask: var(--pp-ui-icon-playpause-toggle-play);
+  -webkit-mask: var(--pp-ui-icon-playpause-toggle-play);
+  mask: var(--pp-ui-icon-playpause-toggle-play);
 }
 
 .pp-ui-state-pause .pp-ui-icon {
-    -webkit-mask: var(--pp-ui-icon-playpause-toggle-pause);
-    mask: var(--pp-ui-icon-playpause-toggle-pause);
-    /*This one is needed for safari, otherwise transitioning the mask will flicker*/
-    mask-size: contain;
+  -webkit-mask: var(--pp-ui-icon-playpause-toggle-pause);
+  mask: var(--pp-ui-icon-playpause-toggle-pause);
+  /*This one is needed for safari, otherwise transitioning the mask will flicker*/
+  mask-size: contain;
 }
 
 .pp-ui-playpause-indicator.pp-ui-state-pause {
-    opacity: 0;
-    animation-name: ppAnimationFadeout;
-    animation-duration: 800ms;
-    animation-direction: normal;
-    animation-fill-mode: forwards;
-    animation-timing-function: ease;
+  opacity: 0;
+  animation-name: ppAnimationFadeout;
+  animation-duration: 800ms;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease;
 }
 
 .pp-ui-playpause-indicator.pp-ui-state-play {
-    opacity: 0;
-    animation-name: ppAnimationFadeout2;
-    animation-duration: 800ms;
-    animation-direction: normal;
-    animation-fill-mode: forwards;
-    animation-timing-function: ease;
+  opacity: 0;
+  animation-name: ppAnimationFadeout2;
+  animation-duration: 800ms;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease;
 }
 
 .pp-ui-slideinmenu-toggle {
 }
 
 .pp-ui-slideinmenu-toggle .pp-ui-icon {
-    -webkit-mask: var(--pp-ui-icon-options);
-    mask: var(--pp-ui-icon-options);
+  -webkit-mask: var(--pp-ui-icon-options);
+  mask: var(--pp-ui-icon-options);
 }
 
 .pp-ui-fullscreen-disabled .pp-ui-icon {
-    -webkit-mask: var(--pp-ui-icon-fullscreen-enter);
-    mask: var(--pp-ui-icon-fullscreen-enter);
+  -webkit-mask: var(--pp-ui-icon-fullscreen-enter);
+  mask: var(--pp-ui-icon-fullscreen-enter);
 }
 
 .pp-ui-fullscreen-enabled .pp-ui-icon {
-    -webkit-mask: var(--pp-ui-icon-fullscreen-exit);
-    mask: var(--pp-ui-icon-fullscreen-exit);
+  -webkit-mask: var(--pp-ui-icon-fullscreen-exit);
+  mask: var(--pp-ui-icon-fullscreen-exit);
 }
 
 .pp-ui-start-button-container {
@@ -294,103 +300,99 @@
 }
 
 .pp-ui-start-button {
-    padding: 1rem;
+  padding: 1rem;
 }
 
 .pp-ui-start-button .pp-ui-icon {
-    min-width: var(--pp-ui-start-button-size);
-    min-height: var(--pp-ui-start-button-size);
+  min-width: var(--pp-ui-start-button-size);
+  min-height: var(--pp-ui-start-button-size);
 }
 
 .pp-ui-start-button .pp-ui-icon {
-    -webkit-mask: var(--pp-ui-icon-start-button);
-    mask: var(--pp-ui-icon-start-button);
+  -webkit-mask: var(--pp-ui-icon-start-button);
+  mask: var(--pp-ui-icon-start-button);
 }
 
 .pp-ui-seek {
 }
 
 .pp-ui-seek .pp-ui-icon {
-    -webkit-mask: var(--pp-ui-icon-seek-back);
-    mask: var(--pp-ui-icon-seek-back);
+  -webkit-mask: var(--pp-ui-icon-seek-back);
+  mask: var(--pp-ui-icon-seek-back);
 }
 
 .pp-ui-seek-forward .pp-ui-icon {
-    -webkit-mask: var(--pp-ui-icon-seek-forward);
-    mask: var(--pp-ui-icon-seek-forward);
+  -webkit-mask: var(--pp-ui-icon-seek-forward);
+  mask: var(--pp-ui-icon-seek-forward);
 }
-
 
 .pp-ui-rate {
 }
 
 .pp-ui-rate .pp-ui-icon {
-    -webkit-mask: var(--pp-ui-icon-fr);
-    mask: var(--pp-ui-icon-fr);
+  -webkit-mask: var(--pp-ui-icon-fr);
+  mask: var(--pp-ui-icon-fr);
 }
 
 .pp-ui-rate-ff .pp-ui-icon {
-    -webkit-mask: var(--pp-ui-icon-ff);
-    mask: var(--pp-ui-icon-ff);
+  -webkit-mask: var(--pp-ui-icon-ff);
+  mask: var(--pp-ui-icon-ff);
 }
-
 
 .pp-ui-mute-toggle {
 }
 
 .pp-ui-mute-toggle .pp-ui-icon {
-    -webkit-mask: var(--pp-ui-icon-muted);
-    mask: var(--pp-ui-icon-muted);
+  -webkit-mask: var(--pp-ui-icon-muted);
+  mask: var(--pp-ui-icon-muted);
 }
 
 .pp-ui-mute-toggle-muted .pp-ui-icon {
-    -webkit-mask: var(--pp-ui-icon-unmuted);
-    mask: var(--pp-ui-icon-unmuted);
-    /*This one is needed for safari, otherwise transitioning the mask will flicker*/
-    mask-size: contain;
+  -webkit-mask: var(--pp-ui-icon-unmuted);
+  mask: var(--pp-ui-icon-unmuted);
+  /*This one is needed for safari, otherwise transitioning the mask will flicker*/
+  mask-size: contain;
 }
 
-
 .pp-ui-spinner {
-    background-color: transparent;
+  background-color: transparent;
 
-    box-sizing: border-box;
-    text-decoration: none;
-    font-weight: 300;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-weight: 300;
 
-    text-align: center;
-    padding: 4px;
-    width: var(--pp-ui-spinner-size);
-    height: var(--pp-ui-spinner-size);
+  text-align: center;
+  padding: 4px;
+  width: var(--pp-ui-spinner-size);
+  height: var(--pp-ui-spinner-size);
 
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .pp-ui-spinner-loading .pp-ui-icon {
-    background: var(--pp-ui-icon-spinner);
-    width: 100%;
-    height: 100%;
-    visibility: visible;
+  background: var(--pp-ui-icon-spinner);
+  width: 100%;
+  height: 100%;
+  visibility: visible;
 }
 
 .pp-ui-label {
-    font-size: var(--pp-ui-label-font-size);
-    text-align: left;
-    display: inline-block;
-    margin-left: 4px;
-    margin-right: 4px;
+  font-size: var(--pp-ui-label-font-size);
+  text-align: left;
+  display: inline-block;
+  margin-left: 4px;
+  margin-right: 4px;
 }
 
 .pp-ui-label-title {
-    margin-top: 4px;
-    margin-bottom: 4px;
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 
 .pp-ui-label-subtitle {
-    font-size: var(--pp-ui-label-subtitle-font-size);
-    color: var(--pp-fg-dim-color);
+  font-size: var(--pp-ui-label-subtitle-font-size);
+  color: var(--pp-fg-dim-color);
 }
-
 
 .pp-ui-label-rate {
 }
@@ -408,77 +410,76 @@
 }
 
 .pp-ui-track-label.pp-ui-selected {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .pp-ui-track-selection-list {
 }
 
 .pp-ui-track-selection-button {
-    margin-top: 8px;
-    margin-bottom: 8px;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 .pp-ui-track-group-button {
 }
 
 .pp-ui-track-group-button .pp-ui-label {
-    display: block;
+  display: block;
 }
 
 .pp-ui-track-group-button .pp-ui-label-subtitle {
-    margin-top: 8px;
-    margin-bottom: 8px;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 .pp-ui-poster-image {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: var(--pp-ui-poster-image-bg);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--pp-ui-poster-image-bg);
 
-    opacity: 1;
-    transition: visibility 0s, opacity 100ms;
+  opacity: 1;
+  transition: visibility 0s, opacity 100ms;
 }
 .pp-ui-poster-image-hidden {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 500ms, visibility 0s 500ms;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 500ms, visibility 0s 500ms;
 }
 
-.pp-ui-poster-image img{
-    height: 100%;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
+.pp-ui-poster-image img {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
-
 
 .pp-ui-slider {
-    min-height: var(--pp-ui-slider-size);
-    height: 100%;
-    margin: var(--pp-ui-slider-margin);
+  min-height: var(--pp-ui-slider-size);
+  height: 100%;
+  margin: var(--pp-ui-slider-margin);
 
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .pp-ui-slider-range {
-    height: var(--pp-ui-slider-height);
-    border-radius: var(--pp-ui-slider-border-radius);
-    background-color: var(--pp-ui-slider-range-bg);
-    transition: height 200ms;
+  height: var(--pp-ui-slider-height);
+  border-radius: var(--pp-ui-slider-border-radius);
+  background-color: var(--pp-ui-slider-range-bg);
+  transition: height 200ms;
 }
 
 .pp-ui-slider-range-progress {
-    background-color: var(--pp-ui-slider-range-progress);
+  background-color: var(--pp-ui-slider-range-progress);
 }
 
 .pp-ui-color-gold .pp-ui-slider-range {
@@ -486,46 +487,46 @@
 }
 
 .pp-ui-color-gold .pp-ui-slider-range-progress {
-    background-color: var(--pp-ui-slider-range-progress-gold);
+  background-color: var(--pp-ui-slider-range-progress-gold);
 }
 
 .pp-ui-slider-range-thumb {
-    height: 10px;
-    width: 10px;
+  height: 10px;
+  width: 10px;
 
-    background-color: var(--pp-ui-slider-range-thumb-bg);
-    border-radius: 50%;
+  background-color: var(--pp-ui-slider-range-thumb-bg);
+  border-radius: 50%;
 
-    transform: translateX(-50%);
-    transition: transform 200ms;
-    visibility: hidden;
+  transform: translateX(-50%);
+  transition: transform 200ms;
+  visibility: hidden;
 
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .pp-ui-slider:focus {
-    outline: none;
-    border: none;
+  outline: none;
+  border: none;
 }
 
 .pp-ui-slider-interacting .pp-ui-slider-range-thumb,
 .pp-ui-slider:focus .pp-ui-slider-range-thumb {
-    transform-origin: center;
-    transform: var(--pp-ui-slider-thumb-transform);
-    visibility: visible;
+  transform-origin: center;
+  transform: var(--pp-ui-slider-thumb-transform);
+  visibility: visible;
 }
 
 .pp-ui-slider-interacting .pp-ui-slider-range {
-    height: var(--pp-ui-slider-height-interaction);
+  height: var(--pp-ui-slider-height-interaction);
 }
 
 .pp-ui-seekbar {
-    position: relative;
-    width: 100%;
-    height: 30px;
+  position: relative;
+  width: 100%;
+  height: 30px;
 }
 
 .pp-ui-seekbar-layer {
@@ -556,240 +557,260 @@
   top: 14px;
 }
 
-
 .pp-ui-seekbar .pp-ui-thumbnail {
-    display: none;
-    position: absolute;
-    top: -8px;
-    height: var(--pp-ui-thumbnail-height);
-    transform: translateY(-100%) translateX(-50%);
+  display: none;
+  position: absolute;
+  top: -8px;
+  height: var(--pp-ui-thumbnail-height);
+  transform: translateY(-100%) translateX(-50%);
 }
 
 .pp-ui-seekbar .pp-ui-thumbnail-with-thumb {
-    display: block;
+  display: block;
 }
 
 .pp-ui-volumebar {
-    position: relative;
-    width: 100%;
+  position: relative;
+  width: 100%;
+  cursor: pointer;
 }
 
 .pp-ui-thumbnail {
-    position: relative;
-    height: var(--pp-ui-thumbnail-height);
-    overflow: hidden;
-    box-sizing: border-box;
+  position: relative;
+  height: var(--pp-ui-thumbnail-height);
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .pp-ui-thumbnail-with-thumb {
-    border: 3px solid;
-    border-color: var(--pp-hover-color);
+  border: 3px solid;
+  border-color: var(--pp-hover-color);
 }
 
 .pp-ui-hover-container {
-    width: 100%;
-    margin: var(--pp-ui-slider-margin);
+  width: 100%;
+  margin: var(--pp-ui-slider-margin);
 }
 
 .pp-ui-hover-container-content {
-    width: fit-content;
+  width: fit-content;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
-    gap: .25rem;
+  gap: 0.25rem;
 
-    /*padding: 8px;*/
+  /*padding: 8px;*/
 }
 
 .pp-cursor-pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .pp-ui-overlay {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
 }
 
 :-webkit-full-screen .pp-ui-overlay.pp-ui-ipad {
-    position: absolute;
-    top: var(--pp-ui-overlay-offset-fullscreen);
-    bottom: 0;
-    left: 0;
-    right: 0;
+  position: absolute;
+  top: var(--pp-ui-overlay-offset-fullscreen);
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 .pp-ui-video {
-    display: flex;
-    height: 100%;
-    width: 100%;
+  display: flex;
+  height: 100%;
+  width: 100%;
 }
 
 .pp-ui-surface {
-    position: relative;
-    height: 100%;
-    width: 100%;
-    background-color: var(--pp-ui-surface-bg);
+  position: relative;
+  height: 100%;
+  width: 100%;
+  background-color: var(--pp-ui-surface-bg);
 }
 
 .pp-ui-surface:focus {
-    border: none;
-    outline: none;
+  border: none;
+  outline: none;
 }
 
 .pp-ui-surface .pp-ui-overlay {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .pp-ui-overlay-menu {
-    background-color: var(--pp-bg-color);
-    width: var(--pp-ui-overlay-menu-width);
-    height: 100%;
-    position: absolute;
-    top: 0;
-    right: 0;
-    overflow: auto;
+  background-color: var(--pp-bg-color);
+  width: var(--pp-ui-overlay-menu-width);
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  overflow: auto;
 
-    scrollbar-color: var(--pp-scrollbar-fg-color) var(--pp-scrollbar-bg-color);
-    scrollbar-width: thin;
+  scrollbar-color: var(--pp-scrollbar-fg-color) var(--pp-scrollbar-bg-color);
+  scrollbar-width: thin;
 }
 
 .pp-ui-overlay-menu-hidden {
-    right: calc(var(--pp-ui-overlay-menu-width) * -1);
-    visibility: hidden;
-    transition: right var(--pp-ui-overlay-menu-animation-time), visibility var(--pp-ui-overlay-menu-animation-time);
+  right: calc(var(--pp-ui-overlay-menu-width) * -1);
+  visibility: hidden;
+  transition: right var(--pp-ui-overlay-menu-animation-time),
+    visibility var(--pp-ui-overlay-menu-animation-time);
 }
 .pp-ui-overlay-menu-visible {
-    right: 0;
-    visibility: visible;
-    transition: right var(--pp-ui-overlay-menu-animation-time);
+  right: 0;
+  visibility: visible;
+  transition: right var(--pp-ui-overlay-menu-animation-time);
 }
 
-
 .pp-ui-overlay-menu::-webkit-scrollbar-track {
-    background-color: var(--pp-scrollbar-bg-color);
+  background-color: var(--pp-scrollbar-bg-color);
 }
 
 .pp-ui-overlay-menu::-webkit-scrollbar {
-    width: 6px;
-    background-color: var(--pp-scrollbar-bg-color);
+  width: 6px;
+  background-color: var(--pp-scrollbar-bg-color);
 }
 
 .pp-ui-overlay-menu::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background-color: var(--pp-scrollbar-fg-color);
+  border-radius: 10px;
+  background-color: var(--pp-scrollbar-fg-color);
 }
 
 .pp-ui-overlay-menu .pp-ui-track-group-button {
-    width: 100%;
+  width: 100%;
 }
 
-.pp-ui-overlay-menu .pp-ui-track-group-button:hover, .pp-ui-overlay-menu .pp-ui-track-selection-button:hover {
-    background-color: var(--pp-side-menu-hover-bg-color);
+.pp-ui-overlay-menu .pp-ui-track-group-button:hover,
+.pp-ui-overlay-menu .pp-ui-track-selection-button:hover {
+  background-color: var(--pp-side-menu-hover-bg-color);
 }
 
 .pp-ui-overlay-menu .pp-ui-track-selection-button {
-    width: 100%;
-    margin: 0;
-    padding: 8px 8px 8px 16px;
+  width: 100%;
+  margin: 0;
+  padding: 8px 8px 8px 16px;
 }
 
 .pp-ui-overlay-menu .pp-ui-track-selection-list {
 }
 
 .pp-ui-controls {
-    width: 100%;
-    height: 100%;
-    position: relative;
+  width: 100%;
+  height: 100%;
+  position: relative;
 
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity var(--pp-ui-controls-animation-time), visibility var(--pp-ui-controls-animation-time);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--pp-ui-controls-animation-time),
+    visibility var(--pp-ui-controls-animation-time);
 }
 
 .pp-ui-layers {
-    position: relative;
-    width: 100%;
-    height: 100%;
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .pp-ui-layer {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 .pp-ui-centered {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .pp-ui-controls-visible {
-    opacity: 1;
-    visibility: visible;
-    transition: visibility 0s, opacity var(--pp-ui-controls-animation-time);
+  opacity: 1;
+  visibility: visible;
+  transition: visibility 0s, opacity var(--pp-ui-controls-animation-time);
 }
 
 .pp-ui-circle-bg {
   width: 64px;
   height: 64px;
   border-radius: 32px;
-  background-color: rgba(0, 0, 0, .25);
+  background-color: rgba(0, 0, 0, 0.25);
 }
 
 .pp-ui-label.pp-ui-disabled {
-    color: var(--pp-fg-disabled-color);
+  color: var(--pp-fg-disabled-color);
 }
 
 .pp-ui-controls .pp-ui-disabled {
-    color: var(--pp-fg-disabled-color);
+  color: var(--pp-fg-disabled-color);
 }
 
 .pp-ui-button.pp-ui-disabled {
-    color: var(--pp-fg-disabled-color);
-    cursor: default;
+  color: var(--pp-fg-disabled-color);
+  cursor: default;
 }
 
 .pp-ui-button.pp-ui-disabled .pp-ui-icon {
-    background-color: var(--pp-fg-disabled-color);
+  background-color: var(--pp-fg-disabled-color);
 }
 
-.pp-ui-button.pp-ui-disabled:hover, .pp-ui-button.pp-ui-disabled:focus {
-    background-color: transparent;
+.pp-ui-button.pp-ui-disabled:hover,
+.pp-ui-button.pp-ui-disabled:focus {
+  background-color: transparent;
 }
 
 .pp-ui-slider.pp-ui-disabled .pp-ui-slider-range {
-    background-color: var(--pp-fg-disabled-color);
+  background-color: var(--pp-fg-disabled-color);
 }
 
 .pp-ui-slider.pp-ui-disabled .pp-ui-slider-range-thumb {
-    display: none;
+  display: none;
 }
 
 .pp-ui-slider.pp-ui-disabled .pp-ui-slider-range-progress {
-    display: none;
+  display: none;
 }
 
 .pp-ui-basic-theme .pp-ui-horizontal-bar {
-    padding: .5rem 0;
+  padding: 0.5rem 0;
 }
 
 .pp-ui-basic-theme .pp-ui-horizontal-bar .pp-ui-button {
-    padding: .25rem;
+  padding: 0.25rem;
 }
 
 .pp-ui-basic-theme .pp-ui-volumebar {
-    width: 120px;
-    max-width: 200px;
+  width: 120px;
+  max-width: 200px;
+}
+
+.pp-ui-volume-group {
+  display: flex;
+  align-items: center;
+}
+
+.pp-ui-basic-theme .pp-ui-volume-group .pp-ui-volumebar {
+  width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: width 200ms ease, opacity 200ms ease;
+}
+
+.pp-ui-basic-theme .pp-ui-volume-group:hover .pp-ui-volumebar {
+  width: 120px;
+  opacity: 1;
 }
 
 .pp-ui-basic-theme .pp-ui-top-bar {
@@ -797,10 +818,10 @@
 }
 
 .pp-ui-spacer {
-    flex-grow: 1;
-    flex-shrink: 1;
-    width: 100%;
-    height: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  width: 100%;
+  height: 100%;
 }
 
 .pp-ui-top-and-bottom-layout {
@@ -811,31 +832,29 @@
 }
 
 .pp-ui-transparent {
-    background: transparent;
+  background: transparent;
 }
 
 .pp-ui-hide {
-    display: none;
+  display: none;
 }
 
 .pp-ui-selected {
 }
 
 .pp-ui-absolute-center {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
 }
 
 .pp-ui-enabled {
-
 }
 
 .pp-ui-disabled {
-
 }
 
 .clpp-video {
@@ -844,20 +863,18 @@
 }
 
 @media (max-width: 800px) {
+  .pp-ui {
+    --pp-ui-button-size: 2rem;
+    --pp-ui-label-font-size: 0.875rem;
+    --pp-ui-label-subtitle-font-size: 0.75rem;
+    --pp-ui-thumbnail-height: 120px;
+    --pp-ui-start-button-size: 3rem;
+  }
 
-    .pp-ui {
-        --pp-ui-button-size: 2rem;
-        --pp-ui-label-font-size: .875rem;
-        --pp-ui-label-subtitle-font-size: .75rem;
-        --pp-ui-thumbnail-height: 120px;
-        --pp-ui-start-button-size: 3rem;
-    }
-
-    .pp-ui-basic-theme .pp-ui-volumebar {
-        display: none;
-    }
+  .pp-ui-basic-theme .pp-ui-volumebar {
+    display: none;
+  }
 }
-
 
 /** Styles for interstitial HLS player */
 .pp-ui-hlsi-video-anchor {
@@ -890,9 +907,6 @@
   font-size: 200px;
 }
 /** END: Styles for interstitial HLS player */
-
-
-
 
 /**
  * Styles for seek bar version 2.
@@ -1012,7 +1026,6 @@
 
 .pp-ui-ad-countdown-label {
   margin-left: 0px;
-  margin-right: 50px;
   width: 40px;
   text-align: center;
 }
