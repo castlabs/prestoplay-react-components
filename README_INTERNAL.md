@@ -1,6 +1,7 @@
 # PRESTOplay React Components
 
-The library is written in TypeScript and comes with a small react application that we use for development.
+The library is written in TypeScript, we use Storybook for development
+and documentation.
 
 ## Get started
 
@@ -10,16 +11,24 @@ npm i
 
 ## Develop
 
-To start the dev app and watch for any file changes, run:
+To start Storybook and watch for any file changes, run:
+
 ```sh
-npm run start
+npm run storybook
 ```
 
 ## Build
 
 To compile the library run:
+
 ```sh
 npm run build
+```
+
+## Test
+
+```sh
+npm run test
 ```
 
 ## Publish
@@ -44,17 +53,3 @@ alphabetical string (letters only).
 
 The `publish` workflow will automatically publish this package into
 a `<beta>` (non-main) NPM channel.
-
-## Test
-
-```sh
-npm run test
-```
-
-## Docs
-
-We are transitioning to use `Storybook` for public docs. Once that is done `app` can be deleted.
-
-```sh
-npm run storybook
-```
